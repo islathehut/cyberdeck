@@ -1,31 +1,33 @@
+import chalk from 'chalk'
+
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { BaseMod, Block, Config, GetModsResult, InstalledModsByBlock } from "../types.js"
-import { createModuleLogger, Logger } from '../../utils/logger.js'
+import { BaseMod, Config } from "../types.js"
+import { createSimpleModuleLogger } from '../../utils/logger.js'
 import { generateChecksum } from '../../utils/crypto.js'
 
-const LOGGER: Logger = createModuleLogger('mod')
+const LOGGER = createSimpleModuleLogger('mods:mod')
 
 export const loadAllModMetadata = (config: Config): BaseMod[] => {
   const loadedMods: BaseMod[] = []
 
-  LOGGER.info(`Reading files from ${config.modsDirPath} to find uninstalled mods`)
+  LOGGER.log(`Reading files from ${config.modsDirPath} to find uninstalled mods`)
   fs.readdirSync(config.modsDirPath, { recursive: false, withFileTypes: true }).forEach((value) => {
-    LOGGER.info(`Found ${value.name}`)
+    LOGGER.log(`Found ${value.name}`)
     if (value.isDirectory()) {
-      LOGGER.warn(`Skipping directory`)
+      LOGGER.log(chalk.dim.yellow(`Skipping directory`))
       return
     }
 
     const filePath = path.join(config.modsDirPath, value.name)
 
-    LOGGER.info(`Reading data to generate checksum`, filePath)
+    LOGGER.log(`Reading data to generate checksum`, filePath)
     const fileData = fs.readFileSync(filePath)
     const checksum = generateChecksum(fileData)
 
     if (config.uninstalledMods.find(mod => mod.checksum === checksum)) {
-      LOGGER.warn(`Skipping already cached uninstalled mod`)
+      LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`))
       return
     }
 

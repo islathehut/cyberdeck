@@ -4,12 +4,13 @@ import chalk from 'chalk'
 import actionSelect from '../components/actionSelect.js'
 import { CLIOptions, Config } from '../app/types.js'
 import { init } from './init.js'
-import { createModuleLogger, Logger } from '../utils/logger.js'
+import { createSimpleModuleLogger } from '../utils/logger.js'
 import { loadMods } from './loadMods.js'
 import { updateInstallOrder } from './updateInstallOrder.js'
 import { installMods } from '../app/mods/install.js'
+import { DEFAULT_THEME } from './theme.js'
 
-const LOGGER: Logger = createModuleLogger('main')
+const LOGGER = createSimpleModuleLogger('prompts:main')
 
 const mainLoop = async (config: Config, options: CLIOptions) => {
   let exit = false
@@ -20,14 +21,17 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
       { name: "View History", value: "viewHistory", description: "View mod install description" },
       { name: "Load Mod Data", value: "loadMods", description: "Load all mod metadata" }
     ]
+
+    console.log("") // just add a line break
     const answer = await actionSelect(
         {
-          message: chalk.bold("Main Menu"),
+          message: "Main Menu",
           choices: [...defaultChoices],
           actions: [
             { name: "Select", value: "select", key: "e" },
             { name: "Exit Program", value: "exit", key: "escape" },
-          ]
+          ],
+          theme: DEFAULT_THEME
         },
       )
     switch (answer.action) {
@@ -35,14 +39,13 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
       case undefined: // catches enter/return key
         switch (answer.answer) {
           case "installMods":
-            console.warn(`Not implemented!`)
             await installMods(config, options)
             break
           case "updateInstallOrder":
             await updateInstallOrder(config)
             break
           case "viewHistory":
-            console.warn(`Not implemented!`)
+            LOGGER.log(chalk.dim.yellow(`Not implemented!`))
             // await viewHistory(config)
             break
           case "loadMods":
@@ -59,27 +62,44 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
   return exit
 };
 
+const printHeader = () => {
+  console.log(chalk.magentaBright(
+    `
+    ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░░▒▓████████▓▒░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░ 
+   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
+   ░▒▓█▓▒░       ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓██████▓▒░ ░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓███████▓▒░  
+   ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
+   ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+    ░▒▓██████▓▒░   ░▒▓█▓▒░   ░▒▓███████▓▒░░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░
+    `
+  ))
+  
+  console.log(chalk.dim.magenta(`~~   The Cyberpunk 2077 CLI Mod Manager  ~~`))
+  console.log(chalk.dim.magenta(`~~         Created by islaofnoman        ~~\n`))
+}
+
 const interactive = async (options: CLIOptions) => {
-  console.log(chalk.magentaBright.bold.underline("CP2077 Command Line Mod Manager"))
+  printHeader()
+
   if (options.dry) {
-    console.warn(`!!!Running in dry mode!!!`)
+    LOGGER.log(chalk.yellowBright(`!!!Running in dry mode!!!`))
   }
+
   let config: Config | null
   try {
     config = await init()
   } catch (e) {
-    LOGGER.error(`Error occurred while initializing`, e)
+    LOGGER.error(chalk.redBright(`Error occurred while initializing`), e)
     process.exit(1)
   }
 
   if (config != null) {
     config = await loadMods(config)
-
-    console.log("Navigate options with arrow keys, use E to select, and Q to go back.")
     await mainLoop(config, options)
   }
 
-  console.log(chalk.magentaBright.bold("Goodbye!"))
+  console.log(chalk.bold.magentaBright("Goodbye!"))
 };
 
 export default interactive

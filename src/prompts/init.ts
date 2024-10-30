@@ -1,15 +1,17 @@
 #! /usr/bin/env ts-node
 
 import chalk from 'chalk'
+import { DateTime } from 'luxon';
 import { confirm, input } from '@inquirer/prompts'
+
 import * as path from 'path'
 
 import { Config } from '../app/types.js';
 import { configFileExists, writeConfigFile, loadConfigFile } from '../app/config/config.js';
-import { createModuleLogger, Logger } from '../utils/logger.js';
-import { DateTime } from 'luxon';
+import { createSimpleModuleLogger } from '../utils/logger.js';
+import { DEFAULT_THEME } from './theme.js';
 
-const LOGGER: Logger = createModuleLogger('init')
+const LOGGER = createSimpleModuleLogger('prompts:init')
 
 const DEFAULT_MODS_DIR_NAME = '/.mods'
 const DEFAULT_MODS_DIR_PATH = path.join(process.cwd(), DEFAULT_MODS_DIR_NAME)
@@ -21,18 +23,20 @@ const init = async (): Promise<Config | null> => {
   let config: Config
   const configExists = configFileExists()
   if (configExists){
-    LOGGER.info(`Found config file!  Loading...`)
+    LOGGER.log(`Found config file!  Loading...`)
     config = loadConfigFile()
-    LOGGER.info(`Loaded config:`, config)
+    LOGGER.log(`Loaded config:`, config)
   } else {
-    LOGGER.info(`No config file found, generating a new one...`)
+    LOGGER.log(`No config file found, generating a new one...`)
     const modsDirPath = await input({
       message: `Enter the directory your mods are stored in`,
       default: DEFAULT_MODS_DIR_PATH,
+      theme: DEFAULT_THEME
     })
     const installDirPath = await input({
       message: `Enter the directory Cyberpunk 2077 is installed in)`,
       default: DEFAULT_INSTALL_DIR_PATH,
+      theme: DEFAULT_THEME
     })
 
     config = {
@@ -45,15 +49,16 @@ const init = async (): Promise<Config | null> => {
       installOrder: {}
     }
 
-    LOGGER.info(`Generated config:`, config)
+    LOGGER.log(`Generated config:`, config)
 
     const areYouSure = await confirm({
       message: `Would you like to create this config?\n\n${chalk.greenBright(JSON.stringify(config, null, 2))}\n`,
-      default: true
+      default: true,
+      theme: DEFAULT_THEME
     })
 
     if (!areYouSure) {
-      LOGGER.warn(`No config file was generated`)
+      LOGGER.log(chalk.yellowBright(`No config file was generated`))
       return null
     }
 
