@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# this project
+.mods/
+.cp2077-cl-mod-manager.config
+__dryRun*
+.DS_Store
