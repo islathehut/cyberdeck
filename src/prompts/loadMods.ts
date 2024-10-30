@@ -14,7 +14,7 @@ const LOGGER = createSimpleModuleLogger('prompts:loadMods')
 
 const loadMods = async (config: Config): Promise<Config> => {
   LOGGER.log(`Loading mods from config and mod directory`)
-  const rawLoadedMods = loadAllModMetadata(config)
+  const rawLoadedMods = await loadAllModMetadata(config)
   const block = createBlock(config)
 
   if (rawLoadedMods.length === 0) {

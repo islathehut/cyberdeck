@@ -21,10 +21,10 @@ const DEFAULT_INSTALL_DIR_PATH = path.join('~/Library/Application Support/CrossO
 
 const init = async (): Promise<Config | null> => {
   let config: Config
-  const configExists = configFileExists()
+  const configExists = await configFileExists()
   if (configExists){
     LOGGER.log(`Found config file!  Loading...`)
-    config = loadConfigFile()
+    config = await loadConfigFile()
     LOGGER.log(`Loaded config:`, config)
   } else {
     LOGGER.log(`No config file found, generating a new one...`)

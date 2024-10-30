@@ -9,6 +9,8 @@ import { loadMods } from './loadMods.js'
 import { updateInstallOrder } from './updateInstallOrder.js'
 import { installMods } from '../app/mods/install.js'
 import { DEFAULT_THEME } from './theme.js'
+import { generateCliHeader } from '../utils/terminal/header.js'
+import { promiseWithSpinner } from '../utils/terminal/tools.js'
 
 const LOGGER = createSimpleModuleLogger('prompts:main')
 
@@ -49,8 +51,7 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
             // await viewHistory(config)
             break
           case "loadMods":
-            await loadMods(config)
-            console.warn(JSON.stringify(config, null, 2))
+            await promiseWithSpinner(() => loadMods(config), 'Loading mods...', 'Finished loading mods!')
             break
         }
         break;
@@ -62,40 +63,23 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
   return exit
 };
 
-const printHeader = () => {
-  console.log(chalk.magentaBright(
-    `
-    ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░░▒▓████████▓▒░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░ 
-   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
-   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
-   ░▒▓█▓▒░       ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓██████▓▒░ ░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓███████▓▒░  
-   ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
-   ░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
-    ░▒▓██████▓▒░   ░▒▓█▓▒░   ░▒▓███████▓▒░░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░
-    `
-  ))
-  
-  console.log(chalk.dim.magenta(`~~   The Cyberpunk 2077 CLI Mod Manager  ~~`))
-  console.log(chalk.dim.magenta(`~~         Created by islaofnoman        ~~\n`))
+const printHeader = (options: CLIOptions) => {
+  console.log(generateCliHeader(options))
 }
 
 const interactive = async (options: CLIOptions) => {
-  printHeader()
-
-  if (options.dry) {
-    LOGGER.log(chalk.yellowBright(`!!!Running in dry mode!!!`))
-  }
+  printHeader(options)
 
   let config: Config | null
   try {
-    config = await init()
+    config = await promiseWithSpinner(() => init(), 'Initializing...', 'Finished initializing!')
   } catch (e) {
     LOGGER.error(chalk.redBright(`Error occurred while initializing`), e)
     process.exit(1)
   }
 
   if (config != null) {
-    config = await loadMods(config)
+    config = await promiseWithSpinner(() => loadMods(config!), 'Loading mods...', 'Finished loading mods!')
     await mainLoop(config, options)
   }
 

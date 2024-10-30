@@ -131,6 +131,6 @@ dist
 
 # this project
 .mods/
-.cp2077-cl-mod-manager.config
+.*.config
 __dryRun*
 .DS_Store

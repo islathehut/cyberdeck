@@ -1,22 +1,40 @@
 import chalk from 'chalk'
 
-import * as fs from 'fs'
+import * as fs from 'node:fs/promises';
 import * as path from 'path'
 import { randomUUID } from "crypto";
 
-import { CLIOptions, Config } from "../types.js";
+import { CLIOptions, Config, UninstalledMod } from "../types.js";
 import { getCurrentUninstalledBlock } from './block.js';
 import { extractArchiveToTempDir } from './extract.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { promiseWithSpinner } from '../../utils/terminal/tools.js';
 
 const LOGGER = createSimpleModuleLogger('mods:install')
+
+const copyFiles = async (modMetadata: UninstalledMod, tempDirPath: string, installPath: string): Promise<void> => {
+  if (modMetadata!.copyOverrides == null || modMetadata!.copyOverrides.length === 0) {
+    LOGGER.log(`Copying all files from ${tempDirPath} to install path`)
+    await fs.cp(path.join(tempDirPath), installPath, {
+      recursive: true
+    })
+  } else {
+    LOGGER.log(`Copying files from ${tempDirPath} to install path based on configured overrides`)
+    for (const override of modMetadata!.copyOverrides!) {
+      LOGGER.log(`Copying ${override.in} to ${override.out} in install path`)
+      await fs.cp(path.join(tempDirPath, override.in), path.join(installPath, override.out), {
+        recursive: true
+      })
+    }
+  }
+}
 
 const installMods = async (config: Config, options: CLIOptions): Promise<void> => {
   let installPath = config.installDirPath
   let logPrefix = ''
   if (options.dry) {
     installPath = path.join(process.cwd(), `/__dryRun_${randomUUID()}`)
-    fs.mkdirSync(installPath)
+    await fs.mkdir(installPath)
     logPrefix = 'DRY RUN - '
   }
 
@@ -36,25 +54,11 @@ const installMods = async (config: Config, options: CLIOptions): Promise<void> =
 
     LOGGER.log(`Creating temp extraction directory for ${fileName}`)
     const tempDirPath = path.join(installPath, `__${modMetadata!.checksum}`)
-    fs.mkdirSync(tempDirPath)
+    await fs.mkdir(tempDirPath)
 
     LOGGER.log(`Extracting mod at ${modMetadata!.filePath} to ${tempDirPath}`)
-    await extractArchiveToTempDir(modMetadata!.filePath, tempDirPath)
-
-    if (modMetadata!.copyOverrides == null || modMetadata!.copyOverrides.length === 0) {
-      LOGGER.log(`Copying all files from ${tempDirPath} to install path`)
-      fs.cpSync(path.join(tempDirPath), installPath, {
-        recursive: true
-      })
-    } else {
-      LOGGER.log(`Copying files from ${tempDirPath} to install path based on configured overrides`)
-      for (const override of modMetadata!.copyOverrides!) {
-        LOGGER.log(`Copying ${override.in} to ${override.out} in install path`)
-        fs.cpSync(path.join(tempDirPath, override.in), path.join(installPath, override.out), {
-          recursive: true
-        })
-      }
-    }
+    await promiseWithSpinner(() => extractArchiveToTempDir(modMetadata!.filePath, tempDirPath), `Extracting ${modMetadata!.fileName}...`, `Finished extracting ${modMetadata!.fileName}!`)
+    await promiseWithSpinner(() => copyFiles(modMetadata!, tempDirPath, installPath), `Copying files from ${modMetadata!.fileName}...`, `Finished copying files from ${modMetadata!.fileName}!`)
   }
 }
 
