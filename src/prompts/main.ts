@@ -6,13 +6,14 @@ import actionSelect from '../components/actionSelect.js'
 import { CLIOptions, Config } from '../app/types.js'
 import { loadExistingConfig, initNewConfig } from './init.js'
 import { createSimpleModuleLogger } from '../utils/logger.js'
-import { loadMods } from './loadMods.js'
+import { loadMods } from './mods/loadMods.js'
 import { DEFAULT_THEME } from './helpers/theme.js'
 import { generateCliHeader } from '../utils/terminal/header.js'
 import { promiseWithSpinner } from '../utils/terminal/tools.js'
 import Blocks from '../app/storage/versedb/schemas/blocks.schema.js'
 import Mods from '../app/storage/versedb/schemas/mods.schema.js'
-import { manageInstallBlocks } from './manageInstallBlocks.js'
+import { manageInstallBlocks } from './blocks/manageInstallBlocks.js'
+import { selectMod } from './mods/manageMods.js'
 
 const LOGGER = createSimpleModuleLogger('prompts:main')
 
@@ -21,6 +22,7 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
   while (exit === false) {
     const defaultChoices = [
       { name: "Manage Install Blocks", value: "manageInstallBlocks", description: "Manage pending install blocks" },
+      { name: "Manage Mods", value: "manageMods", description: "Manage mods that Cyberdeck knows about" },
       { name: "Refresh Mod Metadata", value: "loadMods", description: "Load all mod metadata" }
     ]
 
@@ -42,6 +44,9 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
         switch (answer.answer) {
           case "manageInstallBlocks":
             await manageInstallBlocks(config, options)
+            break
+          case "manageMods":
+            await selectMod()
             break
           case "loadMods":
             await loadMods(config)

@@ -8,13 +8,13 @@ import * as fs from 'node:fs/promises';
 import * as fsSync from 'fs'
 import * as path from 'path'
 
-import { CLIOptions, Config, InstallStatus, UnpackResult } from '../app/types.js';
-import { createSimpleModuleLogger } from '../utils/logger.js';
-import { DEFAULT_THEME } from './helpers/theme.js';
-import { installMods, unpackMods } from '../app/mods/install.js';
-import { promiseWithSpinner } from '../utils/terminal/tools.js';
-import { updateMod } from '../app/mods/mod.js';
-import { updateBlock } from '../app/mods/block.js';
+import { CLIOptions, Config, InstallStatus, UnpackResult } from '../../app/types.js';
+import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { DEFAULT_THEME } from '../helpers/theme.js';
+import { installMods, unpackMods } from '../../app/mods/install.js';
+import { promiseWithSpinner } from '../../utils/terminal/tools.js';
+import { updateMod } from '../../app/mods/mod.js';
+import { updateBlock } from '../../app/mods/block.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:installMods')
 

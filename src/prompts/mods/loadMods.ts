@@ -3,20 +3,20 @@
 import { confirm, input } from '@inquirer/prompts'
 import chalk from 'chalk';
 
-import { Config } from '../app/types.js';
-import { createSimpleModuleLogger } from '../utils/logger.js';
-import { loadAllModMetadata } from '../app/mods/mod.js';
-import { DEFAULT_THEME } from './helpers/theme.js';
+import { Config } from '../../app/types.js';
+import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { loadAllModMetadata } from '../../app/mods/mod.js';
+import { DEFAULT_THEME } from '../helpers/theme.js';
 
-import Mods from '../app/storage/versedb/schemas/mods.schema.js'
+import Mods from '../../app/storage/versedb/schemas/mods.schema.js'
+import { promiseWithSpinner } from '../../utils/terminal/tools.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:loadMods')
 
 const loadMods = async (config: Config): Promise<Config> => {
-  console.log(chalk.green(`Loading new mods...`))
   LOGGER.log(`Loading mods from config and mod directory`)
 
-  const rawLoadedMods = await loadAllModMetadata(config)
+  const rawLoadedMods = await promiseWithSpinner(() => loadAllModMetadata(config), 'Searching for new mod files...', 'Finished searching for new mod files!')
 
   if (rawLoadedMods.length === 0) {
     const message = chalk.dim.yellow(`No new mods found!`)

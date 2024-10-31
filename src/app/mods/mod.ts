@@ -1,16 +1,17 @@
 import chalk from 'chalk'
+import { DateTime } from 'luxon';
+import { Query } from 'verse.db/dist/types/adapter.js';
 
 import * as fs from 'node:fs/promises';
 import * as path from 'path'
+import { randomUUID } from 'node:crypto';
 
 import { Mod, Config, InstallStatus } from "../types.js"
 import { createSimpleModuleLogger } from '../../utils/logger.js'
 import { generateChecksum } from '../../utils/crypto.js'
 import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
-import { randomUUID } from 'node:crypto';
-import { DateTime } from 'luxon';
-import { Query } from 'verse.db/dist/types/adapter.js';
-import { db } from '../storage/versedb/cyberdeck.versedb.js';
+
+import { DB } from '../storage/versedb/cyberdeck.versedb.js';
 
 const LOGGER = createSimpleModuleLogger('mods:mod')
 
@@ -42,7 +43,7 @@ export const searchMods = async (query: any): Promise<Mod[]> => {
 
 export const updateMod = async (findQuery: Query<Mod>, updates: any): Promise<Mod> => {
   try {
-    await db.update(
+    await DB.db.update(
       MODS_DATANAME,
       findQuery,
       updates,
@@ -71,7 +72,7 @@ export const findMod = async (findQuery: Query<Mod>): Promise<Mod | undefined> =
   }
 }
 
-export const findModByChecksum = async (checksum: string): Promise<Mod | undefined> => {
+export const findModByChecksum = async (checksum: string, throwOnUndefined: boolean = false): Promise<Mod | undefined> => {
   return findMod({
     checksum
   })

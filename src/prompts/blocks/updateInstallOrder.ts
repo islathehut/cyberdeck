@@ -4,12 +4,12 @@ import chalk from 'chalk';
 import autocomplete from 'inquirer-autocomplete-standalone';
 import { confirm } from '@inquirer/prompts'
 
-import { Block, InstallStatus, Mod } from '../app/types.js';
-import { createSimpleModuleLogger } from '../utils/logger.js';
-import { DEFAULT_THEME } from './helpers/theme.js';
-import { promiseWithSpinner } from '../utils/terminal/tools.js';
-import { updateBlock } from '../app/mods/block.js';
-import { searchMods, updateMod } from '../app/mods/mod.js';
+import { Block, InstallStatus, Mod } from '../../app/types.js';
+import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { DEFAULT_THEME } from '../helpers/theme.js';
+import { promiseWithSpinner } from '../../utils/terminal/tools.js';
+import { updateBlock } from '../../app/mods/block.js';
+import { searchMods, updateMod } from '../../app/mods/mod.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:updateInstallOrder')
 

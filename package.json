@@ -27,6 +27,7 @@
     "figlet": "^1.7.0",
     "figures": "^6.1.0",
     "inquirer-autocomplete-standalone": "^0.8.1",
+    "inquirer-radio-prompt": "^1.2.0",
     "jszip": "^3.10.1",
     "luxon": "3.5.0",
     "node-7z": "^3.0.0",

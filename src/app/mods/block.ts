@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import { AdapterResults } from 'verse.db/dist/types/adapter.js';
 
 import { randomUUID } from "crypto";
 
@@ -6,14 +7,13 @@ import { Block } from "../types.js";
 import { createSimpleModuleLogger } from "../../utils/logger.js";
 import { DateTime } from 'luxon';
 import Blocks, { BLOCKS_DATANAME } from '../storage/versedb/schemas/blocks.schema.js';
-import { AdapterResults } from 'verse.db/dist/types/adapter.js';
-import { db } from '../storage/versedb/cyberdeck.versedb.js';
+import { DB } from '../storage/versedb/cyberdeck.versedb.js';
 
 const LOGGER = createSimpleModuleLogger('mods:block')
 
 export const updateBlock = async (query: any, newData: any, upsert: boolean): Promise<Block> => {
   try {
-    await db.update(
+    await DB.db.update(
       BLOCKS_DATANAME,
       query,
       newData,

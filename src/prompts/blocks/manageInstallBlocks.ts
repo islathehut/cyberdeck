@@ -2,16 +2,16 @@
 
 import chalk from 'chalk';
 
-import { Block, CLIOptions, Config } from '../app/types.js';
-import { createSimpleModuleLogger } from '../utils/logger.js';
-import { createBlock, getBlockByUuid, getUninstalledBlocks } from '../app/mods/block.js';
-import { DEFAULT_THEME } from './helpers/theme.js';
-import actionSelect from '../components/actionSelect.js';
+import { Block, CLIOptions, Config } from '../../app/types.js';
+import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { createBlock, getBlockByUuid, getUninstalledBlocks } from '../../app/mods/block.js';
+import { DEFAULT_THEME } from '../helpers/theme.js';
+import actionSelect from '../../components/actionSelect.js';
 
-import Blocks, { BLOCKS_DATANAME } from '../app/storage/versedb/schemas/blocks.schema.js';
+import Blocks, { BLOCKS_DATANAME } from '../../app/storage/versedb/schemas/blocks.schema.js';
 import { AdapterResults } from 'verse.db/dist/types/adapter.js';
 import { updateInstallOrder } from './updateInstallOrder.js';
-import { installMods } from './installMods.js';
+import { installMods } from '../mods/installMods.js';
 import { confirm } from '@inquirer/prompts';
 import { DateTime, Zone } from 'luxon';
 
@@ -32,7 +32,7 @@ const displayBlock = (block: Block) => {
     installOrderString += ` ${chalk.yellow(`unset`)}\n  ${shortSeparator}`
   } else {
     installOrderString += `\n  ${shortSeparator}\n`
-    block.installOrder.forEach((filename) => installOrderString += `  ${mediumSeparator} ${chalk.cyan('-')} ${chalk.magenta(filename)}\n`)
+    block.installOrder.forEach((filename) => installOrderString += `  ${mediumSeparator} ${chalk.green('-')} ${chalk.magenta(filename)}\n`)
     installOrderString += `  ${mediumSeparator}`
   }
 
@@ -45,9 +45,11 @@ const displayBlock = (block: Block) => {
   ${longSeparator}
   ${shortSeparator}
   ${shortSeparator} ${installedString}
+  ${shortSeparator}
   ${shortSeparator} ${createdAtString}
   ${shortSeparator} ${modifiedAtString}
   ${shortSeparator} ${installedAtString}
+  ${shortSeparator}
   ${shortSeparator} ${installOrderString}
   ${longSeparator}
   `

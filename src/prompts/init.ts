@@ -18,7 +18,6 @@ import {
   UNPACK_DIR_PATH,
   VERSE_DB_DATA_DIR_PATH
 } from '../app/const.js';
-import { DB } from '../app/storage/versedb/cyberdeck.versedb.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:init')
 
