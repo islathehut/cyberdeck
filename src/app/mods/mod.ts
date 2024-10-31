@@ -84,7 +84,7 @@ export const findModByFilename = async (filename: string): Promise<Mod | undefin
   })
 }
 
-export const loadAllModMetadata = async (config: Config): Promise<Mod[]> => {
+export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
   const loadedMods: Mod[] = []
 
   LOGGER.log(`Reading files from ${config.modsDirPath} to find uninstalled mods`)
