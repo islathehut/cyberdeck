@@ -9,7 +9,7 @@ import { getCurrentUninstalledBlock } from './block.js';
 import { extractArchiveToTempDir } from './extract.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
-import { UNPACK_DIR_PATH } from '../../prompts/init.js';
+import { UNPACK_DIR_PATH } from '../const.js';
 
 const LOGGER = createSimpleModuleLogger('mods:install')
 

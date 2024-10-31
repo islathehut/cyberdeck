@@ -6,22 +6,19 @@ import { confirm, input } from '@inquirer/prompts'
 
 import * as fs from 'node:fs/promises'
 import * as fsSync from 'fs'
-import * as os from 'os'
-import * as path from 'path'
 
 import { Config } from '../app/types.js';
 import { configFileExists, writeConfigFile, loadConfigFile } from '../app/config/config.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
 import { DEFAULT_THEME } from './theme.js';
+import { 
+  CYBERDECK_DIR_PATH,
+  DEFAULT_INSTALL_DIR_PATH,
+  MODS_DIR_PATH,
+  UNPACK_DIR_PATH
+} from '../app/const.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:init')
-
-export const CYBERDECK_DIR_PATH = path.join(os.homedir(), '/.cyberdeck')
-export const MODS_DIR_PATH = path.join(CYBERDECK_DIR_PATH, 'mods')
-export const UNPACK_DIR_PATH = path.join(CYBERDECK_DIR_PATH, 'unpacked')
-
-const DEFAULT_INSTALL_DIR_NAME = 'Cyberpunk 2077'
-const DEFAULT_INSTALL_DIR_PATH = path.join(os.homedir(), '/Library/Application Support/CrossOver/Bottles/Steam/drive_c/Program Files (x86)/Steam/steamapps/common/', DEFAULT_INSTALL_DIR_NAME)
 
 const init = async (): Promise<Config | null> => {
   let config: Config

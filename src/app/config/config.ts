@@ -7,9 +7,7 @@ import * as path from 'path'
 
 import { Config } from "../types.js"
 import { createSimpleModuleLogger } from '../../utils/logger.js'
-import { CYBERDECK_DIR_PATH } from '../../prompts/init.js'
-
-export const CONFIG_FILE_NAME = '.config'
+import { CONFIG_FILE_NAME, CYBERDECK_DIR_PATH } from '../const.js'
 
 const LOGGER = createSimpleModuleLogger('config')
 

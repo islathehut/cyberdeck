@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:interactive": "node dist/index.js interactive"
+    "start:interactive": "DEBUG=cyberdeck* node dist/index.js interactive"
   },
   "keywords": [],
   "author": "",
