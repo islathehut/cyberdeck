@@ -30,6 +30,8 @@ I've been playing Cyberpunk 2077 on MacOS using Crossover recently and the manua
 
 # Using the App
 
+![Cyberdeck in action (v0.1.0)](resources/screenshot_of_cyberdeck_in_action__v0_1_0.png "Cyberdeck in action (v0.1.0)")
+
 Your first time running the tool `cyberdeck` will generate the following files and directories:
 
 - ~/.cyberdeck
