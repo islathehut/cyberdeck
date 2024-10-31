@@ -12,7 +12,7 @@ export const getCurrentUninstalledBlock = (config: Config): Block | undefined =>
   return config.blocks.find((block) => block.installed === false)
 }
 
-export const createBlock = (config: Config): Block => {
+export const createBlock = async (config: Config): Promise<Block> => {
   LOGGER.log(`Creating a new install block`)
   const uninstalledBlock = getCurrentUninstalledBlock(config)
   if (uninstalledBlock != null) {
@@ -28,7 +28,7 @@ export const createBlock = (config: Config): Block => {
 
   config.blocks.push(newBlock)
   config.installOrder[newBlock.uuid] = []
-  writeConfigFile(config, true)
+  await writeConfigFile(config, true)
 
   return newBlock
 }

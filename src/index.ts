@@ -16,6 +16,7 @@ program
   .description('Interactive mode')
   .option('-v, --verbose', 'Verbose mode')
   .option('-d, --dry', 'Dry run')
+  .option('-t, --test', 'Run as test (use a fake install directory)')
   .action((options: CLIOptions) => {
     interactive(options);
   });

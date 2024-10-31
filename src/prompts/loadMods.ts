@@ -15,7 +15,7 @@ const LOGGER = createSimpleModuleLogger('prompts:loadMods')
 const loadMods = async (config: Config): Promise<Config> => {
   LOGGER.log(`Loading mods from config and mod directory`)
   const rawLoadedMods = await loadAllModMetadata(config)
-  const block = createBlock(config)
+  const block = await createBlock(config)
 
   if (rawLoadedMods.length === 0) {
     LOGGER.log(chalk.dim.yellow(`No new mods found!`))

@@ -9,16 +9,23 @@ import { createSimpleModuleLogger } from '../utils/logger.js';
 import { writeConfigFile } from '../app/config/config.js';
 import { createBlock, getCurrentUninstalledBlock } from '../app/mods/block.js';
 import { DEFAULT_THEME } from './theme.js';
+import { promiseWithSpinner } from '../utils/terminal/tools.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:updateInstallOrder')
 
-const autoGenerateInstallOrder = (config: Config, remainingChoices: Set<string>, installOrderForBlock: string[]): string[] => {
-  LOGGER.log(`Auto-generating install order from ${remainingChoices.size} remaining mods`)
-  config.uninstalledMods.filter(mod => remainingChoices.has(mod.checksum)).forEach(mod => {
-    installOrderForBlock.push(mod.fileName)
-  })
+const autoGenerateInstallOrder = async (config: Config, remainingChoices: Set<string>, installOrderForBlock: string[]): Promise<string[]> => {
+  return promiseWithSpinner(
+    () => {
+      LOGGER.log(`Auto-generating install order from ${remainingChoices.size} remaining mods`)
+      config.uninstalledMods.filter(mod => remainingChoices.has(mod.checksum)).forEach(mod => {
+        installOrderForBlock.push(mod.fileName)
+      })
 
-  return installOrderForBlock
+      return Promise.resolve(installOrderForBlock)
+    },
+    'Auto-generating remaining install order...',
+    'Finished auto-generating install order!'
+  )
 }
 
 const updateInstallOrder = async (config: Config): Promise<Config> => {
@@ -26,7 +33,7 @@ const updateInstallOrder = async (config: Config): Promise<Config> => {
   LOGGER.log(`Current Install Order:`, JSON.stringify(config.installOrder, null, 2))
   let currentBlock = getCurrentUninstalledBlock(config)
   if (currentBlock == null) {
-    currentBlock = createBlock(config)
+    currentBlock = await createBlock(config)
   }
 
   let installOrderForBlock = config.installOrder[currentBlock.uuid]
@@ -40,13 +47,17 @@ const updateInstallOrder = async (config: Config): Promise<Config> => {
   })
 
   if (!manuallySet) {
-    installOrderForBlock = autoGenerateInstallOrder(config, remainingChoices, installOrderForBlock)
+    installOrderForBlock = await autoGenerateInstallOrder(config, remainingChoices, installOrderForBlock)
+    exit = true
+  }
+
+  if (remainingChoices.size === 0) {
+    console.log(chalk.yellow(`No uninstalled mods to add to the install order`))
     exit = true
   }
 
   while(!exit && remainingChoices.size > 0) {
     const choices = config.uninstalledMods.filter(mod => remainingChoices.has(mod.checksum))
-
     const answer: UninstalledMod = await autocomplete({
       message: 'Select a mod to add next in the install order',
       source: async (input: string) => {
@@ -71,7 +82,7 @@ const updateInstallOrder = async (config: Config): Promise<Config> => {
     })
   
     if (!continueManually) {
-      installOrderForBlock = autoGenerateInstallOrder(config, remainingChoices, installOrderForBlock)
+      installOrderForBlock = await autoGenerateInstallOrder(config, remainingChoices, installOrderForBlock)
       exit = true
     }
   }
@@ -79,8 +90,6 @@ const updateInstallOrder = async (config: Config): Promise<Config> => {
   LOGGER.log('Done!')
   config.installOrder[currentBlock.uuid] = installOrderForBlock
   writeConfigFile(config, true)
-
-  LOGGER.log(`Mod data loading complete!`, JSON.stringify(config.uninstalledMods, null, 2))
 
   return config
 }

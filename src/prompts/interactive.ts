@@ -1,5 +1,6 @@
 #! /usr/bin/env ts-node
 import chalk from 'chalk'
+import debug from 'debug'
 
 import actionSelect from '../components/actionSelect.js'
 import { CLIOptions, Config } from '../app/types.js'
@@ -7,10 +8,10 @@ import { init } from './init.js'
 import { createSimpleModuleLogger } from '../utils/logger.js'
 import { loadMods } from './loadMods.js'
 import { updateInstallOrder } from './updateInstallOrder.js'
-import { installMods } from '../app/mods/install.js'
 import { DEFAULT_THEME } from './theme.js'
 import { generateCliHeader } from '../utils/terminal/header.js'
 import { promiseWithSpinner } from '../utils/terminal/tools.js'
+import { installMods } from './installMods.js'
 
 const LOGGER = createSimpleModuleLogger('prompts:main')
 
@@ -68,11 +69,15 @@ const printHeader = (options: CLIOptions) => {
 }
 
 const interactive = async (options: CLIOptions) => {
+  if (options.verbose) {
+    debug.enable('cyberdeck:*')
+  }
+
   printHeader(options)
 
   let config: Config | null
   try {
-    config = await promiseWithSpinner(() => init(), 'Initializing...', 'Finished initializing!')
+    config = await promiseWithSpinner(() => init(), 'Initializing app...', 'Finished initializing!')
   } catch (e) {
     LOGGER.error(chalk.redBright(`Error occurred while initializing`), e)
     process.exit(1)

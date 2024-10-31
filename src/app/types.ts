@@ -1,6 +1,7 @@
 export type CLIOptions = {
   verbose?: true | undefined
   dry?: true | undefined
+  test?: true | undefined
 }
 
 export enum InstallStatus {
@@ -35,7 +36,7 @@ export type InstalledMod = BaseMod & {
   modifiedAt: number
   name: string
   blockUuid: string
-  installStatus: InstallStatus.INSTALLED
+  status: InstallStatus.INSTALLED
 }
 
 export type GetModsOptions = {
@@ -79,4 +80,10 @@ export type Config = {
   installOrder: InstallOrder
   blocks: Block[]
   modifiedAt: number
+}
+
+export type UnpackResult = { 
+  mergedDir: string
+  count: number
+  blockUuid: string
 }

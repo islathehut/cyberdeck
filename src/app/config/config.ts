@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import { DateTime } from 'luxon'
 
 import * as fs from 'node:fs/promises'
 import * as fsSync from 'fs'
@@ -6,13 +7,14 @@ import * as path from 'path'
 
 import { Config } from "../types.js"
 import { createSimpleModuleLogger } from '../../utils/logger.js'
+import { CYBERDECK_DIR_PATH } from '../../prompts/init.js'
 
-export const CONFIG_FILE_NAME = '.cyberdeck.config'
+export const CONFIG_FILE_NAME = '.config'
 
 const LOGGER = createSimpleModuleLogger('config')
 
 const getConfigFilePath = (): string => {
-  return path.join(process.cwd(), CONFIG_FILE_NAME)
+  return path.join(CYBERDECK_DIR_PATH, CONFIG_FILE_NAME)
 }
 
 export const configFileExists = async (): Promise<boolean> => {
@@ -21,6 +23,7 @@ export const configFileExists = async (): Promise<boolean> => {
 
 export const writeConfigFile = async (input: Config, overwrite: boolean = false) => {
   LOGGER.log(`Writing config file`)
+  input.modifiedAt = DateTime.utc().toMillis()
   const configFilePath = getConfigFilePath()
 
   if (await configFileExists()) {
