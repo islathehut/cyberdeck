@@ -4,16 +4,17 @@ import * as fs from 'node:fs/promises';
 import * as path from 'path'
 import { randomUUID } from "crypto";
 
-import { CLIOptions, Config, UninstalledMod, UnpackResult } from "../types.js";
-import { getCurrentUninstalledBlock } from './block.js';
+import { CLIOptions, Config, Mod, UnpackResult } from "../types.js";
 import { extractArchiveToTempDir } from './extract.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
 import { UNPACK_DIR_PATH } from '../const.js';
+import { getBlockByUuid } from './block.js';
+import { findModByFilename } from './mod.js';
 
 const LOGGER = createSimpleModuleLogger('mods:install')
 
-const copyFiles = async (modMetadata: UninstalledMod, tempDirPath: string, mergedPath: string): Promise<void> => {
+const copyFiles = async (modMetadata: Mod, tempDirPath: string, mergedPath: string): Promise<void> => {
   if (modMetadata!.copyOverrides == null || modMetadata!.copyOverrides.length === 0) {
     LOGGER.log(`Copying all files from ${tempDirPath} to merged path`)
     await fs.cp(path.join(tempDirPath), mergedPath, {
@@ -30,7 +31,7 @@ const copyFiles = async (modMetadata: UninstalledMod, tempDirPath: string, merge
   }
 }
 
-const unpackMods = async (config: Config, options: CLIOptions): Promise<UnpackResult | null> => {
+const unpackMods = async (blockUuid: string, options: CLIOptions): Promise<UnpackResult | null> => {
   LOGGER.log('Unpacking mods to temporary directory')
   let logPrefix = ''
   let unpackDirPrefix = ''
@@ -51,37 +52,33 @@ const unpackMods = async (config: Config, options: CLIOptions): Promise<UnpackRe
   LOGGER.log(chalk.dim.yellow(`Creating unpack merged dir for this block at ${unpackMergedDirPath}`))
   await fs.mkdir(unpackMergedDirPath)
 
-  const uninstalledBlock = getCurrentUninstalledBlock(config)
-  if (uninstalledBlock == null) {
-    LOGGER.log(chalk.yellowBright(`No uninstalled block found, skipping install!`))
-    return null
-  }
+  const uninstalledBlock = await getBlockByUuid(blockUuid)
 
   LOGGER.log(`${logPrefix}Unpacking mods in path ${unpackModsDirPath} for block ${uninstalledBlock.uuid} and copying files to ${unpackDirPath}`)
-  for (const fileName of config.installOrder[uninstalledBlock.uuid]) {
-    const modMetadata = config.uninstalledMods.find(mod => mod.fileName === fileName)
+  for (const filename of uninstalledBlock.installOrder) {
+    const modMetadata = await findModByFilename(filename)
     if (modMetadata == null) {
-      LOGGER.error(chalk.bold.redBright(`Metadata missing for ${fileName}, skipping!`))
+      LOGGER.error(chalk.bold.redBright(`Metadata missing for ${filename}, skipping!`))
       continue
     }
 
     if (modMetadata.skip) {
-      LOGGER.log(chalk.dim.yellow(`Skipping ${fileName}`))
+      LOGGER.log(chalk.dim.yellow(`Skipping ${filename}`))
       continue
     }
 
-    LOGGER.log(`Creating temp extraction directory for ${fileName}`)
+    LOGGER.log(`Creating temp extraction directory for ${filename}`)
     const tempDirPath = path.join(unpackModsDirPath, `__${modMetadata.checksum}`)
     await fs.mkdir(tempDirPath)
 
-    LOGGER.log(`Extracting mod at ${modMetadata.filePath} to ${tempDirPath}`)
-    await promiseWithSpinner(() => extractArchiveToTempDir(modMetadata.filePath, tempDirPath), `Extracting ${modMetadata.fileName}...`, `Finished extracting ${modMetadata.fileName}!`)
-    await promiseWithSpinner(() => copyFiles(modMetadata, tempDirPath, unpackMergedDirPath), `Copying files from ${modMetadata.fileName} into merged dir...`, `Finished copying files from ${modMetadata.fileName} into merged dir!`)
+    LOGGER.log(`Extracting mod at ${modMetadata.path} to ${tempDirPath}`)
+    await promiseWithSpinner(() => extractArchiveToTempDir(modMetadata.path, tempDirPath), `Extracting ${modMetadata.filename}...`, `Finished extracting ${modMetadata.filename}!`)
+    await promiseWithSpinner(() => copyFiles(modMetadata, tempDirPath, unpackMergedDirPath), `Copying files from ${modMetadata.filename} into merged dir...`, `Finished copying files from ${modMetadata.filename} into merged dir!`)
   }
 
   return {
     mergedDir: unpackMergedDirPath,
-    count: uninstalledBlock.modChecksums.length,
+    count: uninstalledBlock.installOrder.length,
     blockUuid: uninstalledBlock.uuid
   }
 }

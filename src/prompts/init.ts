@@ -15,80 +15,84 @@ import {
   CYBERDECK_DIR_PATH,
   DEFAULT_INSTALL_DIR_PATH,
   MODS_DIR_PATH,
-  UNPACK_DIR_PATH
+  UNPACK_DIR_PATH,
+  VERSE_DB_DATA_DIR_PATH
 } from '../app/const.js';
+import { DB } from '../app/storage/versedb/cyberdeck.versedb.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:init')
 
-const init = async (): Promise<Config | null> => {
-  let config: Config
+const loadExistingConfig = async (): Promise<Config | null> => {
   const configExists = await configFileExists()
   if (configExists){
     LOGGER.log(`Found config file!  Loading...`)
-    config = await loadConfigFile()
+    const config = await loadConfigFile()
     LOGGER.log(`Loaded config:`, config)
-  } else {
-    LOGGER.log(`No config file found, generating a new one...`)
-    const shouldInit = await confirm({
-      message: `No cyberdeck setup found in ${CYBERDECK_DIR_PATH}.  Cyberdeck will create this directory, a new config file and empty sub-directories.  Continue?`,
-      default: true,
-      theme: DEFAULT_THEME
-    })
-
-    if (!shouldInit) {
-      return null
-    }
-
-    const installDirPath = await input({
-      message: `Enter the directory Cyberpunk 2077 is installed in)`,
-      default: DEFAULT_INSTALL_DIR_PATH,
-      theme: DEFAULT_THEME
-    })
-
-    config = {
-      modsDirPath: MODS_DIR_PATH,
-      installDirPath,
-      modifiedAt: DateTime.utc().toMillis(),
-      installedMods: {},
-      blocks: [],
-      uninstalledMods: [],
-      installOrder: {}
-    }
-
-    LOGGER.log(`Generated config:`, config)
-
-    const areYouSure = await confirm({
-      message: `Would you like to create this config?\n\n${chalk.greenBright(JSON.stringify(config, null, 2))}\n`,
-      default: true,
-      theme: DEFAULT_THEME
-    })
-
-    if (!areYouSure) {
-      LOGGER.log(chalk.yellowBright(`No config file was generated`))
-      return null
-    }
-
-    if (!fsSync.existsSync(CYBERDECK_DIR_PATH)) {
-      LOGGER.log(chalk.dim.yellow(`Creating cyberdeck dir at ${CYBERDECK_DIR_PATH}`))
-      await fs.mkdir(CYBERDECK_DIR_PATH)
-    }
-
-    if (!fsSync.existsSync(MODS_DIR_PATH)) {
-      LOGGER.log(chalk.dim.yellow(`Creating cyberdeck mod dir at ${MODS_DIR_PATH}`))
-      await fs.mkdir(MODS_DIR_PATH)
-    }
-
-    if (!fsSync.existsSync(UNPACK_DIR_PATH)) {
-      LOGGER.log(chalk.dim.yellow(`Creating cyberdeck unpack dir at ${UNPACK_DIR_PATH}`))
-      await fs.mkdir(UNPACK_DIR_PATH)
-    }
-
-    await writeConfigFile(config, false)
+    return config
   }
+
+  return null
+}
+
+const initNewConfig = async (): Promise<Config | null> => {
+  LOGGER.log(`No config file found, generating a new one...`)
+  const shouldInit = await confirm({
+    message: `No cyberdeck setup found in ${CYBERDECK_DIR_PATH}.  Cyberdeck will create this directory, a new config file and empty sub-directories.  Continue?`,
+    default: true,
+    theme: DEFAULT_THEME
+  })
+
+  if (!shouldInit) {
+    return null
+  }
+
+  const installDirPath = await input({
+    message: `Enter the directory Cyberpunk 2077 is installed in)`,
+    default: DEFAULT_INSTALL_DIR_PATH,
+    theme: DEFAULT_THEME
+  })
+
+  const config: Config = {
+    modsDirPath: MODS_DIR_PATH,
+    installDirPath,
+    dbDataDirPath: VERSE_DB_DATA_DIR_PATH,
+    modifiedAt: DateTime.utc().toMillis(),
+  }
+
+  LOGGER.log(`Generated config:`, config)
+
+  const areYouSure = await confirm({
+    message: `Would you like to create this config?\n\n${chalk.greenBright(JSON.stringify(config, null, 2))}\n`,
+    default: true,
+    theme: DEFAULT_THEME
+  })
+
+  if (!areYouSure) {
+    LOGGER.log(chalk.yellowBright(`No config file was generated`))
+    return null
+  }
+
+  if (!fsSync.existsSync(CYBERDECK_DIR_PATH)) {
+    LOGGER.log(chalk.dim.yellow(`Creating cyberdeck dir at ${CYBERDECK_DIR_PATH}`))
+    await fs.mkdir(CYBERDECK_DIR_PATH)
+  }
+
+  if (!fsSync.existsSync(MODS_DIR_PATH)) {
+    LOGGER.log(chalk.dim.yellow(`Creating cyberdeck mod dir at ${MODS_DIR_PATH}`))
+    await fs.mkdir(MODS_DIR_PATH)
+  }
+
+  if (!fsSync.existsSync(UNPACK_DIR_PATH)) {
+    LOGGER.log(chalk.dim.yellow(`Creating cyberdeck unpack dir at ${UNPACK_DIR_PATH}`))
+    await fs.mkdir(UNPACK_DIR_PATH)
+  }
+
+  await writeConfigFile(config, false)
 
   return config
 }
 
 export {
-  init
+  loadExistingConfig,
+  initNewConfig
 }

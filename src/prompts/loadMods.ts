@@ -3,22 +3,25 @@
 import { confirm, input } from '@inquirer/prompts'
 import chalk from 'chalk';
 
-import { Config, InstallStatus } from '../app/types.js';
+import { Config } from '../app/types.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
 import { loadAllModMetadata } from '../app/mods/mod.js';
-import { writeConfigFile } from '../app/config/config.js';
-import { createBlock } from '../app/mods/block.js';
 import { DEFAULT_THEME } from './helpers/theme.js';
+
+import Mods from '../app/storage/versedb/schemas/mods.schema.js'
 
 const LOGGER = createSimpleModuleLogger('prompts:loadMods')
 
 const loadMods = async (config: Config): Promise<Config> => {
+  console.log(chalk.green(`Loading new mods...`))
   LOGGER.log(`Loading mods from config and mod directory`)
+
   const rawLoadedMods = await loadAllModMetadata(config)
-  const block = await createBlock(config)
 
   if (rawLoadedMods.length === 0) {
-    LOGGER.log(chalk.dim.yellow(`No new mods found!`))
+    const message = chalk.dim.yellow(`No new mods found!`)
+    console.log(message)
+    LOGGER.log(message)
     return config
   }
 
@@ -29,34 +32,27 @@ const loadMods = async (config: Config): Promise<Config> => {
   })
 
   for (const uninstalledMod of rawLoadedMods) {
-    const defaultName = uninstalledMod.fileName
-    if (!manuallySetMetadata) {
-      config.uninstalledMods.push({
-        ...uninstalledMod,
-        name: defaultName,
-        status: InstallStatus.UNINSTALLED,
-        blockUuid: block.uuid
+    if (manuallySetMetadata) {
+      const name: string = await input({
+        message: `Would you like to enter a name for the mod ${uninstalledMod.filename} (otherwise use hash of the filename)?`,
+        default: uninstalledMod.name,
+        theme: DEFAULT_THEME
       })
-      continue
+  
+      uninstalledMod.name = name
     }
     
-    const name: string = await input({
-      message: `Would you like to enter a name for the mod ${uninstalledMod.fileName} (otherwise use hash of the filename)?`,
-      default: defaultName,
-      theme: DEFAULT_THEME
-    })
-
-    config.uninstalledMods.push({
-      ...uninstalledMod,
-      name,
-      status: InstallStatus.UNINSTALLED,
-      blockUuid: block.uuid
-    })
+    try {
+      await Mods?.add(uninstalledMod)
+    } catch (e) {
+      console.error(`Error while writing mod to db`, e)
+      process.exit(0)
+    }
   }
 
-  writeConfigFile(config, true)
-
-  LOGGER.log(`Mod data loading complete!`, JSON.stringify(config.uninstalledMods, null, 2))
+  const message = chalk.green(`Finished loading new mods!`)
+  console.log(message)
+  LOGGER.log(message)
 
   return config
 }

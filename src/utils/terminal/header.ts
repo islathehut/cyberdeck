@@ -49,8 +49,9 @@ export const generateCliHeader = (cliOptions: CLIOptions): string => {
   bottomText = chalk.bold.magentaBright(` ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     RUNNING AGAINST REAL INSTALL DIRECTORY     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░`)
  }
 
+ // the formatting of these lines is intentional - DO NOT MODIFY
  return `
- ${image}
+${image}
  ${midText}
  ${bottomText}
  `

@@ -32,7 +32,8 @@
     "node-7z": "^3.0.0",
     "node-unrar-js": "^2.0.2",
     "ora": "^8.1.0",
-    "supports-color": "^9.4.0"
+    "supports-color": "^9.4.0",
+    "verse.db": "^2.2.15"
   },
   "devDependencies": {
     "@types/debug": "4.1.12",

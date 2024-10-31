@@ -2,59 +2,59 @@
 
 import { confirm } from '@inquirer/prompts'
 import chalk from 'chalk';
+import { DateTime } from 'luxon';
 
 import * as fs from 'node:fs/promises';
 import * as fsSync from 'fs'
 import * as path from 'path'
 
-import { CLIOptions, Config, InstalledMod, InstallStatus, UnpackResult } from '../app/types.js';
+import { CLIOptions, Config, InstallStatus, UnpackResult } from '../app/types.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
-import { writeConfigFile } from '../app/config/config.js';
 import { DEFAULT_THEME } from './helpers/theme.js';
 import { installMods, unpackMods } from '../app/mods/install.js';
 import { promiseWithSpinner } from '../utils/terminal/tools.js';
-import { DateTime } from 'luxon';
+import { updateMod } from '../app/mods/mod.js';
+import { updateBlock } from '../app/mods/block.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:installMods')
 
-const updateConfigAfterInstall = async (config: Config, unpackResult: UnpackResult) => {
-  const installedAt = DateTime.utc().toMillis()
+const updateDbAfterInstall = async (blockUuid: string) => {
+  const now = DateTime.utc().toMillis()
 
   LOGGER.log(`Updating config with installation metadata`)
-  const modChecksums: string[] = []
-  for (const mod of config.uninstalledMods) {
-    const installedMod: InstalledMod = {
-      ...mod,
-      status: InstallStatus.INSTALLED,
-      blockUuid: unpackResult.blockUuid,
-      modifiedAt: installedAt
-    }
-    config.installedMods[mod.checksum] = installedMod
-    modChecksums.push(mod.checksum)
-  }
-  config.uninstalledMods = []
 
-  const newBlocks = config.blocks.map((block) => {
-    if (block.uuid === unpackResult.blockUuid) {
-      return {
-        ...block,
-        installed: true,
-        installedAt,
-        modChecksums
+  await updateMod(
+    {
+      blockUuid
+    },
+    {
+      $set: {
+        status: InstallStatus.INSTALLED,
+        installedAt: now,
+        modifiedAt: now
       }
     }
+  )
 
-    return block
-  })
-  config.blocks = newBlocks
-
-  await writeConfigFile(config, true)
+  await updateBlock(
+    {
+      uuid: blockUuid
+    },
+    {
+      $set: {
+        installed: true,
+        installedAt: now,
+        modifiedAt: now
+      }
+    },
+    false
+  )
   return
 }
 
-const installModsPrompt = async (config: Config, options: CLIOptions): Promise<void> => {
+const installModsPrompt = async (blockUuid: string, config: Config, options: CLIOptions): Promise<void> => {
   console.log(chalk.bold.green('Unpacking mods before installation'))
-  const result: UnpackResult | null = await unpackMods(config, options)
+  const result: UnpackResult | null = await unpackMods(blockUuid, options)
   if (result == null) {
     console.log(chalk.dim.yellow('No uninstalled mods found, skipping install!'))
     return
@@ -89,7 +89,7 @@ const installModsPrompt = async (config: Config, options: CLIOptions): Promise<v
   console.log(chalk.bold.green(`Installing mods to ${installPath}`))
 
   await promiseWithSpinner(() => installMods(config, result, overrideInstallPath), 'Installing mods...', 'Done installing mods!')
-  await promiseWithSpinner(() => updateConfigAfterInstall(config, result), 'Updating config post-install...', 'Done updating config post install!')
+  await promiseWithSpinner(() => updateDbAfterInstall(blockUuid), 'Updating DB post-install...', 'Done updating DB post install!')
   return
 }
 
