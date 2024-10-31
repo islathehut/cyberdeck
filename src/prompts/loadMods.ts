@@ -8,7 +8,7 @@ import { createSimpleModuleLogger } from '../utils/logger.js';
 import { loadAllModMetadata } from '../app/mods/mod.js';
 import { writeConfigFile } from '../app/config/config.js';
 import { createBlock } from '../app/mods/block.js';
-import { DEFAULT_THEME } from './theme.js';
+import { DEFAULT_THEME } from './helpers/theme.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:loadMods')
 

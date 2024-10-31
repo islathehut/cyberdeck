@@ -10,7 +10,7 @@ import * as path from 'path'
 import { CLIOptions, Config, InstalledMod, InstallStatus, UnpackResult } from '../app/types.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
 import { writeConfigFile } from '../app/config/config.js';
-import { DEFAULT_THEME } from './theme.js';
+import { DEFAULT_THEME } from './helpers/theme.js';
 import { installMods, unpackMods } from '../app/mods/install.js';
 import { promiseWithSpinner } from '../utils/terminal/tools.js';
 import { DateTime } from 'luxon';

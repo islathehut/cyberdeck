@@ -10,7 +10,7 @@ import * as fsSync from 'fs'
 import { Config } from '../app/types.js';
 import { configFileExists, writeConfigFile, loadConfigFile } from '../app/config/config.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
-import { DEFAULT_THEME } from './theme.js';
+import { DEFAULT_THEME } from './helpers/theme.js';
 import { 
   CYBERDECK_DIR_PATH,
   DEFAULT_INSTALL_DIR_PATH,

@@ -8,7 +8,7 @@ import { init } from './init.js'
 import { createSimpleModuleLogger } from '../utils/logger.js'
 import { loadMods } from './loadMods.js'
 import { updateInstallOrder } from './updateInstallOrder.js'
-import { DEFAULT_THEME } from './theme.js'
+import { DEFAULT_THEME } from './helpers/theme.js'
 import { generateCliHeader } from '../utils/terminal/header.js'
 import { promiseWithSpinner } from '../utils/terminal/tools.js'
 import { installMods } from './installMods.js'
@@ -25,7 +25,7 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
       { name: "Load Mod Data", value: "loadMods", description: "Load all mod metadata" }
     ]
 
-    console.log("") // just add a line break
+    // console.log("") // just add a line break
     const answer = await actionSelect(
         {
           message: "Main Menu",
@@ -68,7 +68,7 @@ const printHeader = (options: CLIOptions) => {
   console.log(generateCliHeader(options))
 }
 
-const interactive = async (options: CLIOptions) => {
+const main = async (options: CLIOptions) => {
   if (options.verbose) {
     debug.enable('cyberdeck:*')
   }
@@ -91,4 +91,4 @@ const interactive = async (options: CLIOptions) => {
   console.log(chalk.bold.magentaBright("Goodbye!"))
 };
 
-export default interactive
+export default main

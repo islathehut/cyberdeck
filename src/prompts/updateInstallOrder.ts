@@ -8,7 +8,7 @@ import { Config, UninstalledMod } from '../app/types.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
 import { writeConfigFile } from '../app/config/config.js';
 import { createBlock, getCurrentUninstalledBlock } from '../app/mods/block.js';
-import { DEFAULT_THEME } from './theme.js';
+import { DEFAULT_THEME } from './helpers/theme.js';
 import { promiseWithSpinner } from '../utils/terminal/tools.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:updateInstallOrder')
