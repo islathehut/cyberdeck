@@ -1,34 +1,33 @@
-import chalk from 'chalk'
-import { AdapterResults } from 'verse.db/dist/types/adapter.js';
+import type { operationKeys, Query } from 'verse.db/dist/types/adapter.js';
 
 import { randomUUID } from "crypto";
-
-import { Block } from "../types.js";
-import { createSimpleModuleLogger } from "../../utils/logger.js";
 import { DateTime } from 'luxon';
+
+import type { Block, FindResult, SearchResult } from "../types/types.js";
+import { createSimpleModuleLogger } from "../../utils/logger.js";
 import Blocks, { BLOCKS_DATANAME } from '../storage/versedb/schemas/blocks.schema.js';
-import { DB } from '../storage/versedb/cyberdeck.versedb.js';
+import { db } from '../storage/versedb/cyberdeck.versedb.js';
 
 const LOGGER = createSimpleModuleLogger('mods:block')
 
-export const updateBlock = async (query: any, newData: any, upsert: boolean): Promise<Block> => {
+export const updateBlock = async (query: Query<Block>, newData: operationKeys, upsert: boolean): Promise<Block> => {
   try {
-    await DB.db.update(
+    await db.update(
       BLOCKS_DATANAME,
       query,
       newData,
       upsert
     )
 
-    return getBlock(query)
+    return await getBlock(query)
   } catch (e) {
     LOGGER.error(`Error while updating block`, e)
-    throw e
+    throw e as Error
   }
 }
 
-export const getUninstalledBlocks = async (): Promise<any[]> => {
-  const result: AdapterResults = await Blocks?.search([
+export const getUninstalledBlocks = async (): Promise<Block[]> => {
+  const result: SearchResult<Block> = await Blocks?.search([
     {
       dataname: BLOCKS_DATANAME,
       displayment: null,
@@ -36,35 +35,33 @@ export const getUninstalledBlocks = async (): Promise<any[]> => {
         installed: false
       }
     }
-  ])
+  ]) as SearchResult<Block>
 
-  if (!result || !result.results) {
+  if (result.results == null) {
     return []
   }
 
   return Array.from(result.results.blocks)
 }
 
-export const getBlock = async (query: any): Promise<Block> => {
+export const getBlock = async (query: Query<Block>): Promise<Block> => {
   try {
-    const result: AdapterResults = await Blocks?.find(query)
+    const result: FindResult<Block> = await Blocks?.find(query) as FindResult<Block>
 
-    if (!result.results) {
+    if (result.results == null) {
       throw new Error(`No block found for query ${JSON.stringify(query)}`)
     }
 
     return result.results
   } catch (e) {
     LOGGER.error(`Error while finding block`, e)
-    throw e
+    throw e as Error
   }
 }
 
-export const getBlockByUuid = async (uuid: string): Promise<Block> => {
-  return getBlock({
+export const getBlockByUuid = async (uuid: string): Promise<Block> => await getBlock({
     uuid
   })
-}
 
 export const createBlock = async (): Promise<Block> => {
   LOGGER.log(`Creating a new install block`)
@@ -83,7 +80,7 @@ export const createBlock = async (): Promise<Block> => {
     await Blocks?.add(newBlock)
   } catch (e) {
     console.error(`Error while writing block to db`, e)
-    process.exit(0)
+    throw e as Error
   }
 
   return newBlock

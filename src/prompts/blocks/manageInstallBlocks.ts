@@ -2,22 +2,17 @@
 
 import chalk from 'chalk';
 
-import { Block, CLIOptions, Config } from '../../app/types.js';
-import { createSimpleModuleLogger } from '../../utils/logger.js';
+import type { Block, CLIOptions, Config } from '../../app/types/types.js';
 import { createBlock, getBlockByUuid, getUninstalledBlocks } from '../../app/mods/block.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
-import actionSelect from '../../components/actionSelect.js';
+import actionSelect, { type Choice } from '../../components/actionSelect.js';
 
-import Blocks, { BLOCKS_DATANAME } from '../../app/storage/versedb/schemas/blocks.schema.js';
-import { AdapterResults } from 'verse.db/dist/types/adapter.js';
 import { updateInstallOrder } from './updateInstallOrder.js';
 import { installMods } from '../mods/installMods.js';
 import { confirm } from '@inquirer/prompts';
-import { DateTime, Zone } from 'luxon';
+import { DateTime } from 'luxon';
 
-const LOGGER = createSimpleModuleLogger('prompts:manageInstallBlocks')
-
-const displayBlock = (block: Block) => {
+const displayBlock = (block: Block): void => {
   const longSeparator = chalk.magenta('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░')
   const mediumSeparator = chalk.magenta(`░░░░░░░░`)
   const shortSeparator = chalk.magenta('░░░░')
@@ -26,13 +21,13 @@ const displayBlock = (block: Block) => {
   const installedString = `${chalk.bold.cyan('Installed?    ')} ${chalk.magenta(block.installed)}`
   const createdAtString = `${chalk.bold.cyan('Created At:   ')} ${chalk.magenta(DateTime.fromMillis(block.createdAt).toLocal().toISO())}`
   const modifiedAtString = `${chalk.bold.cyan('Modified At:  ')} ${chalk.magenta(DateTime.fromMillis(block.modifiedAt).toLocal().toISO())}`
-  const installedAtString = `${chalk.bold.cyan('Installed At: ')} ${chalk.magenta(block.installedAt ? DateTime.fromMillis(block.installedAt).toLocal().toISO() : 'n/a')}`
-  let installOrderString = `${chalk.bold.cyan('Install Order:')}`
+  const installedAtString = `${chalk.bold.cyan('Installed At: ')} ${chalk.magenta(block.installedAt != null ? DateTime.fromMillis(block.installedAt).toLocal().toISO() : 'n/a')}`
+  let installOrderString = chalk.bold.cyan('Install Order:')
   if (block.installOrder.length === 0) {
     installOrderString += ` ${chalk.yellow(`unset`)}\n  ${shortSeparator}`
   } else {
     installOrderString += `\n  ${shortSeparator}\n`
-    block.installOrder.forEach((filename) => installOrderString += `  ${mediumSeparator} ${chalk.green('-')} ${chalk.magenta(filename)}\n`)
+    block.installOrder.forEach((filename) => (installOrderString += `  ${mediumSeparator} ${chalk.green('-')} ${chalk.magenta(filename)}\n`))
     installOrderString += `  ${mediumSeparator}`
   }
 
@@ -56,10 +51,10 @@ const displayBlock = (block: Block) => {
   )
 }
 
-const manageBlock = async (blockUuid: string, config: Config, options: CLIOptions) => {
+const manageBlock = async (blockUuid: string, config: Config, options: CLIOptions): Promise<Block> => {
+  let block = await getBlockByUuid(blockUuid)
   let exit = false
-  while (exit === false) {
-    const block = await getBlockByUuid(blockUuid)
+  while (!exit) {
     displayBlock(block)
 
     const defaultChoices = [
@@ -97,11 +92,12 @@ const manageBlock = async (blockUuid: string, config: Config, options: CLIOption
         exit = true;
         break
     }
+    block = await getBlockByUuid(blockUuid)
   };
-  return exit
+  return block
 }
 
-const createNewBlock = async (): Promise<Block | null> => {
+const createAndManageNewBlock = async (config: Config, options: CLIOptions): Promise<Block | null> => {
   const areYouSure = await confirm({
     message: `Are you sure you would like to create a new install block?`,
     default: true,
@@ -113,15 +109,16 @@ const createNewBlock = async (): Promise<Block | null> => {
     return null
   }
 
-  return createBlock()
+  const newBlock = await createBlock()
+  return await manageBlock(newBlock.uuid, config, options)
 }
 
-const manageInstallBlocks = async (config: Config, options: CLIOptions) => {
+const manageInstallBlocks = async (config: Config, options: CLIOptions): Promise<boolean> => {
   let exit = false
-  while (exit === false) {
+  while (!exit) {
     const uninstalledBlocks = await getUninstalledBlocks()
 
-    const choices = []
+    const choices: Array<Choice<string>> = []
     for (const uninstalledBlock of uninstalledBlocks) {
       choices.push({
         name: uninstalledBlock.uuid,
@@ -132,21 +129,15 @@ const manageInstallBlocks = async (config: Config, options: CLIOptions) => {
 
     if (choices.length === 0) {
       console.log(chalk.yellow(`No install blocks have been created, you can create one now!`))
-      const newBlock = await createNewBlock()
-      if (newBlock == null) {
-        exit = true
-      } else {
-        await manageBlock(newBlock.uuid, config, options)
-      }
+      await createAndManageNewBlock(config, options)
     } else {
-      // console.log("") // just add a line break
       const answer = await actionSelect(
         {
           message: "Install Block Management",
           choices: [...choices],
           actions: [
             { name: "Select", value: "select", key: "e" },
-            { name: "New", value: "new", key: "n" },
+            { name: "New", value: "createNew", key: "n" },
             { name: "Exit", value: "exit", key: "escape" },
           ],
           theme: DEFAULT_THEME
@@ -161,9 +152,8 @@ const manageInstallBlocks = async (config: Config, options: CLIOptions) => {
               break
           }
           break;
-        case "new":
-          const newBlock = await createNewBlock()
-          if (newBlock) await manageBlock(newBlock.uuid, config, options)
+        case "createNew":
+          await createAndManageNewBlock(config, options)
           break
         case "exit":
           exit = true;

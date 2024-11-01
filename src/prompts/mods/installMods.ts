@@ -8,7 +8,8 @@ import * as fs from 'node:fs/promises';
 import * as fsSync from 'fs'
 import * as path from 'path'
 
-import { CLIOptions, Config, InstallStatus, UnpackResult } from '../../app/types.js';
+import type { CLIOptions, Config, UnpackResult } from '../../app/types/types.js';
+import { InstallStatus  } from '../../app/types/types.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 import { installMods, unpackMods } from '../../app/mods/install.js';
@@ -18,7 +19,7 @@ import { updateBlock } from '../../app/mods/block.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:installMods')
 
-const updateDbAfterInstall = async (blockUuid: string) => {
+const updateDbAfterInstall = async (blockUuid: string): Promise<void> => {
   const now = DateTime.utc().toMillis()
 
   LOGGER.log(`Updating config with installation metadata`)
@@ -49,7 +50,6 @@ const updateDbAfterInstall = async (blockUuid: string) => {
     },
     false
   )
-  return
 }
 
 const installModsPrompt = async (blockUuid: string, config: Config, options: CLIOptions): Promise<void> => {
@@ -88,9 +88,8 @@ const installModsPrompt = async (blockUuid: string, config: Config, options: CLI
 
   console.log(chalk.bold.green(`Installing mods to ${installPath}`))
 
-  await promiseWithSpinner(() => installMods(config, result, overrideInstallPath), 'Installing mods...', 'Done installing mods!')
-  await promiseWithSpinner(() => updateDbAfterInstall(blockUuid), 'Updating DB post-install...', 'Done updating DB post install!')
-  return
+  await promiseWithSpinner(async () => { await installMods(config, result, overrideInstallPath) }, 'Installing mods...', 'Done installing mods!')
+  await promiseWithSpinner(async () => { await updateDbAfterInstall(blockUuid) }, 'Updating DB post-install...', 'Done updating DB post install!')
 }
 
 export {

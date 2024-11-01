@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import debug from 'debug'
 
 import actionSelect from '../components/actionSelect.js'
-import { CLIOptions, Config } from '../app/types.js'
+import type { CLIOptions, Config } from '../app/types/types.js'
 import { loadExistingConfig, initNewConfig } from './init.js'
 import { createSimpleModuleLogger } from '../utils/logger.js'
 import { loadMods } from './mods/loadMods.js'
@@ -17,9 +17,9 @@ import { selectMod } from './mods/manageMods.js'
 
 const LOGGER = createSimpleModuleLogger('prompts:main')
 
-const mainLoop = async (config: Config, options: CLIOptions) => {
+const mainLoop = async (config: Config, options: CLIOptions): Promise<boolean> => {
   let exit = false
-  while (exit === false) {
+  while (!exit) {
     const defaultChoices = [
       { name: "Manage Install Blocks", value: "manageInstallBlocks", description: "Manage pending install blocks" },
       { name: "Manage Mods", value: "manageMods", description: "Manage mods that Cyberdeck knows about" },
@@ -61,25 +61,24 @@ const mainLoop = async (config: Config, options: CLIOptions) => {
   return exit
 };
 
-const printHeader = (options: CLIOptions) => {
+const printHeader = (options: CLIOptions): void => {
   console.log(generateCliHeader(options))
 }
 
-const main = async (options: CLIOptions) => {
+const main = async (options: CLIOptions): Promise<void> => {
   if (options.verbose) {
     debug.enable('cyberdeck:*')
   }
 
-  LOGGER.log(`Initializing verse.db`)
-  // DB.initDb(options.verbose)
+  LOGGER.log(`Loading database`)
   await Blocks?.load()
   await Mods?.load()
 
   printHeader(options)
 
-  let config: Config | null
+  let config: Config | null = null
   try {
-    config = await promiseWithSpinner(() => loadExistingConfig(), 'Loading existing config...', 'Finished loading existing config!')
+    config = await promiseWithSpinner(async () => await loadExistingConfig(), 'Loading existing config...', 'Finished loading existing config!')
     if (config == null) {
       config = await initNewConfig()
     }

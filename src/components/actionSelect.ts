@@ -21,31 +21,31 @@ import chalk from 'chalk';
 import ansiEscapes from 'ansi-escapes';
 import figures from 'figures';
 
-type SelectTheme = {
+interface SelectTheme {
     icon: { cursor: string };
     style: { disabled: (text: string) => string };
-};
+}
 
 const selectTheme: SelectTheme = {
     icon: { cursor: figures.pointer},
     style: { disabled: (text: string) => chalk.dim(`- ${text}`) },
 };
 
-type Action<ActionValue> = {
+interface Action<ActionValue> {
     value: ActionValue;
     name: string;
     key: string;
 }
 
-type Choice<Value> = {
+export interface Choice<Value> {
     value: Value;
     name?: string;
     description?: string;
     disabled?: boolean | string;
     type?: never;
-};
+}
 
-type ActionSelectConfig<ActionValue, Value> = {
+interface ActionSelectConfig<ActionValue, Value> {
     message: string;
     actions: ReadonlyArray<Action<ActionValue>>;
     choices: ReadonlyArray<Choice<Value> | Separator>;
@@ -54,9 +54,9 @@ type ActionSelectConfig<ActionValue, Value> = {
     default?: unknown;
     theme?: PartialDeep<Theme<SelectTheme>>;
     // TODO: Allow assigning a default action for enter rather than returning an undefined action
-};
+}
 
-type ActionSelectResult<ActionValue, Value> = {
+interface ActionSelectResult<ActionValue, Value> {
     action?: ActionValue;
     answer: Value;
 }
@@ -70,7 +70,7 @@ function isSelectable<Value>(item: Item<Value>): item is Choice<Value> {
 export default createPrompt(
     <ActionValue, Value>(config: ActionSelectConfig<ActionValue, Value>, done: (result: ActionSelectResult<ActionValue, Value>) => void): string => {
         const { choices: items, loop = true, pageSize = 7 } = config;
-        const firstRender = useRef(true);
+        useRef(true);
         const theme = makeTheme<SelectTheme>(selectTheme, config.theme);
         const prefix = usePrefix({ theme });
         const [status, setStatus] = useState('pending');
@@ -133,7 +133,7 @@ export default createPrompt(
                     let next = active;
                     do {
                         next = (next + offset + items.length) % items.length;
-                    } while (!isSelectable(items[next]!));
+                    } while (!isSelectable(items[next]));
                     setActive(next);
                 }
             } else if (isNumberKey(key)) {

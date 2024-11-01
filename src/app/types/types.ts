@@ -1,8 +1,4 @@
-export type CLIOptions = {
-  verbose?: true | undefined
-  dry?: true | undefined
-  test?: true | undefined
-}
+import type { Debugger } from "debug"
 
 export enum InstallStatus {
   INSTALLED = 'INSTALLED',
@@ -10,12 +6,23 @@ export enum InstallStatus {
   UNKNOWN = 'UNKNOWN'
 }
 
-export type CopyOverride = {
+export interface Logger {
+  log: Debugger
+  error: Debugger
+}
+
+export interface CLIOptions {
+  verbose?: true | undefined
+  dry?: true | undefined
+  test?: true | undefined
+}
+
+export interface CopyOverride {
   in: string
   out: string
 }
 
-export type Mod = {
+export interface Mod {
   uuid: string
   filename: string
   path: string
@@ -30,7 +37,7 @@ export type Mod = {
   installedAt?: number | null
 }
 
-export type Block = {
+export interface Block {
   uuid: string
   installOrder: string[]
   installed: boolean
@@ -39,15 +46,27 @@ export type Block = {
   modifiedAt: number
 }
 
-export type Config = {
+export interface Config {
   modsDirPath: string
   installDirPath: string
   dbDataDirPath: string
   modifiedAt: number
 }
 
-export type UnpackResult = { 
+export interface UnpackResult { 
   mergedDir: string
   count: number
   blockUuid: string
+}
+
+export interface SearchResult<T> {
+  acknowledged: boolean
+  message: string
+  results?: Record<string, T[]>
+}
+
+export interface FindResult<T> {
+  acknowledged: boolean
+  message: string
+  results?: T
 }

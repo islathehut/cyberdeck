@@ -6,6 +6,7 @@ import * as path from 'path'
 
 import { DateTime } from 'luxon'
 import { LOGS_DIR_PATH } from '../app/const.js'
+import type { Logger } from '../app/types/types.js'
 
 if (!fs.existsSync(LOGS_DIR_PATH)) {
   fs.mkdirSync(LOGS_DIR_PATH)
@@ -26,9 +27,9 @@ const packageLogger = {
   _errorLogger: error
 }
 
-export const createSimpleModuleLogger = (moduleName: string, baseLogger = packageLogger) => {
-  return {
-    log: packageLogger._logger.extend(moduleName),
-    error: packageLogger._errorLogger.extend(`${moduleName}:error`)
+export const createSimpleModuleLogger = (moduleName: string, baseLogger = packageLogger): Logger => (
+  {
+    log: baseLogger._logger.extend(moduleName),
+    error: baseLogger._errorLogger.extend(`${moduleName}:error`)
   }
-}
+)

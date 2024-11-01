@@ -1,17 +1,17 @@
 import chalk from 'chalk'
 import { DateTime } from 'luxon';
-import { Query } from 'verse.db/dist/types/adapter.js';
+import type { operationKeys, Query } from 'verse.db/dist/types/adapter.js';
 
 import * as fs from 'node:fs/promises';
 import * as path from 'path'
 import { randomUUID } from 'node:crypto';
 
-import { Mod, Config, InstallStatus } from "../types.js"
+import { type Mod, type Config, InstallStatus, type SearchResult, type FindResult } from "../types/types.js"
 import { createSimpleModuleLogger } from '../../utils/logger.js'
 import { generateChecksum } from '../../utils/crypto.js'
 import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
 
-import { DB } from '../storage/versedb/cyberdeck.versedb.js';
+import { db } from '../storage/versedb/cyberdeck.versedb.js';
 
 const LOGGER = createSimpleModuleLogger('mods:mod')
 
@@ -25,64 +25,65 @@ export const addMod = async (mod: Mod): Promise<Mod> => {
     return addedMod
   } catch (e) {
     LOGGER.error(`Error while writing mod to db`, e)
-    throw e
+    throw e as Error
   }
 }
 
-export const searchMods = async (query: any): Promise<Mod[]> => {
-  const modsResult = await Mods?.search([
+export const searchMods = async (query: Query<Mod>): Promise<Mod[]> => {
+  const modsResult: SearchResult<Mod> = await Mods?.search([
     {
       dataname: MODS_DATANAME,
       displayment: null,
       filter: query
     }
-  ])
+  ]) as SearchResult<Mod>
 
-  return modsResult && modsResult.results ? modsResult.results.mods : []
+  return modsResult.results != null ? modsResult.results.mods : []
 }
 
-export const updateMod = async (findQuery: Query<Mod>, updates: any): Promise<Mod> => {
+export const updateMod = async (findQuery: Query<Mod>, updates: operationKeys): Promise<Mod> => {
   try {
-    await DB.db.update(
+    await db.update(
       MODS_DATANAME,
       findQuery,
       updates,
       false
     )
 
-    return (await findMod(findQuery))!
+    const updatedMod = await findMod(findQuery)
+    if (updatedMod == null) {
+      throw new Error(`Couldn't find mod after update`)
+    }
+
+    return updatedMod
   } catch (e) {
     console.error(`Error while writing mod to db`, e)
-    throw e
+    throw e as Error
   }
 }
 
 export const findMod = async (findQuery: Query<Mod>): Promise<Mod | undefined> => {
   try {
-    const result = await Mods?.find(findQuery)
+    const result: FindResult<Mod> = await Mods?.find(findQuery) as FindResult<Mod>
 
-    if (!result.results) {
+    if (result.results == null) {
       return undefined
     }
 
     return result.results
   } catch (e) {
     LOGGER.error(`Error while finding mod in db`, e)
-    throw e
+    throw e as Error
   }
 }
 
-export const findModByChecksum = async (checksum: string, throwOnUndefined: boolean = false): Promise<Mod | undefined> => {
-  return findMod({
+export const findModByChecksum = async (checksum: string, throwOnUndefined = false): Promise<Mod | undefined> => await findMod({
     checksum
   })
-}
 
-export const findModByFilename = async (filename: string): Promise<Mod | undefined> => {
-  return findMod({
+export const findModByFilename = async (filename: string): Promise<Mod | undefined> => await findMod({
     filename
   })
-}
 
 export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
   const loadedMods: Mod[] = []

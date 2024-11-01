@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import autocomplete from 'inquirer-autocomplete-standalone';
 import { confirm } from '@inquirer/prompts'
 
-import { Block, InstallStatus, Mod } from '../../app/types.js';
+import { type Block, InstallStatus, type Mod } from '../../app/types/types.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
@@ -13,8 +13,7 @@ import { searchMods, updateMod } from '../../app/mods/mod.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:updateInstallOrder')
 
-const autoGenerateInstallOrder = async (blockUuid: string, uninstalledMods: any[], remainingChoices: Set<string>, installOrderForBlock: string[]): Promise<string[]> => {
-  return promiseWithSpinner(
+const autoGenerateInstallOrder = async (blockUuid: string, uninstalledMods: Mod[], remainingChoices: Set<string>, installOrderForBlock: string[]): Promise<string[]> => await promiseWithSpinner(
     async () => {
       LOGGER.log(`Auto-generating install order from ${remainingChoices.size} remaining mods`)
       for (const mod of uninstalledMods.filter(mod => remainingChoices.has(mod.checksum))) {
@@ -36,7 +35,6 @@ const autoGenerateInstallOrder = async (blockUuid: string, uninstalledMods: any[
     'Auto-generating remaining install order...',
     'Finished auto-generating install order!'
   )
-}
 
 const updateInstallOrder = async (blockUuid: string): Promise<Block> => {
   LOGGER.log(`Modifying Install Order for block ${blockUuid}`)
@@ -48,7 +46,7 @@ const updateInstallOrder = async (blockUuid: string): Promise<Block> => {
     blockUuid: { $typeOf: 'null' }
   })
 
-  const remainingChoices: Set<string> = new Set(uninstalledMods.map(mod => mod.checksum))
+  const remainingChoices = new Set<string>(uninstalledMods.map(mod => mod.checksum))
   let exit = false
 
   const manuallySet = await confirm({
@@ -71,17 +69,14 @@ const updateInstallOrder = async (blockUuid: string): Promise<Block> => {
     const choices = uninstalledMods.filter((mod: Mod) => remainingChoices.has(mod.checksum))
     const answer: Mod = await autocomplete({
       message: 'Select a mod to add next in the install order',
-      source: async (input: string) => {
-        return choices.filter((mod: Mod) => input == null || mod.name.toLowerCase().includes(input)).map((mod: Mod) => {
-          return {
-            name: mod.name,
-            value: mod,
-            description: mod.filename
-          }
-        })
-      },
+      source: async (input: string | undefined) => choices.filter((mod: Mod) => input == null || mod.name.toLowerCase().includes(input)).map((mod: Mod) => ({
+        name: mod.name,
+        value: mod,
+        description: mod.filename
+      })),
+      // @ts-expect-error The autocomplete library doesn't allow theming but I modified to allow it
       theme: DEFAULT_THEME
-    } as any)
+    })
 
     remainingChoices.delete(answer.checksum)
     installOrderForBlock.push(answer.filename)

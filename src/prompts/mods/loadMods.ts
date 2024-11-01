@@ -3,7 +3,7 @@
 import { confirm, input } from '@inquirer/prompts'
 import chalk from 'chalk';
 
-import { Config } from '../../app/types.js';
+import type { Config } from '../../app/types/types.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { loadUnseenModMetadata } from '../../app/mods/mod.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
@@ -16,7 +16,7 @@ const LOGGER = createSimpleModuleLogger('prompts:loadMods')
 const loadMods = async (config: Config): Promise<Config> => {
   LOGGER.log(`Loading mods from config and mod directory`)
 
-  const rawLoadedMods = await promiseWithSpinner(() => loadUnseenModMetadata(config), 'Searching for new mod files...', 'Finished searching for new mod files!')
+  const rawLoadedMods = await promiseWithSpinner(async () => await loadUnseenModMetadata(config), 'Searching for new mod files...', 'Finished searching for new mod files!')
 
   if (rawLoadedMods.length === 0) {
     const message = chalk.dim.yellow(`No new mods found!`)

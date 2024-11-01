@@ -3,7 +3,7 @@
 import { program } from '@commander-js/extra-typings';
 
 import main from './prompts/main.js';
-import { CLIOptions } from './app/types.js';
+import type { CLIOptions } from './app/types/types.js';
 
 program
   .name('cyberdeck')
@@ -16,8 +16,8 @@ program
   .option('-v, --verbose', 'Verbose mode')
   .option('-d, --dry', 'Dry run')
   .option('-t, --test', 'Run as test (use a fake install directory)')
-  .action((options: CLIOptions) => {
-    main(options);
+  .action(async (options: CLIOptions) => {
+    await main(options);
   });
 
 program.parse(process.argv);

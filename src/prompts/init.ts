@@ -7,7 +7,7 @@ import { confirm, input } from '@inquirer/prompts'
 import * as fs from 'node:fs/promises'
 import * as fsSync from 'fs'
 
-import { Config } from '../app/types.js';
+import type { Config } from '../app/types/types.js';
 import { configFileExists, writeConfigFile, loadConfigFile } from '../app/config/config.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
 import { DEFAULT_THEME } from './helpers/theme.js';
@@ -22,7 +22,7 @@ import {
 const LOGGER = createSimpleModuleLogger('prompts:init')
 
 const loadExistingConfig = async (): Promise<Config | null> => {
-  const configExists = await configFileExists()
+  const configExists = configFileExists()
   if (configExists){
     LOGGER.log(`Found config file!  Loading...`)
     const config = await loadConfigFile()

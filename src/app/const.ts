@@ -1,6 +1,9 @@
 import * as path from 'path'
 import * as os from 'os'
 
+export const CHECKSUM_LENGTH = 32
+export const UUID_LENGTH = 36
+
 export const CONFIG_FILE_NAME = '.config'
 
 export const CYBERDECK_DIR_PATH = path.join(os.homedir(), '/.cyberdeck')

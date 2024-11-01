@@ -1,14 +1,13 @@
 import { Schema, SchemaTypes } from 'verse.db'
-import { DB } from '../cyberdeck.versedb.js'
-import { FieldConfig } from 'verse.db/dist/core/functions/schema.js';
+import { db } from '../cyberdeck.versedb.js'
+import type { FieldConfig } from 'verse.db/dist/core/functions/schema.js';
 import { DateTime } from 'luxon';
+import { UUID_LENGTH } from '../../../const.js';
 
 export const BLOCKS_DATANAME = 'blocks'
  
-const blocksSchemaFields: {
-  [key: string]: FieldConfig
-} = {
-  uuid: { type: SchemaTypes.String, required: true, unique: true, minlength: 36, maxlength: 36 },
+const blocksSchemaFields: Record<string, FieldConfig> = {
+  uuid: { type: SchemaTypes.String, required: true, unique: true, minlength: UUID_LENGTH, maxlength: UUID_LENGTH },
   installed: { type: SchemaTypes.Boolean, required: true },
   createdAt: { type: SchemaTypes.Number, required: true, default: DateTime.utc().toMillis() },
   installedAt: { type: SchemaTypes.Mix, mix: [SchemaTypes.Number, SchemaTypes.Null] },
@@ -20,5 +19,5 @@ const blocksSchemaFields: {
 }
  
 const BlocksSchema = new Schema(blocksSchemaFields)
-const Blocks = DB.db.model(BLOCKS_DATANAME, BlocksSchema)
+const Blocks = db.model(BLOCKS_DATANAME, BlocksSchema)
 export default Blocks

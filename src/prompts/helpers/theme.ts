@@ -1,7 +1,7 @@
-import { Theme } from "@inquirer/core";
+import type { Theme } from "@inquirer/core";
 import chalk from "chalk";
 
-export const DEFAULT_THEME: Partial<Theme> & any = {
+export const DEFAULT_THEME: Partial<Theme> & { icon: { cursor: string } } = {
   style: {
     answer: (text: string) => chalk.magentaBright(text),
     message: (text: string, status: 'idle' | 'done' | 'loading') => chalk.bold.cyan(text),

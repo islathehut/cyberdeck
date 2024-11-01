@@ -1,8 +1,7 @@
-import chalk from 'chalk'
 import radio from 'inquirer-radio-prompt';
 import { input, confirm } from '@inquirer/prompts'
 
-import { CopyOverride, Mod } from "../../app/types.js";
+import type { CopyOverride, Mod } from "../../app/types/types.js";
 import actionSelect from "../../components/actionSelect.js";
 import { DEFAULT_THEME } from "../helpers/theme.js";
 import { updateMod } from "../../app/mods/mod.js";
@@ -19,7 +18,7 @@ export const setSkip = async (mod: Mod): Promise<Mod> => {
     theme: DEFAULT_THEME
   })
 
-  return updateMod(
+  return await updateMod(
     {
       checksum: mod.checksum
     },
@@ -31,8 +30,8 @@ export const setSkip = async (mod: Mod): Promise<Mod> => {
   )
 }
 
-export const deleteCopyOverride = async (override: CopyOverride, mod: Mod): Promise<Mod> => {
-  return updateMod(
+export const deleteCopyOverride = async (override: CopyOverride, mod: Mod): Promise<Mod> => 
+  await updateMod(
     {
       checksum: mod.checksum,
     },
@@ -44,7 +43,7 @@ export const deleteCopyOverride = async (override: CopyOverride, mod: Mod): Prom
       }
     }
   )
-}
+
 
 export const updateCopyOverride = async (override: CopyOverride, mod: Mod): Promise<Mod> => {
   const updatedIn = await input({
@@ -61,7 +60,7 @@ export const updateCopyOverride = async (override: CopyOverride, mod: Mod): Prom
     validate: (value: string) => value.length > 0
   })
 
-  return updateMod(
+  return await updateMod(
     {
       checksum: mod.checksum,
     },
@@ -93,7 +92,7 @@ export const addCopyOverride = async (mod: Mod): Promise<Mod> => {
     validate: (value: string) => value.length > 0
   })
 
-  return updateMod(
+  return await updateMod(
     {
       checksum: mod.checksum,
     },
@@ -108,14 +107,12 @@ export const addCopyOverride = async (mod: Mod): Promise<Mod> => {
 export const manageCopyOverrides = async (mod: Mod): Promise<Mod> => {
   let current = mod
   let exit = false
-  while (exit === false) {
-    const choices = current.copyOverrides.map(override => {
-      return {
-        name: `${override.in} ⇒ ${override.out}`,
-        value: override,
-        description: undefined
-      }
-    })
+  while (!exit) {
+    const choices = current.copyOverrides.map(override => ({
+      name: `${override.in} ⇒ ${override.out}`,
+      value: override,
+      description: undefined
+    }))
 
     if (choices.length === 0) {
       const createNew = await confirm({
@@ -168,7 +165,7 @@ export const manageCopyOverrides = async (mod: Mod): Promise<Mod> => {
 const editMod = async (mod: Mod): Promise<Mod> => {
   let current = mod
   let exit = false
-  while (exit === false) {
+  while (!exit) {
     const defaultChoices = [
       { name: "Set skip", value: "setSkip", description: "Set 'skip' property on mod" },
       { name: "Manage copy overrides", value: "manageCopyOverrides", description: "Manage 'copyOverrides' property on mod" }
