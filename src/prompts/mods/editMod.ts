@@ -111,9 +111,9 @@ export const manageCopyOverrides = async (mod: Mod): Promise<Mod> => {
   while (exit === false) {
     const choices = current.copyOverrides.map(override => {
       return {
-        name: override.in,
+        name: `${override.in} ⇒ ${override.out}`,
         value: override,
-        description: override.out
+        description: undefined
       }
     })
 
