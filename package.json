@@ -17,8 +17,12 @@
     "dist:create:mac": "cp $(command -v node) bin/release/cyberdeck && codesign --remove-signature bin/release/cyberdeck && pnpx postject bin/release/cyberdeck NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 --macho-segment-name NODE_SEA && codesign --sign - bin/release/cyberdeck",
     "dist:create:win": "node -e \"require('fs').copyFileSync(process.execPath, 'bin/release/cyberdeck.exe')\" && signtool remove /s bin/release/cyberdeck.exe && pnpx postject bin/release/cyberdeck.exe NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
     "dist:postcreate": "cp -r assets/ bin/release/assets",
+    "prettier": "pnpx prettier -c --config .prettierrc.json src/",
+    "prettier:fix": "pnpx prettier -c --config .prettierrc.json -w src/",
     "lint": "pnpx eslint -c eslint.config.mjs",
     "lint:fix": "pnpx eslint -c eslint.config.mjs --fix",
+    "format": "pnpm run prettier && pnpm run lint",
+    "format:fix": "pnpm run prettier:fix && pnpm run lint:fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "DEBUG=cyberdeck* node dist/index.js"
   },

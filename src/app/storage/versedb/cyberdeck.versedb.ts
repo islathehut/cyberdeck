@@ -1,9 +1,9 @@
-import { connect as VerseDBConnect } from "verse.db";
+import { connect as VerseDBConnect } from 'verse.db';
 
-import { VERSE_DB_DATA_DIR_PATH, VERSE_DB_LOGS_DIR_PATH } from "../../const.js";
-import { createSimpleModuleLogger } from "../../../utils/logger.js";
+import { VERSE_DB_DATA_DIR_PATH, VERSE_DB_LOGS_DIR_PATH } from '../../const.js';
+import { createSimpleModuleLogger } from '../../../utils/logger.js';
 
-const LOGGER = createSimpleModuleLogger('db')
+const LOGGER = createSimpleModuleLogger('db');
 
 // export class DB {
 //   private static _db: versedb.connect | undefined
@@ -38,20 +38,18 @@ const LOGGER = createSimpleModuleLogger('db')
 // }
 
 const initDb = (devLog = false): VerseDBConnect => {
-  LOGGER.log(`Initializing database`)
+  LOGGER.log(`Initializing database`);
   const db = new VerseDBConnect({
-    adapter: "json",
+    adapter: 'json',
     dataPath: VERSE_DB_DATA_DIR_PATH,
     devLogs: {
       enable: devLog,
-      path: VERSE_DB_LOGS_DIR_PATH
-    }
-  })
+      path: VERSE_DB_LOGS_DIR_PATH,
+    },
+  });
 
-  return db
-}
+  return db;
+};
 
-const db = initDb(false)
-export {
-  db
-}
+const db = initDb(false);
+export { db };
