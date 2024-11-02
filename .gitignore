@@ -134,4 +134,7 @@ dist
 .*.config
 __dryRun*
 .DS_Store
-fake_install_dir/
+fake-install-dir/
+bundle/
+bin/release
+bin/cyberdeck-sea.blob

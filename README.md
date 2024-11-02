@@ -108,21 +108,21 @@ This project uses [Volta](https://volta.sh/) to manage `node` versioning (instea
 ## Initializing the App
 
 ```bash
-npm i pnpm@9.12.3
-npx pnpm i
-npm run build
+volta install pnpm@9.12.3
+pnpm i
+pnpm run build
 ```
 
 ## Running the App
 
 ```bash
-npm run start:interactive
+npm run start
 ```
 
 ### Dry Runs
 
 ```bash
-npm run start:interactive -- -d
+npm run start -- -d
 ```
 
 This modifies the install flow to only extract and unpack files from your mod archives but won't copy the files into your CP2077 install directory.
@@ -130,7 +130,7 @@ This modifies the install flow to only extract and unpack files from your mod ar
 ### Test Mode
 
 ```bash
-npm run start:interactive -- -t
+npm run start -- -t
 ```
 
 This performs the install into a fake directory instead of your real CP2077 install directory to test out the behavior without risking modifying your install.

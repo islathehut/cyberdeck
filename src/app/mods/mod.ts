@@ -1,43 +1,137 @@
-import chalk from 'chalk'
+import chalk from 'chalk';
+import { DateTime } from 'luxon';
+import type { operationKeys, Query } from 'verse.db/dist/types/adapter.js';
 
 import * as fs from 'node:fs/promises';
-import * as path from 'path'
+import * as path from 'path';
+import { randomUUID } from 'node:crypto';
 
-import { BaseMod, Config } from "../types.js"
-import { createSimpleModuleLogger } from '../../utils/logger.js'
-import { generateChecksum } from '../../utils/crypto.js'
+import {
+  type Mod,
+  type Config,
+  InstallStatus,
+  type SearchResult,
+  type FindResult,
+} from '../types/types.js';
+import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { generateChecksum } from '../../utils/crypto.js';
+import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
 
-const LOGGER = createSimpleModuleLogger('mods:mod')
+import { db } from '../storage/versedb/cyberdeck.versedb.js';
 
-export const loadAllModMetadata = async (config: Config): Promise<BaseMod[]> => {
-  const loadedMods: BaseMod[] = []
+const LOGGER = createSimpleModuleLogger('mods:mod');
 
-  LOGGER.log(`Reading files from ${config.modsDirPath} to find uninstalled mods`)
-  const dir = await fs.readdir(config.modsDirPath, { recursive: false, withFileTypes: true })
+export const addMod = async (mod: Mod): Promise<Mod> => {
+  try {
+    await Mods?.add(mod);
+    const addedMod = await findModByChecksum(mod.checksum);
+    if (addedMod == null) {
+      throw new Error(`Mod was written but couldn't find it after`);
+    }
+    return addedMod;
+  } catch (e) {
+    LOGGER.error(`Error while writing mod to db`, e);
+    throw e as Error;
+  }
+};
+
+export const searchMods = async (query: Query<Mod>): Promise<Mod[]> => {
+  const modsResult: SearchResult<Mod> = (await Mods?.search([
+    {
+      dataname: MODS_DATANAME,
+      displayment: null,
+      filter: query,
+    },
+  ])) as SearchResult<Mod>;
+
+  return modsResult.results != null ? modsResult.results.mods : [];
+};
+
+export const updateMod = async (findQuery: Query<Mod>, updates: operationKeys): Promise<Mod> => {
+  try {
+    await db.update(MODS_DATANAME, findQuery, updates, false);
+
+    const updatedMod = await findMod(findQuery);
+    if (updatedMod == null) {
+      throw new Error(`Couldn't find mod after update`);
+    }
+
+    return updatedMod;
+  } catch (e) {
+    console.error(`Error while writing mod to db`, e);
+    throw e as Error;
+  }
+};
+
+export const findMod = async (findQuery: Query<Mod>): Promise<Mod | undefined> => {
+  try {
+    const result: FindResult<Mod> = (await Mods?.find(findQuery)) as FindResult<Mod>;
+
+    if (result.results == null) {
+      return undefined;
+    }
+
+    return result.results;
+  } catch (e) {
+    LOGGER.error(`Error while finding mod in db`, e);
+    throw e as Error;
+  }
+};
+
+export const findModByChecksum = async (
+  checksum: string,
+  throwOnUndefined = false
+): Promise<Mod | undefined> =>
+  await findMod({
+    checksum,
+  });
+
+export const findModByFilename = async (filename: string): Promise<Mod | undefined> =>
+  await findMod({
+    filename,
+  });
+
+export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
+  const loadedMods: Mod[] = [];
+
+  LOGGER.log(`Reading files from ${config.modsDirPath} to find uninstalled mods`);
+  const dir = await fs.readdir(config.modsDirPath, { recursive: false, withFileTypes: true });
   for (const item of dir) {
-    LOGGER.log(`Found ${item.name}`)
+    LOGGER.log(`Found ${item.name}`);
     if (item.isDirectory()) {
-      LOGGER.log(chalk.dim.yellow(`Skipping directory`))
-      continue
+      LOGGER.log(chalk.dim.yellow(`Skipping directory`));
+      continue;
     }
 
-    const filePath = path.join(config.modsDirPath, item.name)
+    const filePath = path.join(config.modsDirPath, item.name);
 
-    LOGGER.log(`Reading data to generate checksum`, filePath)
-    const fileData = await fs.readFile(filePath)
-    const checksum = generateChecksum(fileData)
+    LOGGER.log(`Reading data to generate checksum`, filePath);
+    const fileData = await fs.readFile(filePath);
+    const checksum = generateChecksum(fileData);
 
-    if (config.uninstalledMods.find(mod => mod.checksum === checksum)) {
-      LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`))
-      continue
+    if ((await findModByChecksum(checksum)) != null) {
+      LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`));
+      continue;
     }
 
-    loadedMods.push({
-      fileName: item.name,
-      filePath,
-      checksum
-    } as BaseMod)
+    const now = DateTime.utc().toMillis();
+    const mod: Mod = {
+      uuid: randomUUID(),
+      status: InstallStatus.UNINSTALLED,
+      checksum,
+      path: filePath,
+      filename: item.name,
+      name: item.name,
+      blockUuid: null,
+      skip: false,
+      createdAt: now,
+      modifiedAt: now,
+      copyOverrides: [],
+      installedAt: null,
+    };
+
+    loadedMods.push(mod);
   }
 
-  return loadedMods
-}
+  return loadedMods;
+};
