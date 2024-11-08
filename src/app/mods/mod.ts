@@ -18,6 +18,7 @@ import { generateChecksum } from '../../utils/crypto.js';
 import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
 
 import { db } from '../storage/versedb/cyberdeck.versedb.js';
+import { writeConfigFile } from '../config/config.js';
 
 const LOGGER = createSimpleModuleLogger('mods:mod');
 
@@ -93,6 +94,7 @@ export const findModByFilename = async (filename: string): Promise<Mod | undefin
 
 export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
   const loadedMods: Mod[] = [];
+  let latestModLoadedMs = 0;
 
   LOGGER.log(`Reading files from ${config.modsDirPath} to find uninstalled mods`);
   const dir = await fs.readdir(config.modsDirPath, { recursive: false, withFileTypes: true });
@@ -104,6 +106,15 @@ export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
     }
 
     const filePath = path.join(config.modsDirPath, item.name);
+    const stats = await fs.stat(filePath);
+    if (stats.mtimeMs <= config.latestModLoadedMs && stats.birthtimeMs <= config.latestModLoadedMs) {
+      LOGGER.log(chalk.dim.yellow(`Skipping ${filePath} because modified time is earlier than last latest seen`));
+      continue;
+    }
+
+    if (latestModLoadedMs < stats.birthtimeMs || latestModLoadedMs < stats.birthtimeMs) {
+      latestModLoadedMs = Math.max(stats.birthtimeMs, stats.birthtimeMs);
+    }
 
     LOGGER.log(`Reading data to generate checksum`, filePath);
     const fileData = await fs.readFile(filePath);
@@ -131,6 +142,16 @@ export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
     };
 
     loadedMods.push(mod);
+  }
+
+  if (latestModLoadedMs > 0) {
+    await writeConfigFile(
+      {
+        ...config,
+        latestModLoadedMs
+      }, 
+      true
+    );
   }
 
   return loadedMods;
