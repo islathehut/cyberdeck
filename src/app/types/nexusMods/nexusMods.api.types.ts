@@ -1,4 +1,4 @@
-import { paths } from "./nexusMods.api.autogen.types.js";
+import type { paths } from "./nexusMods.api.autogen.types.js";
 
 /**
  * Response types
@@ -47,7 +47,11 @@ export interface ModMetadataResponse {
       "member_group_id": number;
       "name": string;
     },
-    "endorsement": any; // TODO: check what this actually is
+    "endorsement": {
+      "endorse_status": string;
+      "timestamp": number | null;
+      "version": string | number | null;
+    } | null;
   },
   "file_details": {
     "id": number[];
@@ -80,12 +84,12 @@ export interface ModMetadataResponse {
 export type Path = keyof paths;
 export type PathMethod<T extends Path> = keyof paths[T];
 export type RequestParams<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
-  parameters: any;
+  parameters: Record<string, Record<string, string | number | boolean | null>>;
 }
   ? paths[P][M]['parameters']
   : undefined;
-export type ResponseType<P extends Path, M extends PathMethod<P>> = paths[P][M] extends {
-  responses: { 200: { schema: { [x: string]: any } } };
+export type ResponseType<P extends Path, M extends PathMethod<P>, T> = paths[P][M] extends {
+  responses: { 200: { schema: T } };
 }
   ? paths[P][M]['responses'][200]['schema']
   : undefined;

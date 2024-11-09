@@ -1,16 +1,16 @@
 import chalk from "chalk";
 
 import { createSimpleModuleLogger } from "../../../utils/logger.js";
-import { ModMetadataResponse } from "../../types/nexusMods/nexusMods.api.types.js";
-import { Logger, Mod, NexusModsFileMetadata, NexusModsMetadata, NexusModsModMetadata, NexusModsUser } from "../../types/types.js";
+import type { ModMetadataResponse } from "../../types/nexusMods/nexusMods.api.types.js";
+import type { Logger, Mod, NexusModsFileMetadata, NexusModsMetadata, NexusModsModMetadata, NexusModsUser } from "../../types/types.js";
 import { NexusModsAPI } from "./nexusMods.api.js";
 import { updateMod } from "../mod.js";
 
 export class NexusModsManager {
   private static _manager: NexusModsManager;
-  private static _logger: Logger = createSimpleModuleLogger('nexus-mods:manager');
+  private static readonly _logger: Logger = createSimpleModuleLogger('nexus-mods:manager');
 
-  private _user: NexusModsUser | undefined = undefined;
+  private readonly _user: NexusModsUser | undefined = undefined;
 
   private constructor(user: NexusModsUser | undefined) {
     this._user = user;
@@ -23,14 +23,14 @@ export class NexusModsManager {
     return this._manager;
   }
 
-  public async updateModWithMetadata(mod: Mod): Promise<Mod> {
+  public static async _updateModWithMetadata(mod: Mod): Promise<Mod> {
     const metadata = await NexusModsManager._fetchModMetadataByChecksum(mod.checksum);
     if (metadata.length === 0) {
       NexusModsManager._logger.log(chalk.yellow(`No Nexus Mods metadata found for checksum ${mod.checksum}, skipping update...`));
       return mod;
     }
 
-    const formatted: NexusModsMetadata | undefined = await this.processModMetadata(mod, metadata);
+    const formatted: NexusModsMetadata | undefined = await NexusModsManager._processModMetadata(mod, metadata);
     let updatedMod: Mod | undefined = undefined;
     if (formatted != null) {
       updatedMod = await updateMod(
@@ -62,18 +62,25 @@ export class NexusModsManager {
     return updatedMod;
   }
 
-  private async processModMetadata(mod: Mod, metadata: ModMetadataResponse[]): Promise<NexusModsMetadata | undefined> {
+  private static async _processModMetadata(mod: Mod, metadata: ModMetadataResponse[]): Promise<NexusModsMetadata | undefined> {
+    let latestRecord: ModMetadataResponse = metadata[0];
+
     if (metadata.length === 1) {
-      NexusModsManager._logger.log(`Found one metadata record for ${mod.checksum} with mod name ${metadata[0].mod.name}`);
-      return this.formatModMetadataForDB(metadata[0]);
+      NexusModsManager._logger.log(`Found one metadata record for ${mod.checksum} with mod name ${latestRecord.mod.name}`);
+      return NexusModsManager._formatModMetadataForDB(latestRecord);
     }
 
     NexusModsManager._logger.log(`Found multiple metadata records for ${mod.checksum}, attempting to pick correct record for this mod...`);
-    console.log(chalk.red(`Multi-metadata response handling not implemented!  Skipping metadata processing for ${mod.checksum}`));
-    return undefined;
+    for (const metadataRecord of metadata) {
+      if (metadataRecord.file_details.uploaded_timestamp > latestRecord.file_details.uploaded_timestamp) {
+        latestRecord = metadataRecord;
+      }
+    }
+
+    return NexusModsManager._formatModMetadataForDB(latestRecord);
   }
 
-  private formatModMetadataForDB(nexusModsMetadata: ModMetadataResponse): NexusModsMetadata {
+  private static _formatModMetadataForDB(nexusModsMetadata: ModMetadataResponse): NexusModsMetadata {
     const modMetadata: NexusModsModMetadata = {
       name: nexusModsMetadata.mod.name,
       summary: nexusModsMetadata.mod.summary,

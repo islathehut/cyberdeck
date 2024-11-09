@@ -4,17 +4,17 @@
  *    - https://app.swaggerhub.com/apis-docs/NexusMods/nexus-mods_public_api_params_in_form_data/1.0
  */
 
-import axios, { Axios } from 'axios';
-import { ModMetadataResponse, Path, PathMethod, RequestParams, ResponseType, UserValidateResponse } from '../../types/nexusMods/nexusMods.api.types.js';
+import axios, { type Axios } from 'axios';
+import type { ModMetadataResponse, Path, PathMethod, RequestParams, ResponseType, UserValidateResponse } from '../../types/nexusMods/nexusMods.api.types.js';
 import { NEXUS_MODS_API_APIKEY_HEADER, NEXUS_MODS_API_BASE_URL, NEXUS_MODS_API_GAME_DOMAIN_NAME } from '../../const.js';
 import { ConfigManager } from '../../config/config.manager.js';
-import { Logger } from '../../types/types.js';
+import type { Logger } from '../../types/types.js';
 import { createSimpleModuleLogger } from '../../../utils/logger.js';
 
 export class NexusModsAPI {
-  private static _instance: NexusModsAPI = new NexusModsAPI();
-  private _api: Axios;
-  private _logger: Logger = createSimpleModuleLogger('nexus-mods:api');
+  private static readonly _instance: NexusModsAPI = new NexusModsAPI();
+  private readonly _api: Axios;
+  private readonly _logger: Logger = createSimpleModuleLogger('nexus-mods:api');
 
   private constructor() {
     this._api = axios.create({
@@ -44,19 +44,18 @@ export class NexusModsAPI {
     return response;
   }
 
-  private async callApi<P extends Path, M extends PathMethod<P>>(
+  private async callApi<P extends Path, M extends PathMethod<P>, T>(
     url: P,
     method: M,
     ...params: RequestParams<P, M> extends undefined ? [] : [RequestParams<P, M>]
-  ): Promise<ResponseType<P, M>> {
-    let pathParams: Record<string, any> = {};
-    if (params != null && params[0] != null && params[0].path != null) {
-      pathParams = params[0].path
-    }
+  ): Promise<ResponseType<P, M, T>> {
+    const {
+      path: pathParams
+    } = params[0]?.path != null ? params[0] : { path: {} }
 
     const response = await this._api.request({
       method: method as string,
-      url: this.convertUrlWithNamedParams(url, pathParams),
+      url: NexusModsAPI._convertUrlWithNamedParams(url, pathParams),
       params,
       headers: {
         [NEXUS_MODS_API_APIKEY_HEADER]: ConfigManager.manager.config.nexusModsApiKey
@@ -67,17 +66,17 @@ export class NexusModsAPI {
       throw new Error(`Error occurred while calling ${response.config.url}: ${response.statusText}`)
     }
 
-    return response.data as ResponseType<P, M>;
+    return response.data as ResponseType<P, M, T>;
   }
 
-  private convertUrlWithNamedParams<P extends Path, M extends PathMethod<P>>(url: string, pathParams: Record<string, string>): string {
+  private static _convertUrlWithNamedParams(url: string, pathParams: Record<string, string | number | boolean | null>): string {
     const REGEX = /(?<=\{)[^{\\}]+(?=\})/g;
     const results = [...url.matchAll(REGEX)].flat();
     const malformed: string[] = [];
     let formatted = url;
     for (const result of results) {
       if (pathParams[result] != null) {
-        formatted = formatted.replaceAll(`{${result}}`, pathParams[result]);
+        formatted = formatted.replaceAll(`{${result}}`, `${pathParams[result]}`);
       } else {
         malformed.push(result)
       }

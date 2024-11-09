@@ -10,6 +10,7 @@ import { DEFAULT_THEME } from '../helpers/theme.js';
 import { searchMods } from '../../app/mods/mod.js';
 import actionSelect from '../../components/actionSelect.js';
 import { editMod } from './editMod.js';
+import { wrapTextWithPrefix } from '../../utils/terminal/tools.js';
 
 const displayMod = (mod: Mod): void => {
   const longSeparator = chalk.magenta(
@@ -19,7 +20,7 @@ const displayMod = (mod: Mod): void => {
   const shortSeparator = chalk.magenta('░░░░');
 
   const nameString = chalk.bold.white(mod.name);
-  const descString = `${chalk.bold.cyan('Description:         ')} ${chalk.magenta(mod.description ?? chalk.gray(`unset`))}`;
+  const descString = `${chalk.bold.cyan('Description:         ')} ${mod.description != null ? chalk.magenta(wrapTextWithPrefix(mod.description, `  ${shortSeparator}                       `)) : chalk.gray(`unset`)}`;
   const filenameString = `${chalk.bold.cyan('Filename:            ')} ${chalk.magenta(mod.filename)}`;
   const pathString = `${chalk.bold.cyan('File Path:           ')} ${chalk.magenta(mod.path)}`;
   const checksumString = `${chalk.bold.cyan('Checksum:            ')} ${chalk.magenta(mod.checksum)}`;
@@ -35,29 +36,29 @@ const displayMod = (mod: Mod): void => {
     nexusString += `  ${chalk.gray(`unset`)}`;
   } else {
     nexusString += `\n  ${shortSeparator}`;
-    nexusString += `\n  ${mediumSeparator} ${chalk.bold.gray('Mod Metadata:')}`;
     nexusString += `\n  ${mediumSeparator}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:         ')} ${chalk.magentaBright(mod.nexusMetadata.mod.name)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('ID:           ')} ${chalk.magentaBright(mod.nexusMetadata.mod.modId)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Version:      ')} ${chalk.magentaBright(mod.nexusMetadata.mod.version)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Summary:      ')} ${chalk.magentaBright(mod.nexusMetadata.mod.summary)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Available:    ')} ${mod.nexusMetadata.mod.available ? chalk.magentaBright(mod.nexusMetadata.mod.available) : chalk.bold.redBright(mod.nexusMetadata.mod.available)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('NSFW:         ')} ${chalk.magentaBright(mod.nexusMetadata.mod.nsfw)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Created At:   ')} ${chalk.magentaBright(mod.nexusMetadata.mod.createdAt)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Modified At:  ')} ${chalk.magentaBright(mod.nexusMetadata.mod.modifiedAt)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.bold.gray('Author:')}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:      ')} ${chalk.magentaBright(mod.nexusMetadata.mod.author.displayName)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Username:  ')} ${chalk.magentaBright(mod.nexusMetadata.mod.author.name)}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:               ')} ${chalk.magentaBright(mod.nexusMetadata.mod.name)}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('ID:                 ')} ${chalk.magentaBright(mod.nexusMetadata.mod.modId)}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Summary:            ')} ${chalk.magentaBright(wrapTextWithPrefix(mod.nexusMetadata.mod.summary, `  ${mediumSeparator}                      `))}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Latest Version:     ')} ${chalk.magentaBright(mod.nexusMetadata.mod.version)}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Installed Version:  ')} ${chalk.magentaBright(mod.nexusMetadata.file.version)}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Available:          ')} ${mod.nexusMetadata.mod.available ? chalk.magentaBright(mod.nexusMetadata.mod.available) : chalk.bold.redBright(mod.nexusMetadata.mod.available)}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('NSFW:               ')} ${chalk.magentaBright(mod.nexusMetadata.mod.nsfw)}`;
+    nexusString += `\n  ${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Created At:         ')} ${chalk.magentaBright(mod.nexusMetadata.mod.createdAt)}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Modified At:        ')} ${chalk.magentaBright(mod.nexusMetadata.mod.modifiedAt)}`;
+    nexusString += `\n  ${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.bold.gray('Author:')}`;
+    nexusString += `\n  ${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:         ')} ${chalk.magentaBright(mod.nexusMetadata.mod.author.displayName)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Username:     ')} ${chalk.magentaBright(mod.nexusMetadata.mod.author.name)}`;
 
     nexusString += `\n  ${mediumSeparator}`;
-    nexusString += `\n  ${mediumSeparator} ${chalk.bold.gray('File Metadata:')}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.bold.gray('Installed File Metadata:')}`;
     nexusString += `\n  ${mediumSeparator}`;
     nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:         ')} ${chalk.magentaBright(mod.nexusMetadata.file.name)}`;
     nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('ID:           ')} ${chalk.magentaBright(mod.nexusMetadata.file.id)}`;
-    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Description:  ')} ${chalk.magentaBright(mod.nexusMetadata.file.description)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Description:  ')} ${chalk.magentaBright(wrapTextWithPrefix(mod.nexusMetadata.file.description, `  ${mediumSeparator}${mediumSeparator}                `))}`;
     nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Filename:     ')} ${chalk.magentaBright(mod.nexusMetadata.file.fileName)}`;
     nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Version:      ')} ${chalk.magentaBright(mod.nexusMetadata.file.version)}`;
     nexusString += `\n  ${mediumSeparator}${mediumSeparator}`;

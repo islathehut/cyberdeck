@@ -34,3 +34,32 @@ export const promiseWithSpinner = async <T>(
 
   return result;
 }
+
+export const wrapTextWithPrefix = (text: string, prefix: string, width = 100): string => {
+  const originalLines = text.split('\n');
+  const lines = [];
+  for (let i = 0; i < originalLines.length; i++) {
+    const words = originalLines[i].split(' ');
+    let currentLine = '';
+  
+    for (const word of words) {
+      if (currentLine.length + word.length + 1 <= width) {
+        currentLine += (currentLine.length > 0 ? ' ' : '') + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+  
+    if (currentLine.length > 0) {
+      lines.push(currentLine);
+    }
+    
+    if (i < originalLines.length-1) {
+      lines.push('');
+    }
+  }
+  
+
+  return lines.map((line: string, index: number) => index > 0 ? `${prefix}${line}` : line).join('\n');
+}

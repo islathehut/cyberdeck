@@ -12,11 +12,11 @@ const DEFAULT_CONFIG_FILE_PATH = path.join(CYBERDECK_DIR_PATH, CONFIG_FILE_NAME)
 
 export class ConfigManager {
   private static _manager: ConfigManager | undefined;
-  private static _logger = createSimpleModuleLogger('config-manager');
+  private static readonly _logger = createSimpleModuleLogger('config-manager');
 
   private _config: Config;
-  private _cliOptions: CLIOptions;
-  private _configFilePath: string;
+  private readonly _cliOptions: CLIOptions;
+  private readonly _configFilePath: string;
 
   private constructor (config: Config, configFilePath: string, cliOptions: CLIOptions) {
     this._config = config;

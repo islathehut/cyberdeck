@@ -2,7 +2,7 @@
 
 import chalk from 'chalk';
 
-import type { Block, CLIOptions, Config } from '../../app/types/types.js';
+import type { Block } from '../../app/types/types.js';
 import { createBlock, getBlockByUuid, getUninstalledBlocks } from '../../app/mods/block.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 import actionSelect, { type Choice } from '../../components/actionSelect.js';
@@ -11,7 +11,6 @@ import { updateInstallOrder } from './updateInstallOrder.js';
 import { installMods } from '../mods/installMods.js';
 import { confirm } from '@inquirer/prompts';
 import { DateTime } from 'luxon';
-import { ConfigManager } from '../../app/config/config.manager.js';
 
 const displayBlock = (block: Block): void => {
   const longSeparator = chalk.magenta(

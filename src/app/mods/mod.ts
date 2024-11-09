@@ -8,7 +8,6 @@ import { randomUUID } from 'node:crypto';
 
 import {
   type Mod,
-  type Config,
   InstallStatus,
   type SearchResult,
   type FindResult,
@@ -96,7 +95,9 @@ export const findModByFilename = async (filename: string): Promise<Mod | undefin
 export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]> => {
   const loadedMods: Mod[] = [];
   let latestModLoadedMs = 0;
-  const configManager = ConfigManager.manager;
+  const { 
+    manager: configManager
+  } = ConfigManager;
 
   LOGGER.log(`Reading files from ${configManager.config.modsDirPath} to find uninstalled mods`);
   const dir = await fs.readdir(configManager.config.modsDirPath, { recursive: false, withFileTypes: true });
@@ -130,7 +131,7 @@ export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]>
         LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`));
         continue;
       }
-      await NexusModsManager.manager.updateModWithMetadata(existingMod);
+      await NexusModsManager._updateModWithMetadata(existingMod);
       continue;
     }
 

@@ -198,7 +198,7 @@ const editMod = async (mod: Mod): Promise<Mod> => {
             current = await manageCopyOverrides(current);
             break;
           case 'updateNexusMods':
-            current = await NexusModsManager.manager.updateModWithMetadata(current);
+            current = await NexusModsManager._updateModWithMetadata(current);
             break;
         }
         break;

@@ -13,7 +13,7 @@ import { NexusModsManager } from '../../app/mods/nexusMods/nexusMods.manager.js'
 
 const LOGGER = createSimpleModuleLogger('prompts:loadMods');
 
-const loadMods = async (recheckAll: boolean = false): Promise<void> => {
+const loadMods = async (recheckAll = false): Promise<void> => {
   LOGGER.log(`Loading mods from config and mod directory`);
   const rawLoadedMods = await promiseWithSpinner(
     async () => await loadUnseenModMetadata(recheckAll),
@@ -52,7 +52,7 @@ const loadMods = async (recheckAll: boolean = false): Promise<void> => {
 
     try {
       await Mods?.add(uninstalledMod);
-      await NexusModsManager.manager.updateModWithMetadata(uninstalledMod);
+      await NexusModsManager._updateModWithMetadata(uninstalledMod);
     } catch (e) {
       console.error(`Error while writing mod to db`, e);
       process.exit(0);
@@ -63,7 +63,7 @@ const loadMods = async (recheckAll: boolean = false): Promise<void> => {
   console.log(message);
   LOGGER.log(message);
 
-  return;
+  
 };
 
 export { loadMods };

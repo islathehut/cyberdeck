@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-import { ModMetadataResponse, UserValidateResponse } from "./nexusMods.api.types.js";
+import type { ModMetadataResponse, UserValidateResponse } from "./nexusMods.api.types.js";
 
 export interface paths {
   "/v1/games/{game_domain_name}/mods/updated.json": {

@@ -14,7 +14,7 @@ import Mods from '../app/storage/versedb/schemas/mods.schema.js';
 import { manageInstallBlocks } from './blocks/manageInstallBlocks.js';
 import { selectMod } from './mods/manageMods.js';
 import { ConfigManager } from '../app/config/config.manager.js';
-import { CLIOptions } from '../app/types/types.js';
+import type { CLIOptions } from '../app/types/types.js';
 import { NexusModsManager } from '../app/mods/nexusMods/nexusMods.manager.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:main');
