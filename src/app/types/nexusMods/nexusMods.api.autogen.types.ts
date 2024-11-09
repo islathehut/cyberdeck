@@ -3,22 +3,22 @@
  * Do not make direct changes to the file.
  */
 
-import type { ModMetadataResponse, UserValidateResponse } from "./nexusMods.api.types.js";
+import type { ModMetadataResponse, UserValidateResponse } from './nexusMods.api.types.js';
 
 export interface paths {
-  "/v1/games/{game_domain_name}/mods/updated.json": {
+  '/v1/games/{game_domain_name}/mods/updated.json': {
     /** <p>Returns a list of mods that have been updated in a given period, with timestamps of their last update. Cached for 5 minutes.</p> */
-    get: operations["get_v1_games_game_domain_mods_updates.json"];
+    get: operations['get_v1_games_game_domain_mods_updates.json'];
   };
-  "/v1/games/{game_domain_name}/mods/{mod_id}/changelogs.json": {
+  '/v1/games/{game_domain_name}/mods/{mod_id}/changelogs.json': {
     /** <p>Returns list of changelogs for mod</p> */
-    get: operations["get_v1_games_game_domain_mods_mod_id_changelogs.json"];
+    get: operations['get_v1_games_game_domain_mods_mod_id_changelogs.json'];
   };
-  "/v1/games/{game_domain_name}/mods/latest_added.json": {
+  '/v1/games/{game_domain_name}/mods/latest_added.json': {
     /** <p>Retrieve 10 latest added mods for a specified game</p> */
-    get: operations["get_v1_games_game_domain_mods_latest_added.json"];
+    get: operations['get_v1_games_game_domain_mods_latest_added.json'];
   };
-  "/v1/games/{game_domain_name}/mods/latest_updated.json": {
+  '/v1/games/{game_domain_name}/mods/latest_updated.json': {
     /** <p>Retrieve 10 latest updated mods for a specified game</p> */
     get: {
       parameters: {
@@ -35,78 +35,78 @@ export interface paths {
       };
     };
   };
-  "/v1/games/{game_domain_name}/mods/trending.json": {
+  '/v1/games/{game_domain_name}/mods/trending.json': {
     /** <p>Retrieve 10 trending mods for a specified game</p> */
-    get: operations["get_v1_games_game_domain_mods_trending.json"];
+    get: operations['get_v1_games_game_domain_mods_trending.json'];
   };
-  "/v1/games/{game_domain_name}/mods/{id}.json": {
+  '/v1/games/{game_domain_name}/mods/{id}.json': {
     /** <p>Retrieve specified mod, from a specified game. Cached for 5 minutes.</p> */
-    get: operations["get_v1_games_game_domain_name_mods_id.json"];
+    get: operations['get_v1_games_game_domain_name_mods_id.json'];
   };
-  "/v1/games/{game_domain_name}/mods/md5_search/{md5_hash}.json": {
+  '/v1/games/{game_domain_name}/mods/md5_search/{md5_hash}.json': {
     /** <p>Looks up a file MD5 file hash</p> */
-    get: operations["get_v1_games_game_domain_name_mods_md5_search_md5_hash.json"];
+    get: operations['get_v1_games_game_domain_name_mods_md5_search_md5_hash.json'];
   };
-  "/v1/games/{game_domain_name}/mods/{id}/endorse.json": {
+  '/v1/games/{game_domain_name}/mods/{id}/endorse.json': {
     /** <p>Endorse a mod</p> */
-    post: operations["post_v1_games_game_domain_name_mods_id_endorse.json"];
+    post: operations['post_v1_games_game_domain_name_mods_id_endorse.json'];
   };
-  "/v1/games/{game_domain_name}/mods/{id}/abstain.json": {
+  '/v1/games/{game_domain_name}/mods/{id}/abstain.json': {
     /** <p>Abstain from endorsing a mod</p> */
-    post: operations["post_v1_games_game_domain_name_mods_id_abstain.json"];
+    post: operations['post_v1_games_game_domain_name_mods_id_abstain.json'];
   };
-  "/v1/games/{game_domain_name}/mods/{mod_id}/files.json": {
+  '/v1/games/{game_domain_name}/mods/{mod_id}/files.json': {
     /** <p>Lists all files for a specific mod</p> */
-    get: operations["get_v1_games_game_domain_mods_mod_id_files.json"];
+    get: operations['get_v1_games_game_domain_mods_mod_id_files.json'];
   };
-  "/v1/games/{game_domain_name}/mods/{mod_id}/files/{file_id}.json": {
+  '/v1/games/{game_domain_name}/mods/{mod_id}/files/{file_id}.json': {
     /** <p>View a specified mod file, using a specified game and mod</p> */
-    get: operations["get_v1_games_game_domain_mods_mod_id_files_file_id.json"];
+    get: operations['get_v1_games_game_domain_mods_mod_id_files_file_id.json'];
   };
-  "/v1/games/{game_domain_name}/mods/{mod_id}/files/{id}/download_link.json": {
+  '/v1/games/{game_domain_name}/mods/{mod_id}/files/{id}/download_link.json': {
     /**
      * <p>Generate download link for mod file. For premium users, will return array of download links with their prefered download location in the first element.</p><br/>
      *
      * <p>NOTE: Non-premium members must provide the key and expiry from the .nxm link provided by the website. It is recommended for clients to extract them from the nxm link before sending this request. This ensures that all non-premium members must access the website to download through the API.</p>
      */
-    get: operations["get_v1_games_game_domain_mods_mod_id_files_id_download_link.json"];
+    get: operations['get_v1_games_game_domain_mods_mod_id_files_id_download_link.json'];
   };
-  "/v1/games.json": {
+  '/v1/games.json': {
     /**
      * <p>Returns a list of all games. Optionally can also return unapproved
      * games.</p>
      */
-    get: operations["get_v1_games.json"];
+    get: operations['get_v1_games.json'];
   };
-  "/v1/games/{game_domain_name}.json": {
+  '/v1/games/{game_domain_name}.json': {
     /**
      * <p>Returns specified game, along with download count, file count and
      * categories.</p>
      */
-    get: operations["get_v1_games_game_domain.json"];
+    get: operations['get_v1_games_game_domain.json'];
   };
-  "/v1/users/validate.json": {
+  '/v1/users/validate.json': {
     /** <p>Checks an API key is valid and returns the user&#39;s details.</p> */
-    get: operations["post_v1_users_validate.json"];
+    get: operations['post_v1_users_validate.json'];
   };
-  "/v1/user/tracked_mods.json": {
+  '/v1/user/tracked_mods.json': {
     /** <p>Fetch all the mods being tracked by the current user</p> */
-    get: operations["get_v1_user_tracked_mods.json"];
+    get: operations['get_v1_user_tracked_mods.json'];
     /** <p>Track this mod with the current user</p> */
-    post: operations["post_v1_user_tracked_mods.json"];
+    post: operations['post_v1_user_tracked_mods.json'];
     /** <p>Stop tracking this mod with the current user</p> */
-    delete: operations["delete_v1_user_tracked_mods.json"];
+    delete: operations['delete_v1_user_tracked_mods.json'];
   };
-  "/v1/user/endorsements.json": {
+  '/v1/user/endorsements.json': {
     /** <p>Returns a list of all endorsements for the current user.</p> */
-    get: operations["get_v1_user_endorsements.json"];
+    get: operations['get_v1_user_endorsements.json'];
   };
-  "/v1/colourschemes.json": {
+  '/v1/colourschemes.json': {
     /**
      * <p>Returns list of all colour schemes, including the primary, secondary and
      * &#39;darker&#39; colours.</p>
      */
-    get: operations["get_v1_colourschemes.json"];
+    get: operations['get_v1_colourschemes.json'];
   };
 }
 
@@ -114,7 +114,7 @@ export interface definitions {}
 
 export interface operations {
   /** <p>Returns a list of mods that have been updated in a given period, with timestamps of their last update. Cached for 5 minutes.</p> */
-  "get_v1_games_game_domain_mods_updates.json": {
+  'get_v1_games_game_domain_mods_updates.json': {
     parameters: {
       query: {
         /** The only accepted periods are 1d, 1w and 1m (1 day, 1 week and 1 month) */
@@ -131,7 +131,7 @@ export interface operations {
     };
   };
   /** <p>Returns list of changelogs for mod</p> */
-  "get_v1_games_game_domain_mods_mod_id_changelogs.json": {
+  'get_v1_games_game_domain_mods_mod_id_changelogs.json': {
     parameters: {
       path: {
         mod_id: number;
@@ -145,7 +145,7 @@ export interface operations {
     };
   };
   /** <p>Retrieve 10 latest added mods for a specified game</p> */
-  "get_v1_games_game_domain_mods_latest_added.json": {
+  'get_v1_games_game_domain_mods_latest_added.json': {
     parameters: {
       path: {
         /** Game Domain E.g. 'skyrim' */
@@ -160,7 +160,7 @@ export interface operations {
     };
   };
   /** <p>Retrieve 10 trending mods for a specified game</p> */
-  "get_v1_games_game_domain_mods_trending.json": {
+  'get_v1_games_game_domain_mods_trending.json': {
     parameters: {
       path: {
         /** Game Domain E.g. 'skyrim' */
@@ -175,7 +175,7 @@ export interface operations {
     };
   };
   /** <p>Retrieve specified mod, from a specified game. Cached for 5 minutes.</p> */
-  "get_v1_games_game_domain_name_mods_id.json": {
+  'get_v1_games_game_domain_name_mods_id.json': {
     parameters: {
       path: {
         /** Mod ID */
@@ -192,7 +192,7 @@ export interface operations {
     };
   };
   /** <p>Looks up a file MD5 file hash</p> */
-  "get_v1_games_game_domain_name_mods_md5_search_md5_hash.json": {
+  'get_v1_games_game_domain_name_mods_md5_search_md5_hash.json': {
     parameters: {
       path: {
         /** Mod ID */
@@ -208,12 +208,12 @@ export interface operations {
       422: unknown;
       /** Mod found */
       200: {
-        schema: ModMetadataResponse[]
-      }
+        schema: ModMetadataResponse[];
+      };
     };
   };
   /** <p>Endorse a mod</p> */
-  "post_v1_games_game_domain_name_mods_id_endorse.json": {
+  'post_v1_games_game_domain_name_mods_id_endorse.json': {
     parameters: {
       path: {
         /** Game Domain E.g. 'skyrim' */
@@ -236,7 +236,7 @@ export interface operations {
     };
   };
   /** <p>Abstain from endorsing a mod</p> */
-  "post_v1_games_game_domain_name_mods_id_abstain.json": {
+  'post_v1_games_game_domain_name_mods_id_abstain.json': {
     parameters: {
       path: {
         /** Game Domain E.g. 'skyrim' */
@@ -259,7 +259,7 @@ export interface operations {
     };
   };
   /** <p>Lists all files for a specific mod</p> */
-  "get_v1_games_game_domain_mods_mod_id_files.json": {
+  'get_v1_games_game_domain_mods_mod_id_files.json': {
     parameters: {
       path: {
         /** Game Domain E.g. 'skyrim' */
@@ -278,7 +278,7 @@ export interface operations {
     };
   };
   /** <p>View a specified mod file, using a specified game and mod</p> */
-  "get_v1_games_game_domain_mods_mod_id_files_file_id.json": {
+  'get_v1_games_game_domain_mods_mod_id_files_file_id.json': {
     parameters: {
       path: {
         /** File ID */
@@ -299,7 +299,7 @@ export interface operations {
    *
    * <p>NOTE: Non-premium members must provide the key and expiry from the .nxm link provided by the website. It is recommended for clients to extract them from the nxm link before sending this request. This ensures that all non-premium members must access the website to download through the API.</p>
    */
-  "get_v1_games_game_domain_mods_mod_id_files_id_download_link.json": {
+  'get_v1_games_game_domain_mods_mod_id_files_id_download_link.json': {
     parameters: {
       path: {
         /** Game Domain Name E.g. skyrim */
@@ -331,7 +331,7 @@ export interface operations {
    * <p>Returns a list of all games. Optionally can also return unapproved
    * games.</p>
    */
-  "get_v1_games.json": {
+  'get_v1_games.json': {
     parameters: {
       query: {
         /** Whether to include unapproved games or not */
@@ -349,7 +349,7 @@ export interface operations {
    * <p>Returns specified game, along with download count, file count and
    * categories.</p>
    */
-  "get_v1_games_game_domain.json": {
+  'get_v1_games_game_domain.json': {
     parameters: {
       path: {
         /** Game Domain Name E.g. skyrim */
@@ -364,7 +364,7 @@ export interface operations {
     };
   };
   /** <p>Checks an API key is valid and returns the user&#39;s details.</p> */
-  "post_v1_users_validate.json": {
+  'post_v1_users_validate.json': {
     parameters: {};
     responses: {
       /** Missing */
@@ -378,7 +378,7 @@ export interface operations {
     };
   };
   /** <p>Fetch all the mods being tracked by the current user</p> */
-  "get_v1_user_tracked_mods.json": {
+  'get_v1_user_tracked_mods.json': {
     parameters: {};
     responses: {
       /** Missing */
@@ -386,7 +386,7 @@ export interface operations {
     };
   };
   /** <p>Track this mod with the current user</p> */
-  "post_v1_user_tracked_mods.json": {
+  'post_v1_user_tracked_mods.json': {
     parameters: {
       query: {
         /** Game Domain Name E.g. skyrim */
@@ -405,7 +405,7 @@ export interface operations {
     };
   };
   /** <p>Stop tracking this mod with the current user</p> */
-  "delete_v1_user_tracked_mods.json": {
+  'delete_v1_user_tracked_mods.json': {
     parameters: {
       query: {
         /** Game Domain Name E.g. skyrim */
@@ -422,7 +422,7 @@ export interface operations {
     };
   };
   /** <p>Returns a list of all endorsements for the current user.</p> */
-  "get_v1_user_endorsements.json": {
+  'get_v1_user_endorsements.json': {
     responses: {
       /** Success */
       200: unknown;
@@ -438,7 +438,7 @@ export interface operations {
    * <p>Returns list of all colour schemes, including the primary, secondary and
    * &#39;darker&#39; colours.</p>
    */
-  "get_v1_colourschemes.json": {
+  'get_v1_colourschemes.json': {
     parameters: {};
     responses: {
       /** ok */

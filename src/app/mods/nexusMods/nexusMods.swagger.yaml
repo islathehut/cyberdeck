@@ -4,24 +4,24 @@ info:
   description: |-
 
     <p>The Nexus Mods Public API allows third-party applications to access the Nexus Mods database, provided they are supplying a valid API Key for a user. Users can view their own API Keys by visiting <a href="https://www.nexusmods.com/users/myaccount?tab=api%20access">https://www.nexusmods.com/users/myaccount?tab=api%20access</a>.</p>
-    
+
     <p>Applications can also implement integrations without the user having to manage their own keys by using the Nexus Mods Single Sign-On (SSO). Documentation and a simple demo for the SSO can be found at <a href="https://github.com/Nexus-Mods/sso-integration-demo">https://github.com/Nexus-Mods/sso-integration-demo</a>.</p>
-    
+
     ## Authentication
     If you try accessing the API, you might receive the following error: <code>Please provide an API Key with your request</code>.
-    
+
     This is because all requests to the API require an API key to be sent as a header. The header <code>apikey</code> is used for this purpose, setting this to a valid API Key will authenticate correctly - this can be tested on the swaggerhub documentation using the "Authorise" button below and providing one of your personal API Keys.
-    
+
     >Note: NEVER share your personal API keys with any other user, or include it as part of your own software.
-    
+
     ## Rate Limiting
-    
+
     We utilise user-based rate limiting on our API, so refreshing your API key (this can be done on the API Access page) will not allow you to exceed the rate limits. Our limits are as follows:
-    
+
     > 2,500 requests within 24 hours and once this limit has been exceeded by a user they are then restricted to 100 requests per hour.
-    
+
     The API will return headers to inform the client of the remaining requests and remaining time:
-    
+
     ```
     X-RL-Hourly-Limit →100
     X-RL-Hourly-Remaining →96
@@ -30,22 +30,22 @@ info:
     X-RL-Daily-Remaining →2488
     X-RL-Daily-Reset →2019-02-02 00:00:00 +0000
     ```
-    
+
     Once a client's limits are reached, the API will return a HTTP 429 code, along with the headers above, allowing the client to determine which limit has been breached.
-    
+
     > A 429 status code can also be served by nginx if the client sends more than 30 requests per second. Nginx will however allow bursts over this for very short periods of time.
-    
+
     *Some routes don't count towards your hourly limits - these are listed below:*
     ```
     /v1/users/validate.json
     ```
-    
+
     ## User Agent
-    
+
     Applications should send a valid user agent string identifying the application/library they are using and system information. This allows us to collect statistics and aides with debugging potential problems.
-    
+
     E.g. Vortex sends the following user agent string. This identifies the library and node version, along with the OS information. `NexusApiClient/0.7.3 (Windows_NT 10.0.17134; x64) Node/8.9.3`
-    
+
   version: '1.0'
   x-copyright: Black Tree Gaming Ltd
 basePath: '/'
@@ -87,7 +87,7 @@ paths:
       description: |
 
         <p>Returns a list of mods that have been updated in a given period, with timestamps of their last update. Cached for 5 minutes.</p>
-        
+
   '/v1/games/{game_domain_name}/mods/{mod_id}/changelogs.json':
     get:
       tags:
@@ -328,7 +328,7 @@ paths:
           description: Mod ID
         - name: category
           type: string
-          description: "Filter File Category. Case insensitive. Comma seperated list of categories. Can be: main, update, optional, old_version or miscellaneous"
+          description: 'Filter File Category. Case insensitive. Comma seperated list of categories. Can be: main, update, optional, old_version or miscellaneous'
           in: query
           required: false
       responses:
@@ -417,7 +417,7 @@ paths:
       description: |
 
         <p>Generate download link for mod file. For premium users, will return array of download links with their prefered download location in the first element.</p><br/>
-        
+
         <p>NOTE: Non-premium members must provide the key and expiry from the .nxm link provided by the website. It is recommended for clients to extract them from the nxm link before sending this request. This ensures that all non-premium members must access the website to download through the API.</p>
 
   /v1/games.json:
@@ -525,7 +525,7 @@ paths:
           description: User succesfully tracked mod
         '200':
           description: User already tracking mod
-          
+
       description: |
 
         <p>Track this mod with the current user</p>

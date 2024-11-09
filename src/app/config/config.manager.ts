@@ -18,14 +18,20 @@ export class ConfigManager {
   private readonly _cliOptions: CLIOptions;
   private readonly _configFilePath: string;
 
-  private constructor (config: Config, configFilePath: string, cliOptions: CLIOptions) {
+  private constructor(config: Config, configFilePath: string, cliOptions: CLIOptions) {
     this._config = config;
     this._configFilePath = configFilePath;
     this._cliOptions = cliOptions;
   }
 
-  public static async init(config: Config, cliOptions: CLIOptions, configFilePath: string = DEFAULT_CONFIG_FILE_PATH): Promise<ConfigManager> {
-    ConfigManager._logger.log(`Initializing new ConfigManager with config file at ${configFilePath}`);
+  public static async init(
+    config: Config,
+    cliOptions: CLIOptions,
+    configFilePath: string = DEFAULT_CONFIG_FILE_PATH
+  ): Promise<ConfigManager> {
+    ConfigManager._logger.log(
+      `Initializing new ConfigManager with config file at ${configFilePath}`
+    );
     if (this._manager != null) {
       throw new Error(`ConfigManager has already been initialized!`);
     }
@@ -40,7 +46,10 @@ export class ConfigManager {
     return this._manager;
   }
 
-  public static async initFromFile(cliOptions: CLIOptions, configFilePath: string = DEFAULT_CONFIG_FILE_PATH): Promise<ConfigManager> {
+  public static async initFromFile(
+    cliOptions: CLIOptions,
+    configFilePath: string = DEFAULT_CONFIG_FILE_PATH
+  ): Promise<ConfigManager> {
     ConfigManager._logger.log(`Initializing existing config from config file at ${configFilePath}`);
     if (this._manager != null) {
       throw new Error(`ConfigManager has already been initialized!`);
@@ -65,7 +74,7 @@ export class ConfigManager {
     this._config = {
       ...this.config,
       ...updates,
-      modifiedAt: DateTime.utc().toMillis()
+      modifiedAt: DateTime.utc().toMillis(),
     };
 
     await fs.writeFile(this._configFilePath, JSON.stringify(this.config, null, 2));

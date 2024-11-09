@@ -56,9 +56,7 @@ const displayBlock = (block: Block): void => {
   );
 };
 
-const manageBlock = async (
-  blockUuid: string
-): Promise<Block> => {
+const manageBlock = async (blockUuid: string): Promise<Block> => {
   let block = await getBlockByUuid(blockUuid);
   let exit = false;
   while (!exit) {
