@@ -9,13 +9,14 @@ import { DEFAULT_THEME } from '../helpers/theme.js';
 
 import Mods from '../../app/storage/versedb/schemas/mods.schema.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
+import { NexusModsManager } from '../../app/mods/nexusMods/nexusMods.manager.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:loadMods');
 
-const loadMods = async (): Promise<void> => {
+const loadMods = async (recheckAll: boolean = false): Promise<void> => {
   LOGGER.log(`Loading mods from config and mod directory`);
   const rawLoadedMods = await promiseWithSpinner(
-    async () => await loadUnseenModMetadata(),
+    async () => await loadUnseenModMetadata(recheckAll),
     'Searching for new mod files...',
     `Finished searching for new mod files!`,
     `Failed while searching for new mod files!!!`
@@ -51,6 +52,7 @@ const loadMods = async (): Promise<void> => {
 
     try {
       await Mods?.add(uninstalledMod);
+      await NexusModsManager.manager.updateModWithMetadata(uninstalledMod);
     } catch (e) {
       console.error(`Error while writing mod to db`, e);
       process.exit(0);

@@ -57,7 +57,7 @@ const mainLoop = async (): Promise<boolean> => {
             await selectMod();
             break;
           case 'loadMods':
-            await loadMods();
+            await loadMods(true);
             break;
         }
         break;

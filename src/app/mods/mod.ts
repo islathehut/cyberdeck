@@ -19,6 +19,7 @@ import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
 
 import { db } from '../storage/versedb/cyberdeck.versedb.js';
 import { ConfigManager } from '../config/config.manager.js';
+import { NexusModsManager } from './nexusMods/nexusMods.manager.js';
 
 const LOGGER = createSimpleModuleLogger('mods:mod');
 
@@ -92,7 +93,7 @@ export const findModByFilename = async (filename: string): Promise<Mod | undefin
     filename,
   });
 
-export const loadUnseenModMetadata = async (): Promise<Mod[]> => {
+export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]> => {
   const loadedMods: Mod[] = [];
   let latestModLoadedMs = 0;
   const configManager = ConfigManager.manager;
@@ -107,9 +108,10 @@ export const loadUnseenModMetadata = async (): Promise<Mod[]> => {
     }
 
     const filePath = path.join(configManager.config.modsDirPath, item.name);
+
     const stats = await fs.stat(filePath);
     const isRecent = stats.mtimeMs <= configManager.config.latestModLoadedMs && stats.birthtimeMs <= configManager.config.latestModLoadedMs;
-    if (isRecent) {
+    if (!recheckAll && isRecent) {
       LOGGER.log(chalk.dim.yellow(`Skipping ${filePath} because modified time is earlier than last latest seen`));
       continue;
     }
@@ -122,8 +124,13 @@ export const loadUnseenModMetadata = async (): Promise<Mod[]> => {
     const fileData = await fs.readFile(filePath);
     const checksum = generateChecksum(fileData);
 
-    if ((await findModByChecksum(checksum)) != null) {
-      LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`));
+    const existingMod = await findModByChecksum(checksum);
+    if (existingMod != null) {
+      if (existingMod.nexusMetadata != null) {
+        LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`));
+        continue;
+      }
+      await NexusModsManager.manager.updateModWithMetadata(existingMod);
       continue;
     }
 

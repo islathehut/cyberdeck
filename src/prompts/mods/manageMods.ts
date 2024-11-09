@@ -158,7 +158,7 @@ const selectMod = async (): Promise<boolean> => {
           .map((mod: Mod) => ({
             name: mod.name,
             value: mod,
-            description: mod.filename,
+            description: mod.description ?? mod.name,
           })),
       // @ts-expect-error The autocomplete library doesn't allow theming but I modified to allow it
       theme: DEFAULT_THEME,
