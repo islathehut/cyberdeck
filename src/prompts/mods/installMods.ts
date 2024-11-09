@@ -97,14 +97,16 @@ const installModsPrompt = async (
       await installMods(config, result, overrideInstallPath);
     },
     'Installing mods...',
-    'Done installing mods!'
+    'Done installing mods!',
+    'Failed to install mods!!!'
   );
   await promiseWithSpinner(
     async () => {
       await updateDbAfterInstall(blockUuid);
     },
     'Updating DB post-install...',
-    'Done updating DB post install!'
+    'Done updating DB post install!',
+    'Failed to update DB post-install!!!'
   );
 };
 

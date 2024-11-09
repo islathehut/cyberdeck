@@ -56,6 +56,7 @@ const initNewConfig = async (): Promise<Config | null> => {
     installDirPath,
     dbDataDirPath: VERSE_DB_DATA_DIR_PATH,
     modifiedAt: DateTime.utc().toMillis(),
+    latestModLoadedMs: 0
   };
 
   LOGGER.log(`Generated config:`, config);

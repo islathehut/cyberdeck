@@ -1,16 +1,36 @@
 import chalk from 'chalk';
-import { oraPromise } from 'ora';
+import { DateTime } from 'luxon';
+import ora from 'ora';
+import { createSimpleModuleLogger } from '../logger.js';
+
+const Logger = createSimpleModuleLogger('utils:terminal:tools');
 
 export const promiseWithSpinner = async <T>(
   promise: () => Promise<T>,
   text: string,
-  successText: string
-): Promise<T> =>
-  await oraPromise(promise, {
+  successText: string,
+  failText: string
+): Promise<T | null> => {
+  const startTimeMs = DateTime.utc().toMillis();
+  const spinner = ora({
     color: 'yellow',
     text: chalk.cyan(text),
-    successText: chalk.magenta(successText),
     spinner: 'dots',
     isEnabled: true,
-    discardStdin: true,
+    discardStdin: true
   });
+
+  let result: T | null = null;
+  try {
+    spinner.start();
+    result = await promise();
+    const elapsedMs = DateTime.utc().toMillis() - startTimeMs;
+    spinner.succeed(`${chalk.magenta(successText)} ${chalk.green(`(${elapsedMs}ms)`)}`);
+  } catch (e) {
+    const elapsedMs = DateTime.utc().toMillis() - startTimeMs;
+    Logger.error(`Error occurred while running promise in spinner`, e);
+    spinner.fail(`${chalk.red(failText)} ${chalk.yellow(`(${elapsedMs}ms)`)}`);
+  }
+
+  return result;
+}

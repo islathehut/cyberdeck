@@ -130,6 +130,7 @@ const createAndManageNewBlock = async (
 const manageInstallBlocks = async (config: Config, options: CLIOptions): Promise<boolean> => {
   let exit = false;
   while (!exit) {
+    let newBlock: Block | null = null;
     const uninstalledBlocks = await getUninstalledBlocks();
 
     const choices: Array<Choice<string>> = [];
@@ -143,7 +144,7 @@ const manageInstallBlocks = async (config: Config, options: CLIOptions): Promise
 
     if (choices.length === 0) {
       console.log(chalk.yellow(`No install blocks have been created, you can create one now!`));
-      await createAndManageNewBlock(config, options);
+      newBlock = await createAndManageNewBlock(config, options);
     } else {
       const answer = await actionSelect({
         message: 'Install Block Management',
@@ -165,12 +166,16 @@ const manageInstallBlocks = async (config: Config, options: CLIOptions): Promise
           }
           break;
         case 'createNew':
-          await createAndManageNewBlock(config, options);
+          newBlock = await createAndManageNewBlock(config, options);
           break;
         case 'exit':
           exit = true;
           break;
       }
+    }
+    
+    if (newBlock == null && uninstalledBlocks.length === 0) {
+      exit = true;
     }
   }
   return exit;

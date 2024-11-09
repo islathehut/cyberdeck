@@ -10,17 +10,22 @@ import { DEFAULT_THEME } from '../helpers/theme.js';
 
 import Mods from '../../app/storage/versedb/schemas/mods.schema.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
+import { DateTime } from 'luxon';
 
 const LOGGER = createSimpleModuleLogger('prompts:loadMods');
 
 const loadMods = async (config: Config): Promise<Config> => {
   LOGGER.log(`Loading mods from config and mod directory`);
-
   const rawLoadedMods = await promiseWithSpinner(
     async () => await loadUnseenModMetadata(config),
     'Searching for new mod files...',
-    'Finished searching for new mod files!'
+    `Finished searching for new mod files!`,
+    `Failed while searching for new mod files!!!`
   );
+
+  if (rawLoadedMods == null) {
+    return config;
+  }
 
   if (rawLoadedMods.length === 0) {
     const message = chalk.dim.yellow(`No new mods found!`);

@@ -18,8 +18,8 @@ const autoGenerateInstallOrder = async (
   uninstalledMods: Mod[],
   remainingChoices: Set<string>,
   installOrderForBlock: string[]
-): Promise<string[]> =>
-  await promiseWithSpinner(
+): Promise<string[]> => {
+  const result = await promiseWithSpinner(
     async () => {
       LOGGER.log(`Auto-generating install order from ${remainingChoices.size} remaining mods`);
       for (const mod of uninstalledMods.filter(mod => remainingChoices.has(mod.checksum))) {
@@ -39,8 +39,16 @@ const autoGenerateInstallOrder = async (
       return installOrderForBlock;
     },
     'Auto-generating remaining install order...',
-    'Finished auto-generating install order!'
+    'Finished auto-generating install order!',
+    'Failed while auto-generating install order!!!'
   );
+
+  if (result == null) {
+    throw new Error(`Failed to generate install order`);
+  }
+  
+  return result;
+}
 
 const updateInstallOrder = async (blockUuid: string): Promise<Block> => {
   LOGGER.log(`Modifying Install Order for block ${blockUuid}`);

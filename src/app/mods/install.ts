@@ -85,14 +85,16 @@ const unpackMods = async (blockUuid: string, options: CLIOptions): Promise<Unpac
         await extractArchiveToTempDir(modMetadata.path, tempDirPath);
       },
       `Extracting ${modMetadata.filename}...`,
-      `Finished extracting ${modMetadata.filename}!`
+      `Finished extracting ${modMetadata.filename}!`,
+      `Failed to extract ${modMetadata.filename}!!!`
     );
     await promiseWithSpinner(
       async () => {
         await copyFiles(modMetadata, tempDirPath, unpackMergedDirPath);
       },
       `Copying files from ${modMetadata.filename} into merged dir...`,
-      `Finished copying files from ${modMetadata.filename} into merged dir!`
+      `Finished copying files from ${modMetadata.filename} into merged dir!`,
+      `Failed while copying files from ${modMetadata.filename} into merged dir!!!`
     );
   }
 

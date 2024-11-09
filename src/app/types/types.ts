@@ -51,6 +51,7 @@ export interface Config {
   installDirPath: string;
   dbDataDirPath: string;
   modifiedAt: number;
+  latestModLoadedMs: number;
 }
 
 export interface UnpackResult {

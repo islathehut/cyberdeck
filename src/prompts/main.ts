@@ -87,7 +87,8 @@ const main = async (options: CLIOptions): Promise<void> => {
     config = await promiseWithSpinner(
       async () => await loadExistingConfig(),
       'Loading existing config...',
-      'Finished loading existing config!'
+      'Finished loading existing config!',
+      'Failed to load existing config!!!'
     );
     if (config == null) {
       config = await initNewConfig();
