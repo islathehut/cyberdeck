@@ -21,3 +21,7 @@ export const DEFAULT_INSTALL_DIR_PATH = path.join(
   '/Library/Application Support/CrossOver/Bottles/Steam/drive_c/Program Files (x86)/Steam/steamapps/common/',
   DEFAULT_INSTALL_DIR_NAME
 );
+
+export const NEXUS_MODS_API_BASE_URL = 'https://api.nexusmods.com/';
+export const NEXUS_MODS_API_APIKEY_HEADER = 'apikey';
+export const NEXUS_MODS_API_GAME_DOMAIN_NAME = 'cyberpunk2077';

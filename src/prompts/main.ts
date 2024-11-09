@@ -15,6 +15,7 @@ import { manageInstallBlocks } from './blocks/manageInstallBlocks.js';
 import { selectMod } from './mods/manageMods.js';
 import { ConfigManager } from '../app/config/config.manager.js';
 import { CLIOptions } from '../app/types/types.js';
+import { NexusModsManager } from '../app/mods/nexusMods/nexusMods.manager.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:main');
 
@@ -100,6 +101,7 @@ const main = async (options: CLIOptions): Promise<void> => {
   }
 
   if (configManager != null) {
+    await NexusModsManager.init();
     await loadMods();
     await mainLoop();
   }

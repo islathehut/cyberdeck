@@ -19,18 +19,54 @@ const displayMod = (mod: Mod): void => {
   const shortSeparator = chalk.magenta('░░░░');
 
   const nameString = chalk.bold.white(mod.name);
-  const filenameString = `${chalk.bold.cyan('Filename:      ')} ${chalk.magenta(mod.filename)}`;
-  const pathString = `${chalk.bold.cyan('File Path:     ')} ${chalk.magenta(mod.path)}`;
-  const checksumString = `${chalk.bold.cyan('Checksum:      ')} ${chalk.magenta(mod.checksum)}`;
-  const statusString = `${chalk.bold.cyan('Status:        ')} ${chalk.magenta(mod.status)}`;
-  const blockString = `${chalk.bold.cyan('Block:         ')} ${chalk.magenta(mod.blockUuid)}`;
-  const skipString = `${chalk.bold.cyan('Skipped:       ')} ${mod.skip ? chalk.yellow(mod.skip) : chalk.magenta(mod.skip)}`;
-  const createdAtString = `${chalk.bold.cyan('Created At:    ')} ${chalk.magenta(DateTime.fromMillis(mod.createdAt).toLocal().toISO())}`;
-  const modifiedAtString = `${chalk.bold.cyan('Modified At:   ')} ${chalk.magenta(DateTime.fromMillis(mod.modifiedAt).toLocal().toISO())}`;
-  const installedAtString = `${chalk.bold.cyan('Installed At:  ')} ${chalk.magenta(mod.installedAt != null ? DateTime.fromMillis(mod.installedAt).toLocal().toISO() : 'n/a')}`;
+  const descString = `${chalk.bold.cyan('Description:         ')} ${chalk.magenta(mod.description ?? chalk.gray(`unset`))}`;
+  const filenameString = `${chalk.bold.cyan('Filename:            ')} ${chalk.magenta(mod.filename)}`;
+  const pathString = `${chalk.bold.cyan('File Path:           ')} ${chalk.magenta(mod.path)}`;
+  const checksumString = `${chalk.bold.cyan('Checksum:            ')} ${chalk.magenta(mod.checksum)}`;
+  const statusString = `${chalk.bold.cyan('Status:              ')} ${chalk.magenta(mod.status)}`;
+  const blockString = `${chalk.bold.cyan('Install Block:       ')} ${chalk.magenta(mod.blockUuid)}`;
+  const skipString = `${chalk.bold.cyan('Skipped:             ')} ${mod.skip ? chalk.yellow(mod.skip) : chalk.magenta(mod.skip)}`;
+  const createdAtString = `${chalk.bold.cyan('Created At:          ')} ${chalk.magenta(DateTime.fromMillis(mod.createdAt).toLocal().toISO())}`;
+  const modifiedAtString = `${chalk.bold.cyan('Modified At:         ')} ${chalk.magenta(DateTime.fromMillis(mod.modifiedAt).toLocal().toISO())}`;
+  const installedAtString = `${chalk.bold.cyan('Installed At:        ')} ${chalk.magenta(mod.installedAt != null ? DateTime.fromMillis(mod.installedAt).toLocal().toISO() : 'n/a')}`;
+
+  let nexusString = chalk.bold.cyan('Nexus Mods Metadata:');
+  if (mod.nexusMetadata == null) {
+    nexusString += `  ${chalk.gray(`unset`)}`;
+  } else {
+    nexusString += `\n  ${shortSeparator}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.bold.gray('Mod Metadata:')}`;
+    nexusString += `\n  ${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:         ')} ${chalk.magentaBright(mod.nexusMetadata.mod.name)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('ID:           ')} ${chalk.magentaBright(mod.nexusMetadata.mod.modId)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Version:      ')} ${chalk.magentaBright(mod.nexusMetadata.mod.version)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Summary:      ')} ${chalk.magentaBright(mod.nexusMetadata.mod.summary)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Available:    ')} ${mod.nexusMetadata.mod.available ? chalk.magentaBright(mod.nexusMetadata.mod.available) : chalk.bold.redBright(mod.nexusMetadata.mod.available)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('NSFW:         ')} ${chalk.magentaBright(mod.nexusMetadata.mod.nsfw)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Created At:   ')} ${chalk.magentaBright(mod.nexusMetadata.mod.createdAt)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Modified At:  ')} ${chalk.magentaBright(mod.nexusMetadata.mod.modifiedAt)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.bold.gray('Author:')}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:      ')} ${chalk.magentaBright(mod.nexusMetadata.mod.author.displayName)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Username:  ')} ${chalk.magentaBright(mod.nexusMetadata.mod.author.name)}`;
+
+    nexusString += `\n  ${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.bold.gray('File Metadata:')}`;
+    nexusString += `\n  ${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:         ')} ${chalk.magentaBright(mod.nexusMetadata.file.name)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('ID:           ')} ${chalk.magentaBright(mod.nexusMetadata.file.id)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Description:  ')} ${chalk.magentaBright(mod.nexusMetadata.file.description)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Filename:     ')} ${chalk.magentaBright(mod.nexusMetadata.file.fileName)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Version:      ')} ${chalk.magentaBright(mod.nexusMetadata.file.version)}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator}`;
+    nexusString += `\n  ${mediumSeparator}${mediumSeparator} ${chalk.whiteBright.italic.bold('Uploaded At:  ')} ${chalk.magentaBright(mod.nexusMetadata.file.uploadedAt)}`;
+  }
+
   let copyOverridesString = chalk.bold.cyan('Copy Overrides:');
   if (mod.copyOverrides.length === 0) {
-    copyOverridesString += ` ${chalk.gray(`unset`)}\n  ${shortSeparator}`;
+    copyOverridesString += `       ${chalk.gray(`unset`)}\n  ${shortSeparator}`;
   } else {
     copyOverridesString += `\n  ${shortSeparator}\n`;
     mod.copyOverrides.forEach(
@@ -48,9 +84,11 @@ const displayMod = (mod: Mod): void => {
   ${shortSeparator}
   ${longSeparator}
   ${shortSeparator}
+  ${shortSeparator} ${descString}
   ${shortSeparator} ${filenameString}
   ${shortSeparator} ${pathString}
   ${shortSeparator} ${checksumString}
+  ${shortSeparator}
   ${shortSeparator} ${blockString}
   ${shortSeparator} ${statusString}
   ${shortSeparator} ${skipString}
@@ -58,6 +96,8 @@ const displayMod = (mod: Mod): void => {
   ${shortSeparator} ${createdAtString}
   ${shortSeparator} ${modifiedAtString}
   ${shortSeparator} ${installedAtString}
+  ${shortSeparator}
+  ${shortSeparator} ${nexusString}
   ${shortSeparator}
   ${shortSeparator} ${copyOverridesString}
   ${longSeparator}

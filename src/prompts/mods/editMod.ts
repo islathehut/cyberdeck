@@ -5,6 +5,7 @@ import type { CopyOverride, Mod } from '../../app/types/types.js';
 import actionSelect from '../../components/actionSelect.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 import { updateMod } from '../../app/mods/mod.js';
+import { NexusModsManager } from '../../app/mods/nexusMods/nexusMods.manager.js';
 
 export const setSkip = async (mod: Mod): Promise<Mod> => {
   const answer = await radio({
@@ -170,6 +171,11 @@ const editMod = async (mod: Mod): Promise<Mod> => {
         value: 'manageCopyOverrides',
         description: "Manage 'copyOverrides' property on mod",
       },
+      {
+        name: 'Update Nexus Mods Metadata',
+        value: 'updateNexusMods',
+        description: 'Pull latest metadata from Nexus Mods and update DB record'
+      }
     ];
 
     const answer = await actionSelect({
@@ -190,6 +196,9 @@ const editMod = async (mod: Mod): Promise<Mod> => {
             break;
           case 'manageCopyOverrides':
             current = await manageCopyOverrides(current);
+            break;
+          case 'updateNexusMods':
+            current = await NexusModsManager.manager.updateModWithMetadata(current);
             break;
         }
         break;

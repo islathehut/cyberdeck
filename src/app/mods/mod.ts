@@ -108,7 +108,8 @@ export const loadUnseenModMetadata = async (): Promise<Mod[]> => {
 
     const filePath = path.join(configManager.config.modsDirPath, item.name);
     const stats = await fs.stat(filePath);
-    if (stats.mtimeMs <= configManager.config.latestModLoadedMs && stats.birthtimeMs <= configManager.config.latestModLoadedMs) {
+    const isRecent = stats.mtimeMs <= configManager.config.latestModLoadedMs && stats.birthtimeMs <= configManager.config.latestModLoadedMs;
+    if (isRecent) {
       LOGGER.log(chalk.dim.yellow(`Skipping ${filePath} because modified time is earlier than last latest seen`));
       continue;
     }
