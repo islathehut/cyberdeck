@@ -7,8 +7,8 @@ import { confirm, input } from '@inquirer/prompts';
 import * as fs from 'node:fs/promises';
 import * as fsSync from 'fs';
 
-import type { Config } from '../app/types/types.js';
-import { configFileExists, writeConfigFile, loadConfigFile } from '../app/config/config.js';
+import type { CLIOptions, Config } from '../app/types/types.js';
+import { ConfigManager } from '../app/config/config.manager.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
 import { DEFAULT_THEME } from './helpers/theme.js';
 import {
@@ -21,19 +21,7 @@ import {
 
 const LOGGER = createSimpleModuleLogger('prompts:init');
 
-const loadExistingConfig = async (): Promise<Config | null> => {
-  const configExists = configFileExists();
-  if (configExists) {
-    LOGGER.log(`Found config file!  Loading...`);
-    const config = await loadConfigFile();
-    LOGGER.log(`Loaded config:`, config);
-    return config;
-  }
-
-  return null;
-};
-
-const initNewConfig = async (): Promise<Config | null> => {
+const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | null> => {
   LOGGER.log(`No config file found, generating a new one...`);
   const shouldInit = await confirm({
     message: `No cyberdeck setup found in ${CYBERDECK_DIR_PATH}.  Cyberdeck will create this directory, a new config file and empty sub-directories.  Continue?`,
@@ -51,12 +39,19 @@ const initNewConfig = async (): Promise<Config | null> => {
     theme: DEFAULT_THEME,
   });
 
+  const nexusModsApiKey = await input({
+    message: `(Optional) Enter your Nexus Mods API Key (use the 'Personal API Key' on https://next.nexusmods.com/settings/api-keys):`,
+    default: undefined,
+    theme: DEFAULT_THEME
+  })
+
   const config: Config = {
     modsDirPath: MODS_DIR_PATH,
     installDirPath,
     dbDataDirPath: VERSE_DB_DATA_DIR_PATH,
     modifiedAt: DateTime.utc().toMillis(),
-    latestModLoadedMs: 0
+    latestModLoadedMs: 0,
+    nexusModsApiKey
   };
 
   LOGGER.log(`Generated config:`, config);
@@ -87,9 +82,7 @@ const initNewConfig = async (): Promise<Config | null> => {
     await fs.mkdir(UNPACK_DIR_PATH);
   }
 
-  await writeConfigFile(config, false);
-
-  return config;
+  return await ConfigManager.init(config, cliOptions);
 };
 
-export { loadExistingConfig, initNewConfig };
+export { initNewConfig };

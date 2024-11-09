@@ -52,6 +52,7 @@ export interface Config {
   dbDataDirPath: string;
   modifiedAt: number;
   latestModLoadedMs: number;
+  nexusModsApiKey?: string;
 }
 
 export interface UnpackResult {

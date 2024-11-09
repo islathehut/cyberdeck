@@ -11,6 +11,7 @@ import { updateInstallOrder } from './updateInstallOrder.js';
 import { installMods } from '../mods/installMods.js';
 import { confirm } from '@inquirer/prompts';
 import { DateTime } from 'luxon';
+import { ConfigManager } from '../../app/config/config.manager.js';
 
 const displayBlock = (block: Block): void => {
   const longSeparator = chalk.magenta(
@@ -57,9 +58,7 @@ const displayBlock = (block: Block): void => {
 };
 
 const manageBlock = async (
-  blockUuid: string,
-  config: Config,
-  options: CLIOptions
+  blockUuid: string
 ): Promise<Block> => {
   let block = await getBlockByUuid(blockUuid);
   let exit = false;
@@ -94,7 +93,7 @@ const manageBlock = async (
             await updateInstallOrder(blockUuid);
             break;
           case 'installMods':
-            await installMods(blockUuid, config, options);
+            await installMods(blockUuid);
             break;
         }
         break;
@@ -108,10 +107,7 @@ const manageBlock = async (
   return block;
 };
 
-const createAndManageNewBlock = async (
-  config: Config,
-  options: CLIOptions
-): Promise<Block | null> => {
+const createAndManageNewBlock = async (): Promise<Block | null> => {
   const areYouSure = await confirm({
     message: `Are you sure you would like to create a new install block?`,
     default: true,
@@ -124,10 +120,10 @@ const createAndManageNewBlock = async (
   }
 
   const newBlock = await createBlock();
-  return await manageBlock(newBlock.uuid, config, options);
+  return await manageBlock(newBlock.uuid);
 };
 
-const manageInstallBlocks = async (config: Config, options: CLIOptions): Promise<boolean> => {
+const manageInstallBlocks = async (): Promise<boolean> => {
   let exit = false;
   while (!exit) {
     let newBlock: Block | null = null;
@@ -144,7 +140,7 @@ const manageInstallBlocks = async (config: Config, options: CLIOptions): Promise
 
     if (choices.length === 0) {
       console.log(chalk.yellow(`No install blocks have been created, you can create one now!`));
-      newBlock = await createAndManageNewBlock(config, options);
+      newBlock = await createAndManageNewBlock();
     } else {
       const answer = await actionSelect({
         message: 'Install Block Management',
@@ -161,19 +157,19 @@ const manageInstallBlocks = async (config: Config, options: CLIOptions): Promise
         case undefined: // catches enter/return key
           switch (answer.answer) {
             default:
-              await manageBlock(answer.answer, config, options);
+              await manageBlock(answer.answer);
               break;
           }
           break;
         case 'createNew':
-          newBlock = await createAndManageNewBlock(config, options);
+          newBlock = await createAndManageNewBlock();
           break;
         case 'exit':
           exit = true;
           break;
       }
     }
-    
+
     if (newBlock == null && uninstalledBlocks.length === 0) {
       exit = true;
     }

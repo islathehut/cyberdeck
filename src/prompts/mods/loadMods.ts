@@ -3,35 +3,33 @@
 import { confirm, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 
-import type { Config } from '../../app/types/types.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { loadUnseenModMetadata } from '../../app/mods/mod.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 
 import Mods from '../../app/storage/versedb/schemas/mods.schema.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
-import { DateTime } from 'luxon';
 
 const LOGGER = createSimpleModuleLogger('prompts:loadMods');
 
-const loadMods = async (config: Config): Promise<Config> => {
+const loadMods = async (): Promise<void> => {
   LOGGER.log(`Loading mods from config and mod directory`);
   const rawLoadedMods = await promiseWithSpinner(
-    async () => await loadUnseenModMetadata(config),
+    async () => await loadUnseenModMetadata(),
     'Searching for new mod files...',
     `Finished searching for new mod files!`,
     `Failed while searching for new mod files!!!`
   );
 
   if (rawLoadedMods == null) {
-    return config;
+    return;
   }
 
   if (rawLoadedMods.length === 0) {
     const message = chalk.dim.yellow(`No new mods found!`);
     console.log(message);
     LOGGER.log(message);
-    return config;
+    return;
   }
 
   const manuallySetMetadata = await confirm({
@@ -63,7 +61,7 @@ const loadMods = async (config: Config): Promise<Config> => {
   console.log(message);
   LOGGER.log(message);
 
-  return config;
+  return;
 };
 
 export { loadMods };
