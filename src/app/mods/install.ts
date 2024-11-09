@@ -4,13 +4,14 @@ import * as fs from 'node:fs/promises';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
 
-import type { CLIOptions, Config, Mod, UnpackResult } from '../types/types.js';
+import type { Mod, UnpackResult } from '../types/types.js';
 import { extractArchiveToTempDir } from './extract.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
 import { UNPACK_DIR_PATH } from '../const.js';
 import { getBlockByUuid } from './block.js';
 import { findModByFilename } from './mod.js';
+import { ConfigManager } from '../config/config.manager.js';
 
 const LOGGER = createSimpleModuleLogger('mods:install');
 
@@ -35,11 +36,11 @@ const copyFiles = async (
   }
 };
 
-const unpackMods = async (blockUuid: string, options: CLIOptions): Promise<UnpackResult | null> => {
+const unpackMods = async (blockUuid: string): Promise<UnpackResult | null> => {
   LOGGER.log('Unpacking mods to temporary directory');
   let logPrefix = '';
   let unpackDirPrefix = '';
-  if (options.dry) {
+  if (ConfigManager.manager.cliOptions.dry) {
     logPrefix = 'DRY RUN - ';
     unpackDirPrefix = 'dryRun_';
   }
@@ -106,11 +107,10 @@ const unpackMods = async (blockUuid: string, options: CLIOptions): Promise<Unpac
 };
 
 const installMods = async (
-  config: Config,
   unpackResult: UnpackResult,
   overrideInstallPath?: string
 ): Promise<void> => {
-  const installPath = overrideInstallPath ?? config.installDirPath;
+  const installPath = overrideInstallPath ?? ConfigManager.manager.config.installDirPath;
   LOGGER.log(
     `Installing ${unpackResult.count} mods in ${unpackResult.mergedDir} to ${installPath}`
   );

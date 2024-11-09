@@ -8,7 +8,6 @@ import { randomUUID } from 'node:crypto';
 
 import {
   type Mod,
-  type Config,
   InstallStatus,
   type SearchResult,
   type FindResult,
@@ -18,7 +17,8 @@ import { generateChecksum } from '../../utils/crypto.js';
 import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
 
 import { db } from '../storage/versedb/cyberdeck.versedb.js';
-import { writeConfigFile } from '../config/config.js';
+import { ConfigManager } from '../config/config.manager.js';
+import { NexusModsManager } from './nexusMods/nexusMods.manager.js';
 
 const LOGGER = createSimpleModuleLogger('mods:mod');
 
@@ -92,12 +92,15 @@ export const findModByFilename = async (filename: string): Promise<Mod | undefin
     filename,
   });
 
-export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
+export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]> => {
   const loadedMods: Mod[] = [];
   let latestModLoadedMs = 0;
+  const { 
+    manager: configManager
+  } = ConfigManager;
 
-  LOGGER.log(`Reading files from ${config.modsDirPath} to find uninstalled mods`);
-  const dir = await fs.readdir(config.modsDirPath, { recursive: false, withFileTypes: true });
+  LOGGER.log(`Reading files from ${configManager.config.modsDirPath} to find uninstalled mods`);
+  const dir = await fs.readdir(configManager.config.modsDirPath, { recursive: false, withFileTypes: true });
   for (const item of dir) {
     LOGGER.log(`Found ${item.name}`);
     if (item.isDirectory()) {
@@ -105,9 +108,11 @@ export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
       continue;
     }
 
-    const filePath = path.join(config.modsDirPath, item.name);
+    const filePath = path.join(configManager.config.modsDirPath, item.name);
+
     const stats = await fs.stat(filePath);
-    if (stats.mtimeMs <= config.latestModLoadedMs && stats.birthtimeMs <= config.latestModLoadedMs) {
+    const isRecent = stats.mtimeMs <= configManager.config.latestModLoadedMs && stats.birthtimeMs <= configManager.config.latestModLoadedMs;
+    if (!recheckAll && isRecent) {
       LOGGER.log(chalk.dim.yellow(`Skipping ${filePath} because modified time is earlier than last latest seen`));
       continue;
     }
@@ -120,8 +125,13 @@ export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
     const fileData = await fs.readFile(filePath);
     const checksum = generateChecksum(fileData);
 
-    if ((await findModByChecksum(checksum)) != null) {
-      LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`));
+    const existingMod = await findModByChecksum(checksum);
+    if (existingMod != null) {
+      if (existingMod.nexusMetadata != null) {
+        LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`));
+        continue;
+      }
+      await NexusModsManager._updateModWithMetadata(existingMod);
       continue;
     }
 
@@ -145,13 +155,9 @@ export const loadUnseenModMetadata = async (config: Config): Promise<Mod[]> => {
   }
 
   if (latestModLoadedMs > 0) {
-    await writeConfigFile(
-      {
-        ...config,
-        latestModLoadedMs
-      }, 
-      true
-    );
+    await configManager.updateConfig({
+      latestModLoadedMs
+    })
   }
 
   return loadedMods;

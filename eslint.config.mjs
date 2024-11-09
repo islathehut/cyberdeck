@@ -17,7 +17,8 @@ export default [
       "**/*.config.mjs", 
       "bundle/*",
       "dist/*",
-      "src/components/actionSelect.ts"
+      "src/components/actionSelect.ts",
+      "src/**/*.autogen.*"
     ],
   }
 ];

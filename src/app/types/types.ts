@@ -22,6 +22,44 @@ export interface CopyOverride {
   out: string;
 }
 
+export interface NexusModsAuthor {
+  name: string;
+  displayName: string;
+  memberId: number;
+  memberGroupId: number;
+}
+
+export interface NexusModsModMetadata {
+  name: string;
+  summary: string;
+  pictureUrl: string;
+  uid: number;
+  modId: number;
+  gameId: number;
+  version: string;
+  createdAt: number;
+  modifiedAt: number;
+  nsfw: boolean;
+  available: boolean;
+  author: NexusModsAuthor;
+}
+
+export interface NexusModsFileMetadata {
+  id: number;
+  uid: number;
+  name: string;
+  version: string;
+  isPrimary: boolean;
+  fileName: string;
+  description: string;
+  uploadedAt: number;
+}
+
+export interface NexusModsMetadata {
+  mod: NexusModsModMetadata;
+  file: NexusModsFileMetadata;
+}
+
 export interface Mod {
   uuid: string;
   filename: string;
@@ -30,11 +68,13 @@ export interface Mod {
   status: InstallStatus;
   blockUuid?: string | null;
   name: string;
+  description?: string | null;
   copyOverrides: CopyOverride[];
   skip: boolean;
   createdAt: number;
   modifiedAt: number;
   installedAt?: number | null;
+  nexusMetadata?: NexusModsMetadata | null;
 }
 
 export interface Block {
@@ -52,6 +92,7 @@ export interface Config {
   dbDataDirPath: string;
   modifiedAt: number;
   latestModLoadedMs: number;
+  nexusModsApiKey?: string;
 }
 
 export interface UnpackResult {
@@ -70,4 +111,14 @@ export interface FindResult<T> {
   acknowledged: boolean;
   message: string;
   results?: T;
+}
+
+export interface NexusModsUser {
+  userId: number;
+  key: string;
+  name: string;
+  isPremium: boolean;
+  isSupporter: boolean;
+  email: string;
+  profileUrl: string;
 }
