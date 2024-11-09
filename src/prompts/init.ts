@@ -42,8 +42,8 @@ const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | nu
   const nexusModsApiKey = await input({
     message: `(Optional) Enter your Nexus Mods API Key (use the 'Personal API Key' on https://next.nexusmods.com/settings/api-keys):`,
     default: undefined,
-    theme: DEFAULT_THEME
-  })
+    theme: DEFAULT_THEME,
+  });
 
   const config: Config = {
     modsDirPath: MODS_DIR_PATH,
@@ -51,7 +51,7 @@ const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | nu
     dbDataDirPath: VERSE_DB_DATA_DIR_PATH,
     modifiedAt: DateTime.utc().toMillis(),
     latestModLoadedMs: 0,
-    nexusModsApiKey
+    nexusModsApiKey,
   };
 
   LOGGER.log(`Generated config:`, config);

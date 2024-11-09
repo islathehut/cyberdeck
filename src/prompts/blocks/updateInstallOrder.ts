@@ -46,9 +46,9 @@ const autoGenerateInstallOrder = async (
   if (result == null) {
     throw new Error(`Failed to generate install order`);
   }
-  
+
   return result;
-}
+};
 
 const updateInstallOrder = async (blockUuid: string): Promise<Block> => {
   LOGGER.log(`Modifying Install Order for block ${blockUuid}`);

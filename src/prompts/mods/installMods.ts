@@ -53,14 +53,9 @@ const updateDbAfterInstall = async (blockUuid: string): Promise<void> => {
   );
 };
 
-const installModsPrompt = async (
-  blockUuid: string
-): Promise<void> => {
-  const { 
-    manager: { 
-      cliOptions, 
-      config 
-    } 
+const installModsPrompt = async (blockUuid: string): Promise<void> => {
+  const {
+    manager: { cliOptions, config },
   } = ConfigManager;
   console.log(chalk.bold.green('Unpacking mods before installation'));
   const result: UnpackResult | null = await unpackMods(blockUuid);

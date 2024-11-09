@@ -174,8 +174,8 @@ const editMod = async (mod: Mod): Promise<Mod> => {
       {
         name: 'Update Nexus Mods Metadata',
         value: 'updateNexusMods',
-        description: 'Pull latest metadata from Nexus Mods and update DB record'
-      }
+        description: 'Pull latest metadata from Nexus Mods and update DB record',
+      },
     ];
 
     const answer = await actionSelect({

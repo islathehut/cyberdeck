@@ -62,8 +62,6 @@ const loadMods = async (recheckAll = false): Promise<void> => {
   const message = chalk.green(`Finished loading new mods!`);
   console.log(message);
   LOGGER.log(message);
-
-  
 };
 
 export { loadMods };

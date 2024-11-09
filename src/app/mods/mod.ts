@@ -6,12 +6,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'path';
 import { randomUUID } from 'node:crypto';
 
-import {
-  type Mod,
-  InstallStatus,
-  type SearchResult,
-  type FindResult,
-} from '../types/types.js';
+import { type Mod, InstallStatus, type SearchResult, type FindResult } from '../types/types.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { generateChecksum } from '../../utils/crypto.js';
 import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
@@ -95,12 +90,13 @@ export const findModByFilename = async (filename: string): Promise<Mod | undefin
 export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]> => {
   const loadedMods: Mod[] = [];
   let latestModLoadedMs = 0;
-  const { 
-    manager: configManager
-  } = ConfigManager;
+  const { manager: configManager } = ConfigManager;
 
   LOGGER.log(`Reading files from ${configManager.config.modsDirPath} to find uninstalled mods`);
-  const dir = await fs.readdir(configManager.config.modsDirPath, { recursive: false, withFileTypes: true });
+  const dir = await fs.readdir(configManager.config.modsDirPath, {
+    recursive: false,
+    withFileTypes: true,
+  });
   for (const item of dir) {
     LOGGER.log(`Found ${item.name}`);
     if (item.isDirectory()) {
@@ -111,9 +107,15 @@ export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]>
     const filePath = path.join(configManager.config.modsDirPath, item.name);
 
     const stats = await fs.stat(filePath);
-    const isRecent = stats.mtimeMs <= configManager.config.latestModLoadedMs && stats.birthtimeMs <= configManager.config.latestModLoadedMs;
+    const isRecent =
+      stats.mtimeMs <= configManager.config.latestModLoadedMs &&
+      stats.birthtimeMs <= configManager.config.latestModLoadedMs;
     if (!recheckAll && isRecent) {
-      LOGGER.log(chalk.dim.yellow(`Skipping ${filePath} because modified time is earlier than last latest seen`));
+      LOGGER.log(
+        chalk.dim.yellow(
+          `Skipping ${filePath} because modified time is earlier than last latest seen`
+        )
+      );
       continue;
     }
 
@@ -156,8 +158,8 @@ export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]>
 
   if (latestModLoadedMs > 0) {
     await configManager.updateConfig({
-      latestModLoadedMs
-    })
+      latestModLoadedMs,
+    });
   }
 
   return loadedMods;
