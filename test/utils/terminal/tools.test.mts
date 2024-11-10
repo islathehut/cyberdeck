@@ -2,7 +2,7 @@ import t from 'tap';
 
 import { generateTestDataDir, sleep } from '../../testUtils/utils.js';
 
-let tools: typeof import("/Users/isla/Dev/cyberdeck/src/utils/terminal/tools")
+let tools: typeof import('/Users/isla/Dev/cyberdeck/src/utils/terminal/tools');
 
 t.beforeEach(async t => {
   await generateTestDataDir(t);
