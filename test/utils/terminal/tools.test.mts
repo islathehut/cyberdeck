@@ -1,8 +1,12 @@
 import t from 'tap';
 
-import { sleep } from '../../testUtils/utils.js';
+import { generateTestDataDir, sleep } from '../../testUtils/utils.js';
 
 import { promiseWithSpinner, wrapTextWithPrefix } from '../../../src/utils/terminal/tools.js';
+
+t.beforeEach(async t => {
+  await generateTestDataDir(t);
+});
 
 /**
  * promiseWithSpinner
