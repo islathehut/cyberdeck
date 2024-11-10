@@ -25,7 +25,7 @@
     "format": "pnpm run prettier && pnpm run lint",
     "format:fix": "pnpm run prettier:fix && pnpm run lint:fix",
     "test": "tap --color",
-    "test:ci": "tap --color --serial=test/",
+    "test:ci": "cross-env IS_CI=true tap --color --serial=test/",
     "start": "DEBUG=cyberdeck* node dist/index.js",
     "prepare": "husky"
   },
@@ -64,6 +64,7 @@
     "@types/luxon": "3.4.2",
     "@types/node": "^18.18.13",
     "@types/node-7z": "^2.1.10",
+    "cross-env": "^7.0.3",
     "esbuild": "^0.24.0",
     "eslint": "^9.13.0",
     "eslint-config-love": "^96.0.0",

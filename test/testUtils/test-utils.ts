@@ -17,10 +17,10 @@ export const generateTestDataDir = async (t: Test) => {
       versedb: {
         data: {
           'blocks.json': await fs.readFile(
-            path.join(process.cwd(), 'test/fixtures/blocks.fixture.json')
+            path.join(process.cwd(), 'test/testUtils/fixtures/blocks.fixture.json')
           ),
           'mods.json': await fs.readFile(
-            path.join(process.cwd(), 'test/fixtures/mods.fixture.json')
+            path.join(process.cwd(), 'test/testUtils/fixtures/mods.fixture.json')
           ),
         },
       },

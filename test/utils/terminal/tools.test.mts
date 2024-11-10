@@ -1,6 +1,6 @@
 import t from 'tap';
 
-import { generateTestDataDir, sleep } from '../../testUtils/utils.js';
+import { generateTestDataDir, sleep } from '../../testUtils/test-utils.js';
 
 let tools: typeof import('/Users/isla/Dev/cyberdeck/src/utils/terminal/tools');
 

@@ -1,6 +1,6 @@
 import t from 'tap';
 
-import { generateTestDataDir } from '../../../../testUtils/utils.js';
+import { generateTestDataDir } from '../../../../testUtils/test-utils.js';
 import { generateFakeMod } from '../../../../testUtils/schema.helper.js';
 import { InstallStatus } from '../../../../../src/app/types/types.js';
 
