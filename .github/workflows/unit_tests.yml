@@ -20,4 +20,4 @@ jobs:
         uses: ./.github/actions/setup-env
 
       - name: "Unit tests"
-        run: pnpm run test
+        run: pnpm run test:ci
