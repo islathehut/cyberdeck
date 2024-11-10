@@ -25,7 +25,8 @@
     "format": "pnpm run prettier && pnpm run lint",
     "format:fix": "pnpm run prettier:fix && pnpm run lint:fix",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DEBUG=cyberdeck* node dist/index.js"
+    "start": "DEBUG=cyberdeck* node dist/index.js",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -63,6 +64,8 @@
     "esbuild": "^0.24.0",
     "eslint": "^9.13.0",
     "eslint-config-love": "^96.0.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "openapi-typescript": "5.4.1",
     "pnpm": "^9.12.3",
     "prettier": "^3.1.0",
@@ -72,5 +75,11 @@
   "volta": {
     "node": "22.11.0",
     "npm": "10.9.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "pnpm run prettier",
+      "pnpm run lint"
+    ]
   }
 }
