@@ -20,7 +20,7 @@ const LOGGER = createSimpleModuleLogger('prompts:init');
 const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | null> => {
   LOGGER.log(`No config file found, generating a new one...`);
   const shouldInit = await confirm({
-    message: `No cyberdeck setup found in ${CYBERDECK_DIR_PATH}.  Cyberdeck will create this directory, a new config file and empty sub-directories.  Continue?`,
+    message: `No cyberdeck setup found in ${CYBERDECK_DIR_PATH()}.  Cyberdeck will create this directory, a new config file and empty sub-directories.  Continue?`,
     default: true,
     theme: DEFAULT_THEME,
   });
@@ -42,9 +42,9 @@ const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | nu
   });
 
   const config: Config = {
-    modsDirPath: MODS_DIR_PATH,
+    modsDirPath: MODS_DIR_PATH(),
     installDirPath,
-    dbDataDirPath: VERSE_DB_DATA_DIR_PATH,
+    dbDataDirPath: VERSE_DB_DATA_DIR_PATH(),
     modifiedAt: DateTime.utc().toMillis(),
     latestModLoadedMs: 0,
     nexusModsApiKey,

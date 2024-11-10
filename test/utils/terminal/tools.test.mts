@@ -10,7 +10,7 @@ import { promiseWithSpinner, wrapTextWithPrefix } from '../../../src/utils/termi
 
 t.test('Successful promise', async t => {
   const output = 'successful test output';
-  const logs = t.capture(process.stderr, 'write', process.stderr.write);
+  const logs = t.capture(process.stderr, 'write', () => {});
 
   const successfulPromise = async () => {
     await sleep(2000);
@@ -44,7 +44,7 @@ t.test('Successful promise', async t => {
 
 t.test('Failed promise', async t => {
   const output = null;
-  const logs = t.capture(process.stderr, 'write', process.stderr.write);
+  const logs = t.capture(process.stderr, 'write', () => {});
   const successfulPromise = async () => {
     await sleep(2000);
     throw new Error(`Whoops!`);

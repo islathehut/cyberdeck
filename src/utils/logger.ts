@@ -10,7 +10,7 @@ import type { Logger } from '../app/types/types.js';
 
 const datetime = DateTime.local().toISO();
 const logConsole = new Console(
-  fs.createWriteStream(path.join(LOGS_DIR_PATH, `/cyberdeck_${datetime}.log`), { flags: 'a' })
+  fs.createWriteStream(path.join(LOGS_DIR_PATH(), `/cyberdeck_${datetime}.log`), { flags: 'a' })
 );
 
 const packageName = 'cyberdeck';

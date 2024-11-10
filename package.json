@@ -88,6 +88,9 @@
     "coverage-map": "coverage-map.mjs",
     "plugin": [
       "@tapjs/clock"
+    ],
+    "exclude": [
+      "test/testUtils/*"
     ]
   }
 }
