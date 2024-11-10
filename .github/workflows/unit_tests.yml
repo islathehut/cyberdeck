@@ -1,4 +1,4 @@
-name: Run Unit Tests (Linux)
+name: Run Unit Tests
 on:
   pull_request:
 
