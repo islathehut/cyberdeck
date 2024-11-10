@@ -2,10 +2,11 @@ import t from 'tap';
 
 import { generateTestDataDir, sleep } from '../../testUtils/utils.js';
 
-import { promiseWithSpinner, wrapTextWithPrefix } from '../../../src/utils/terminal/tools.js';
+let tools: typeof import("/Users/isla/Dev/cyberdeck/src/utils/terminal/tools")
 
 t.beforeEach(async t => {
   await generateTestDataDir(t);
+  tools = await import('../../../src/utils/terminal/tools.js');
 });
 
 /**
@@ -20,7 +21,7 @@ t.test('Successful promise', async t => {
     await sleep(2000);
     return output;
   };
-  const result = await promiseWithSpinner(
+  const result = await tools.promiseWithSpinner(
     successfulPromise,
     'Running test...',
     'Test passed!',
@@ -53,7 +54,7 @@ t.test('Failed promise', async t => {
     await sleep(2000);
     throw new Error(`Whoops!`);
   };
-  const result = await promiseWithSpinner(
+  const result = await tools.promiseWithSpinner(
     successfulPromise,
     'Running test...',
     'Test passed!',
@@ -87,7 +88,7 @@ t.test('Default length - No wrap', t => {
   const input = 'foobar';
   const prefix = '>>>>>>>> ';
   const output = 'foobar';
-  t.match(wrapTextWithPrefix(input, prefix), output);
+  t.match(tools.wrapTextWithPrefix(input, prefix), output);
   t.end();
 });
 
@@ -97,7 +98,7 @@ t.test('Default length - Wraps', t => {
   const prefix = '>>>>>>>> ';
   const output = `foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar
 >>>>>>>> foobar foobar`;
-  t.match(wrapTextWithPrefix(input, prefix), output);
+  t.match(tools.wrapTextWithPrefix(input, prefix), output);
   t.end();
 });
 
@@ -108,7 +109,7 @@ t.test('Default length - Wraps and handles newlines in input', t => {
   const output = `foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar foobar
 >>>>>>>> 
 >>>>>>>> foobar foobar`;
-  t.match(wrapTextWithPrefix(input, prefix), output);
+  t.match(tools.wrapTextWithPrefix(input, prefix), output);
   t.end();
 });
 
@@ -116,7 +117,7 @@ t.test('Custom length - No wrap with one word and short length', t => {
   const input = 'foobar';
   const prefix = '>>>>>>>> ';
   const output = 'foobar';
-  t.match(wrapTextWithPrefix(input, prefix, 1), output);
+  t.match(tools.wrapTextWithPrefix(input, prefix, 1), output);
   t.end();
 });
 
@@ -131,7 +132,7 @@ t.test('Custom length - Wraps', t => {
 >>>>>>>> foobar foobar
 >>>>>>>> foobar foobar
 >>>>>>>> foobar foobar`;
-  t.match(wrapTextWithPrefix(input, prefix, 15), output);
+  t.match(tools.wrapTextWithPrefix(input, prefix, 15), output);
   t.end();
 });
 
@@ -147,6 +148,6 @@ t.test('Custom length - Wraps and handles newlines in input', t => {
 >>>>>>>> foobar foobar
 >>>>>>>> 
 >>>>>>>> foobar foobar`;
-  t.match(wrapTextWithPrefix(input, prefix, 15), output);
+  t.match(tools.wrapTextWithPrefix(input, prefix, 15), output);
   t.end();
 });
