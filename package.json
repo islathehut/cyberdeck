@@ -18,13 +18,13 @@
     "dist:create:win": "node -e \"require('fs').copyFileSync(process.execPath, 'bin/release/cyberdeck.exe')\" && signtool remove /s bin/release/cyberdeck.exe && pnpx postject bin/release/cyberdeck.exe NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
     "dist:postcreate": "cp -r assets/ bin/release/assets",
     "generate:types:nexusmods": "npx openapi-typescript src/app/mods/external/nexusMods/nexusMods.swagger.yaml --output src/app/mods/external/nexusMods/nexusMods.api.types.ts",
-    "prettier": "pnpx prettier -c --config .prettierrc.json src/",
-    "prettier:fix": "pnpx prettier -c --config .prettierrc.json -w src/",
+    "prettier": "pnpx prettier -c --config .prettierrc.json src/ test/",
+    "prettier:fix": "pnpx prettier -c --config .prettierrc.json -w src/ test/",
     "lint": "pnpx eslint -c eslint.config.mjs",
     "lint:fix": "pnpx eslint -c eslint.config.mjs --fix",
     "format": "pnpm run prettier && pnpm run lint",
     "format:fix": "pnpm run prettier:fix && pnpm run lint:fix",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tap",
     "start": "DEBUG=cyberdeck* node dist/index.js",
     "prepare": "husky"
   },
@@ -58,6 +58,7 @@
     "@types/debug": "4.1.12",
     "@types/figlet": "^1.5.8",
     "@types/inquirer": "^9.0.7",
+    "@types/jest": "^29.5.14",
     "@types/luxon": "3.4.2",
     "@types/node": "^18.18.13",
     "@types/node-7z": "^2.1.10",
@@ -69,6 +70,7 @@
     "openapi-typescript": "5.4.1",
     "pnpm": "^9.12.3",
     "prettier": "^3.1.0",
+    "tap": "^21.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   },
@@ -81,5 +83,8 @@
       "pnpm run prettier",
       "pnpm run lint"
     ]
+  },
+  "tap": {
+    "coverage-map": "coverage-map.mjs"
   }
 }
