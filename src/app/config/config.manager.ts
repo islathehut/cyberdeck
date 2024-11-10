@@ -8,7 +8,7 @@ import type { CLIOptions, Config } from '../types/types.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { CONFIG_FILE_NAME, CYBERDECK_DIR_PATH } from '../const.js';
 
-const DEFAULT_CONFIG_FILE_PATH = path.join(CYBERDECK_DIR_PATH, CONFIG_FILE_NAME);
+const DEFAULT_CONFIG_FILE_PATH = (): string => path.join(CYBERDECK_DIR_PATH(), CONFIG_FILE_NAME);
 
 export class ConfigManager {
   private static _manager: ConfigManager | undefined;
@@ -27,7 +27,7 @@ export class ConfigManager {
   public static async init(
     config: Config,
     cliOptions: CLIOptions,
-    configFilePath: string = DEFAULT_CONFIG_FILE_PATH
+    configFilePath: string = DEFAULT_CONFIG_FILE_PATH()
   ): Promise<ConfigManager> {
     ConfigManager._logger.log(
       `Initializing new ConfigManager with config file at ${configFilePath}`
@@ -48,7 +48,7 @@ export class ConfigManager {
 
   public static async initFromFile(
     cliOptions: CLIOptions,
-    configFilePath: string = DEFAULT_CONFIG_FILE_PATH
+    configFilePath: string = DEFAULT_CONFIG_FILE_PATH()
   ): Promise<ConfigManager> {
     ConfigManager._logger.log(`Initializing existing config from config file at ${configFilePath}`);
     if (this._manager != null) {

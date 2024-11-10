@@ -16,10 +16,12 @@ const modsSchemaFields: Record<string, FieldConfig> = {
     maxlength: UUID_LENGTH,
   },
   status: {
-    type: SchemaTypes.String,
+    type: SchemaTypes.Custom,
     required: true,
-    validate: (value: string) =>
-      Object.values(InstallStatus).includes(value as InstallStatus) ||
+    validate: (value: unknown) =>
+      (typeof value === 'string' &&
+        // @ts-expect-error This could be any string hence the validation
+        Object.values(InstallStatus).includes(value)) ||
       `'status' must be of type 'InstallStatus'`,
   },
   createdAt: { type: SchemaTypes.Number, required: true, default: DateTime.utc().toMillis() },
@@ -45,6 +47,8 @@ const modsSchemaFields: Record<string, FieldConfig> = {
     },
   },
   name: { type: SchemaTypes.String, required: true },
+  description: { type: SchemaTypes.String, required: false },
+  nexusMetadata: { type: SchemaTypes.Mix, mix: [SchemaTypes.Object, SchemaTypes.Null] },
 };
 
 const ModsSchema = new Schema(modsSchemaFields);

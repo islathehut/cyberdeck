@@ -1,0 +1,20 @@
+[
+  {
+    "uuid": "05e0f090-e91f-4b01-9e85-36fa258520c5",
+    "installed": true,
+    "installOrder": ["test_mod3.rar", "test_mod4.7z"],
+    "createdAt": 1730503449555,
+    "modifiedAt": 1730525349321,
+    "installedAt": 1730525349321,
+    "_id": "ed030V-2c9ebE-d135fR-0fe91S-cc783E"
+  },
+  {
+    "uuid": "30e820af-fa9f-4e72-b47b-bf967e11e027",
+    "installed": true,
+    "installOrder": ["test_mod1.zip", "test_mod2.zip"],
+    "createdAt": 1731106479074,
+    "modifiedAt": 1731106582850,
+    "installedAt": 1731106582850,
+    "_id": "3761fV-5ee8eE-eb80cR-48907S-ec513E"
+  }
+]

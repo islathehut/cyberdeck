@@ -4,9 +4,6 @@ import chalk from 'chalk';
 import { DateTime } from 'luxon';
 import { confirm, input } from '@inquirer/prompts';
 
-import * as fs from 'node:fs/promises';
-import * as fsSync from 'fs';
-
 import type { CLIOptions, Config } from '../app/types/types.js';
 import { ConfigManager } from '../app/config/config.manager.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
@@ -15,7 +12,6 @@ import {
   CYBERDECK_DIR_PATH,
   DEFAULT_INSTALL_DIR_PATH,
   MODS_DIR_PATH,
-  UNPACK_DIR_PATH,
   VERSE_DB_DATA_DIR_PATH,
 } from '../app/const.js';
 
@@ -24,7 +20,7 @@ const LOGGER = createSimpleModuleLogger('prompts:init');
 const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | null> => {
   LOGGER.log(`No config file found, generating a new one...`);
   const shouldInit = await confirm({
-    message: `No cyberdeck setup found in ${CYBERDECK_DIR_PATH}.  Cyberdeck will create this directory, a new config file and empty sub-directories.  Continue?`,
+    message: `No cyberdeck setup found in ${CYBERDECK_DIR_PATH()}.  Cyberdeck will create this directory, a new config file and empty sub-directories.  Continue?`,
     default: true,
     theme: DEFAULT_THEME,
   });
@@ -46,9 +42,9 @@ const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | nu
   });
 
   const config: Config = {
-    modsDirPath: MODS_DIR_PATH,
+    modsDirPath: MODS_DIR_PATH(),
     installDirPath,
-    dbDataDirPath: VERSE_DB_DATA_DIR_PATH,
+    dbDataDirPath: VERSE_DB_DATA_DIR_PATH(),
     modifiedAt: DateTime.utc().toMillis(),
     latestModLoadedMs: 0,
     nexusModsApiKey,
@@ -65,21 +61,6 @@ const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | nu
   if (!areYouSure) {
     LOGGER.log(chalk.yellowBright(`No config file was generated`));
     return null;
-  }
-
-  if (!fsSync.existsSync(CYBERDECK_DIR_PATH)) {
-    LOGGER.log(chalk.dim.yellow(`Creating cyberdeck dir at ${CYBERDECK_DIR_PATH}`));
-    await fs.mkdir(CYBERDECK_DIR_PATH);
-  }
-
-  if (!fsSync.existsSync(MODS_DIR_PATH)) {
-    LOGGER.log(chalk.dim.yellow(`Creating cyberdeck mod dir at ${MODS_DIR_PATH}`));
-    await fs.mkdir(MODS_DIR_PATH);
-  }
-
-  if (!fsSync.existsSync(UNPACK_DIR_PATH)) {
-    LOGGER.log(chalk.dim.yellow(`Creating cyberdeck unpack dir at ${UNPACK_DIR_PATH}`));
-    await fs.mkdir(UNPACK_DIR_PATH);
   }
 
   return await ConfigManager.init(config, cliOptions);

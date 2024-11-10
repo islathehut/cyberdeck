@@ -45,7 +45,7 @@ const unpackMods = async (blockUuid: string): Promise<UnpackResult | null> => {
     unpackDirPrefix = 'dryRun_';
   }
 
-  const unpackDirPath = path.join(UNPACK_DIR_PATH, `/__${unpackDirPrefix}${randomUUID()}`);
+  const unpackDirPath = path.join(UNPACK_DIR_PATH(), `/__${unpackDirPrefix}${randomUUID()}`);
   LOGGER.log(chalk.dim.yellow(`Creating unpack dir for this block at ${unpackDirPath}`));
   await fs.mkdir(unpackDirPath);
 

@@ -9,10 +9,10 @@ const initDb = (devLog = false): VerseDBConnect => {
   LOGGER.log(`Initializing database`);
   const db = new VerseDBConnect({
     adapter: 'json',
-    dataPath: VERSE_DB_DATA_DIR_PATH,
+    dataPath: VERSE_DB_DATA_DIR_PATH(),
     devLogs: {
       enable: devLog,
-      path: VERSE_DB_LOGS_DIR_PATH,
+      path: VERSE_DB_LOGS_DIR_PATH(),
     },
   });
 

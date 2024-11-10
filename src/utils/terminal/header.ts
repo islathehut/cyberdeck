@@ -19,18 +19,28 @@ export const generateCliHeader = (cliOptions: CLIOptions): string => {
     `
   );
 
-  let bottomText = '';
+  const bottomText: string[] = [];
   if (cliOptions.dry) {
-    bottomText = chalk.bold.redBright(
-      ` ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░       !!!!!!!! DRY RUN ENABLED !!!!!!!!!       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░`
+    bottomText.push(
+      chalk.bold.redBright(
+        ` ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░       !!!!!!!! DRY RUN ENABLED !!!!!!!!!       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░`
+      )
     );
-  } else if (cliOptions.test) {
-    bottomText = chalk.bold.yellowBright(
-      ` ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     RUNNING AGAINST FAKE INSTALL DIRECTORY     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░`
+  }
+
+  if (cliOptions.test) {
+    bottomText.push(
+      chalk.bold.yellowBright(
+        ` ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     RUNNING AGAINST FAKE INSTALL DIRECTORY     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░`
+      )
     );
-  } else {
-    bottomText = chalk.bold.magentaBright(
-      ` ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     RUNNING AGAINST REAL INSTALL DIRECTORY     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░`
+  }
+
+  if (!cliOptions.dry && !cliOptions.test) {
+    bottomText.push(
+      chalk.bold.magentaBright(
+        ` ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░     RUNNING AGAINST REAL INSTALL DIRECTORY     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░`
+      )
     );
   }
 
@@ -38,6 +48,6 @@ export const generateCliHeader = (cliOptions: CLIOptions): string => {
   return `
 ${image}
  ${midText}
- ${bottomText}
+ ${bottomText.join('\n ')}
  `;
 };
