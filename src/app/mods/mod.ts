@@ -7,7 +7,7 @@ import * as path from 'path';
 import { randomUUID } from 'node:crypto';
 
 import { type Mod, InstallStatus, type SearchResult, type FindResult } from '../types/types.js';
-import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import { generateChecksum } from '../../utils/crypto.js';
 import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
 
@@ -54,7 +54,7 @@ export const updateMod = async (findQuery: Query<Mod>, updates: operationKeys): 
 
     return updatedMod;
   } catch (e) {
-    console.error(`Error while writing mod to db`, e);
+    nodeConsole.error(`Error while writing mod to db`, e);
     throw e as Error;
   }
 };

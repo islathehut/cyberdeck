@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 import { DateTime } from 'luxon';
 
 import type { Block, FindResult, SearchResult } from '../types/types.js';
-import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import Blocks, { BLOCKS_DATANAME } from '../storage/versedb/schemas/blocks.schema.js';
 import { db } from '../storage/versedb/cyberdeck.versedb.js';
 
@@ -79,7 +79,7 @@ export const createBlock = async (): Promise<Block> => {
   try {
     await Blocks?.add(newBlock);
   } catch (e) {
-    console.error(`Error while writing block to db`, e);
+    nodeConsole.error(`Error while writing block to db`, e);
     throw e as Error;
   }
 

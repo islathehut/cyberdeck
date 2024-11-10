@@ -25,8 +25,8 @@
     "format": "pnpm run prettier && pnpm run lint",
     "format:fix": "pnpm run prettier:fix && pnpm run lint:fix",
     "test": "tap --color",
-    "test:ci": "cross-env IS_CI=true tap --color --serial=test/",
-    "start": "DEBUG=cyberdeck* node dist/index.js",
+    "test:ci": "cross-env IS_CI=true DEBUG=cyberdeck* tap --color --serial=test/ --reporter=base --jobs 1",
+    "start": "cross-env DEBUG=cyberdeck* node dist/index.js",
     "prepare": "husky"
   },
   "keywords": [],

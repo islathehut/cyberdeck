@@ -1,6 +1,7 @@
 import t from 'tap';
 
 import { generateTestDataDir, sleep } from '../../testUtils/test-utils.js';
+import { nodeConsole } from '../../../src/utils/logger.js';
 
 let tools: typeof import('/Users/isla/Dev/cyberdeck/src/utils/terminal/tools');
 
@@ -15,7 +16,7 @@ t.beforeEach(async t => {
 
 t.test('Successful promise', async t => {
   const output = 'successful test output';
-  const logs = t.capture(process.stderr, 'write', () => {});
+  const logs = t.capture(process.stderr, 'write', nodeConsole.log);
 
   const successfulPromise = async () => {
     await sleep(2000);
@@ -49,13 +50,13 @@ t.test('Successful promise', async t => {
 
 t.test('Failed promise', async t => {
   const output = null;
-  const logs = t.capture(process.stderr, 'write', () => {});
-  const successfulPromise = async () => {
+  const logs = t.capture(process.stderr, 'write', nodeConsole.log);
+  const failedPromise = async () => {
     await sleep(2000);
     throw new Error(`Whoops!`);
   };
   const result = await tools.promiseWithSpinner(
-    successfulPromise,
+    failedPromise,
     'Running test...',
     'Test passed!',
     'Test failed!'

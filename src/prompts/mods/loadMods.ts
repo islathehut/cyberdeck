@@ -3,7 +3,7 @@
 import { confirm, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 
-import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import { loadUnseenModMetadata } from '../../app/mods/mod.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 
@@ -28,7 +28,7 @@ const loadMods = async (recheckAll = false): Promise<void> => {
 
   if (rawLoadedMods.length === 0) {
     const message = chalk.dim.yellow(`No new mods found!`);
-    console.log(message);
+    nodeConsole.log(message);
     LOGGER.log(message);
     return;
   }
@@ -54,13 +54,13 @@ const loadMods = async (recheckAll = false): Promise<void> => {
       await Mods?.add(uninstalledMod);
       await NexusModsManager._updateModWithMetadata(uninstalledMod);
     } catch (e) {
-      console.error(`Error while writing mod to db`, e);
+      nodeConsole.error(`Error while writing mod to db`, e);
       process.exit(0);
     }
   }
 
   const message = chalk.green(`Finished loading new mods!`);
-  console.log(message);
+  nodeConsole.log(message);
   LOGGER.log(message);
 };
 
