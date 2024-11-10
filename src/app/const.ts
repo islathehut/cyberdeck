@@ -6,7 +6,10 @@ export const UUID_LENGTH = 36;
 
 export const CONFIG_FILE_NAME = '.config';
 
-export const CYBERDECK_DIR_PATH = path.join(os.homedir(), '/.cyberdeck');
+export const CYBERDECK_DIR_PATH = path.join(
+  process.env.CYBERDECK_DIR_BASE_PATH ?? os.homedir(),
+  '/.cyberdeck'
+);
 export const MODS_DIR_PATH = path.join(CYBERDECK_DIR_PATH, 'mods');
 export const UNPACK_DIR_PATH = path.join(CYBERDECK_DIR_PATH, 'unpacked');
 export const LOGS_DIR_PATH = path.join(CYBERDECK_DIR_PATH, 'logs');

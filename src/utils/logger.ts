@@ -8,10 +8,6 @@ import { DateTime } from 'luxon';
 import { LOGS_DIR_PATH } from '../app/const.js';
 import type { Logger } from '../app/types/types.js';
 
-if (!fs.existsSync(LOGS_DIR_PATH)) {
-  fs.mkdirSync(LOGS_DIR_PATH);
-}
-
 const datetime = DateTime.local().toISO();
 const logConsole = new Console(
   fs.createWriteStream(path.join(LOGS_DIR_PATH, `/cyberdeck_${datetime}.log`), { flags: 'a' })
