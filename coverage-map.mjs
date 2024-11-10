@@ -1,1 +1,1 @@
-export default test => test.replace(/^test/, 'src').replace(/\.test\.mjs/, '.ts');
+export default test => test.replace(/^test/, 'src').replace(/\.test\.mts/, '.ts');

@@ -85,6 +85,9 @@
     ]
   },
   "tap": {
-    "coverage-map": "coverage-map.mjs"
+    "coverage-map": "coverage-map.mjs",
+    "plugin": [
+      "@tapjs/clock"
+    ]
   }
 }
