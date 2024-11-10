@@ -77,6 +77,9 @@
     "npm": "10.9.0"
   },
   "lint-staged": {
-    "*.ts": "pnpm run format"
+    "*.ts": [
+      "pnpm run prettier",
+      "pnpm run lint"
+    ]
   }
 }
