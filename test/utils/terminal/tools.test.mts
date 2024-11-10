@@ -1,9 +1,11 @@
 import t from 'tap';
+import * as os from 'os';
 
 import { generateTestDataDir, sleep } from '../../testUtils/test-utils.js';
 import { nodeConsole } from '../../../src/utils/logger.js';
 
 let tools: typeof import('/Users/isla/Dev/cyberdeck/src/utils/terminal/tools');
+const snapshotSuffix: string = os.platform() === 'win32' ? 'Windows' : 'Unix';
 
 t.beforeEach(async t => {
   await generateTestDataDir(t);
@@ -33,7 +35,7 @@ t.test('Successful promise', async t => {
   const spinnerLogs = logs();
   t.matchSnapshot(
     spinnerLogs.slice(0, -2).map(log => log.args[0]),
-    'promiseWithSpinner - Success'
+    `promiseWithSpinner - Success - ${snapshotSuffix}`
   );
 
   const finalLog = spinnerLogs.pop()?.args[0].toString();
@@ -66,7 +68,7 @@ t.test('Failed promise', async t => {
   const spinnerLogs = logs();
   t.matchSnapshot(
     spinnerLogs.slice(0, -2).map(log => log.args[0]),
-    'promiseWithSpinner - Failure'
+    `promiseWithSpinner - Failure - ${snapshotSuffix}`
   );
 
   const finalLog = spinnerLogs.pop()?.args[0].toString();

@@ -5,7 +5,7 @@
  * Make sure to inspect the output below.  Do not ignore changes!
  */
 'use strict'
-exports[`test/utils/terminal/tools.test.mts > TAP > Failed promise > promiseWithSpinner - Failure 1`] = `
+exports[`test/utils/terminal/tools.test.mts > TAP > Failed promise > promiseWithSpinner - Failure - Unix 1`] = `
 Array [
   "\\u001b[33m⠋\\u001b[39m \\u001b[36mRunning test...\\u001b[39m",
   "\\u001b[33m⠙\\u001b[39m \\u001b[36mRunning test...\\u001b[39m",
@@ -34,7 +34,7 @@ Array [
 ]
 `
 
-exports[`test/utils/terminal/tools.test.mts > TAP > Successful promise > promiseWithSpinner - Success 1`] = `
+exports[`test/utils/terminal/tools.test.mts > TAP > Successful promise > promiseWithSpinner - Success - Unix 1`] = `
 Array [
   "\\u001b[33m⠋\\u001b[39m \\u001b[36mRunning test...\\u001b[39m",
   "\\u001b[33m⠙\\u001b[39m \\u001b[36mRunning test...\\u001b[39m",
