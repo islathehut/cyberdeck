@@ -55,6 +55,7 @@
     "verse.db": "^2.2.15"
   },
   "devDependencies": {
+    "@tapjs/clock": "^3.0.0",
     "@types/debug": "4.1.12",
     "@types/figlet": "^1.5.8",
     "@types/inquirer": "^9.0.7",

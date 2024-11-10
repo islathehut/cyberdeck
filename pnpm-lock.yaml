@@ -75,6 +75,9 @@ importers:
         specifier: ^2.2.15
         version: 2.2.15
     devDependencies:
+      '@tapjs/clock':
+        specifier: ^3.0.0
+        version: 3.0.0(@tapjs/core@4.0.0(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@types/debug':
         specifier: 4.1.12
         version: 4.1.12
@@ -611,6 +614,12 @@ packages:
     peerDependencies:
       '@tapjs/core': 4.0.0
 
+  '@tapjs/clock@3.0.0':
+    resolution: {integrity: sha512-qGsAUtGNutgdD9sQS6ISg7Fgt4NP0kImcNdpFgaLPv2Lfb8e/JPJR+erIY+r2aUr4jE49JFSsuKx97JuUCACkw==}
+    engines: {node: 20 || >=22}
+    peerDependencies:
+      '@tapjs/core': 4.0.0
+
   '@tapjs/config@5.0.0':
     resolution: {integrity: sha512-AAHbK30FwnGC3FcFACnXEGZ+uFtkpxsF2bwvgAzHND2tIE9ld2LwGMiGq3rM9EwcZ1AAnU8ibbUC0WbnS5FcCQ==}
     engines: {node: 20 || >=22}
@@ -1082,6 +1091,10 @@ packages:
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
+
+  clock-mock@2.0.2:
+    resolution: {integrity: sha512-qgywozrNhtXKlQgVCFKUTlDm1q7QoR4NbHZXxogKEDqQsxUcxpNI3zTiIWWo15LYgoWI54TH2PGXT7y7A+UYlw==}
+    engines: {node: '>=16.17'}
 
   code-excerpt@4.0.0:
     resolution: {integrity: sha512-xxodCmBen3iy2i0WtAK8FlFNrRzjUqjRsMfho58xT/wvZU1YTM3fCnRjcy1gJPMepaRlgm/0e6w8SpWHpn3/cA==}
@@ -3462,6 +3475,12 @@ snapshots:
     dependencies:
       '@tapjs/core': 4.0.0(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
+  '@tapjs/clock@3.0.0(@tapjs/core@4.0.0(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
+    dependencies:
+      '@tapjs/after': 3.0.0(@tapjs/core@4.0.0(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+      '@tapjs/core': 4.0.0(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      clock-mock: 2.0.2
+
   '@tapjs/config@5.0.0(@tapjs/core@4.0.0(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@tapjs/test@4.0.0(@tapjs/core@4.0.0(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@tapjs/core': 4.0.0(@types/node@18.19.61)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4099,6 +4118,8 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
+
+  clock-mock@2.0.2: {}
 
   code-excerpt@4.0.0:
     dependencies:
