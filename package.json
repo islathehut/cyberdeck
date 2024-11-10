@@ -24,7 +24,7 @@
     "lint:fix": "pnpx eslint -c eslint.config.mjs --fix",
     "format": "pnpm run prettier && pnpm run lint",
     "format:fix": "pnpm run prettier:fix && pnpm run lint:fix",
-    "test": "tap",
+    "test": "tap --color",
     "start": "DEBUG=cyberdeck* node dist/index.js",
     "prepare": "husky"
   },
