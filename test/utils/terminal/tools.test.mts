@@ -25,7 +25,7 @@ t.test('Successful promise', async t => {
   t.match(result, output);
 
   const spinnerLogs = logs();
-  t.matchSnapshot(spinnerLogs.slice(0, -2), 'promiseWithSpinner - Success');
+  t.matchSnapshot(spinnerLogs.slice(0, -2).map(log => log.args[0]), 'promiseWithSpinner - Success');
 
   const finalLog = spinnerLogs.pop()?.args[0].toString();
   t.notMatch(
@@ -55,7 +55,7 @@ t.test('Failed promise', async t => {
   t.match(result, output);
 
   const spinnerLogs = logs();
-  t.matchSnapshot(spinnerLogs.slice(0, -2), 'promiseWithSpinner - Failure');
+  t.matchSnapshot(spinnerLogs.slice(0, -2).map(log => log.args[0]), 'promiseWithSpinner - Failure');
 
   const finalLog = spinnerLogs.pop()?.args[0].toString();
   t.notMatch(
