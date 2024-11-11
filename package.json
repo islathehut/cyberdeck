@@ -24,8 +24,9 @@
     "lint:fix": "pnpx eslint -c eslint.config.mjs --fix",
     "format": "pnpm run prettier && pnpm run lint",
     "format:fix": "pnpm run prettier:fix && pnpm run lint:fix",
-    "test": "tap --color",
-    "test:ci": "cross-env IS_CI=true DEBUG=cyberdeck* tap --color --serial=test/ --reporter=base --jobs 1",
+    "link-tap-snapshots": "tsx ./scripts/link_snapshots.ts",
+    "test": "pnpm run link-tap-snapshots && tap --color",
+    "test:ci": "pnpm run link-tap-snapshots && cross-env IS_CI=true DEBUG=cyberdeck* tap --color --serial=test/ --reporter=base --jobs 1",
     "start": "cross-env DEBUG=cyberdeck* node dist/index.js",
     "prepare": "husky"
   },
@@ -73,8 +74,10 @@
     "openapi-typescript": "5.4.1",
     "pnpm": "9.12.3",
     "prettier": "^3.1.0",
+    "symlink-dir": "^6.0.3",
     "tap": "^21.0.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.5.3"
   },
   "volta": {
@@ -98,7 +101,10 @@
     ],
     "exclude": [
       "test/testUtils/*"
+    ],
+    "include": [
+      "test/*"
     ]
   },
-  "packageManager": "pnpm@9.12.3+sha256.24235772cc4ac82a62627cd47f834c72667a2ce87799a846ec4e8e555e2d4b8b"
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
 }
