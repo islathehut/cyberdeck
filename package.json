@@ -8,7 +8,10 @@
     "cyberdeck": "./dist/src/index.js"
   },
   "scripts": {
-    "build": "npx tsc",
+    "apply-patches": "tsx ./scripts/apply_patches.ts",
+    "generate-support-files": "tsx ./scripts/gen_support_files.ts",
+    "postinstall": "pnpm run apply-patches",
+    "build": "npx tsc && pnpm run generate-support-files",
     "build:clean": "rm -rf dist/ && pnpm run build",
     "bundle": "esbuild dist/src/index.js --bundle --platform=node --format=cjs --outfile=bundle/bundle.cjs --allow-overwrite --main-fields=module,main",
     "build:bundle": "pnpm run build && pnpm run bundle",
@@ -18,8 +21,8 @@
     "dist:create:win": "node -e \"require('fs').copyFileSync(process.execPath, 'bin/release/cyberdeck.exe')\" && signtool remove /s bin/release/cyberdeck.exe && pnpx postject bin/release/cyberdeck.exe NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
     "dist:postcreate": "cp -r assets/ bin/release/assets",
     "generate:types:nexusmods": "npx openapi-typescript src/app/mods/external/nexusMods/nexusMods.swagger.yaml --output src/app/mods/external/nexusMods/nexusMods.api.types.ts",
-    "prettier": "pnpx prettier -c --config .prettierrc.json src/ test/",
-    "prettier:fix": "pnpx prettier -c --config .prettierrc.json -w src/ test/",
+    "prettier": "pnpx prettier -c --config .prettierrc.json src/ scripts/ test/",
+    "prettier:fix": "pnpx prettier -c --config .prettierrc.json -w src/ scripts/ test/",
     "lint": "pnpx eslint -c eslint.config.mjs",
     "lint:fix": "pnpx eslint -c eslint.config.mjs --fix",
     "format": "pnpm run prettier && pnpm run lint",
@@ -54,7 +57,8 @@
     "ora": "^8.1.0",
     "p-defer": "^4.0.1",
     "supports-color": "^9.4.0",
-    "verse.db": "^2.2.15"
+    "verse.db": "^2.2.15",
+    "yaml": "^2.6.0"
   },
   "devDependencies": {
     "@tapjs/clock": "^3.0.0",
@@ -63,7 +67,7 @@
     "@types/inquirer": "^9.0.7",
     "@types/jest": "^29.5.14",
     "@types/luxon": "3.4.2",
-    "@types/node": "^18.18.13",
+    "@types/node": "^22.9.0",
     "@types/node-7z": "^2.1.10",
     "ansi-regex": "^6.1.0",
     "cross-env": "^7.0.3",

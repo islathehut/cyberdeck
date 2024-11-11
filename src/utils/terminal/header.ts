@@ -4,9 +4,10 @@ import chalk from 'chalk';
 import * as path from 'path';
 
 import type { CLIOptions } from '../../app/types/types.js';
+import { CYBERDECK_DIR_PATH } from '../../app/const.js';
 
 const generateCliHeaderImage = (): string => {
-  const imageAnsPath = path.join(process.cwd(), '/assets/cyberdeck_header_image.utf.ans');
+  const imageAnsPath = path.join(CYBERDECK_DIR_PATH(), '/assets/cyberdeck_header_image.utf.ans');
   return ANSI.get({ filePath: imageAnsPath });
 };
 
