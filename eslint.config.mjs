@@ -1,5 +1,7 @@
 import love from 'eslint-config-love'
 
+import path from 'path';
+
 export default [
   {
     ...love,
@@ -9,8 +11,7 @@ export default [
         '@typescript-eslint/no-magic-numbers': 'off'
       },
       files: [
-        "src/**/*.ts",
-        "scripts/**/*.ts"
+        "src/**/*.ts"
       ],
   },
   {
