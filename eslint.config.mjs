@@ -11,7 +11,8 @@ export default [
         '@typescript-eslint/no-magic-numbers': 'off'
       },
       files: [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "scripts/**/*.ts"
       ],
   },
   {

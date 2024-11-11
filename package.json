@@ -2,15 +2,15 @@
   "name": "cyberdeck",
   "version": "0.3.0",
   "description": "Cross-platform CLI mod manager for Cyberpunk 2077",
-  "main": "./dist/index.js",
+  "main": "./dist/src/index.js",
   "type": "module",
   "bin": {
-    "cyberdeck": "./dist/index.js"
+    "cyberdeck": "./dist/src/index.js"
   },
   "scripts": {
     "build": "npx tsc",
     "build:clean": "rm -rf dist/ && pnpm run build",
-    "bundle": "esbuild dist/index.js --bundle --platform=node --format=cjs --outfile=bundle/bundle.cjs --allow-overwrite --main-fields=module,main",
+    "bundle": "esbuild dist/src/index.js --bundle --platform=node --format=cjs --outfile=bundle/bundle.cjs --allow-overwrite --main-fields=module,main",
     "build:bundle": "pnpm run build && pnpm run bundle",
     "dist:blob": "node --experimental-sea-config bin/config/sea-config.json",
     "dist:create:linux": "cp $(command -v node) bin/release/cyberdeck && pnpx postject bin/release/cyberdeck NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
@@ -24,10 +24,10 @@
     "lint:fix": "pnpx eslint -c eslint.config.mjs --fix",
     "format": "pnpm run prettier && pnpm run lint",
     "format:fix": "pnpm run prettier:fix && pnpm run lint:fix",
-    "link-tap-snapshots": "tsx ./src/scripts/link_snapshots.ts",
+    "link-tap-snapshots": "tsx ./scripts/link_snapshots.ts",
     "test": "pnpm run link-tap-snapshots && tap --color",
     "test:ci": "pnpm run link-tap-snapshots && cross-env IS_CI=true DEBUG=cyberdeck* tap --color --serial=test/ --reporter=base --jobs 1",
-    "start": "cross-env DEBUG=cyberdeck* node dist/index.js",
+    "start": "cross-env DEBUG=cyberdeck* node dist/src/index.js",
     "prepare": "husky"
   },
   "keywords": [],

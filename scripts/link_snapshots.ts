@@ -1,7 +1,7 @@
 import symlinkDir from 'symlink-dir';
 import path from 'path';
 
-import { getOSFamily } from '../utils/util.js';
+import { getOSFamily } from '../src/utils/util.js';
 
 const runScript = async (): Promise<void> => {
   const outputDir = path.join('./tap-snapshots');
