@@ -1,9 +1,9 @@
 import t from 'tap';
 import ansiRegex from 'ansi-regex';
 
-import { generateTestDataDir, sleep } from '../../testUtils/test-utils.js';
+import { generateTestDataDir } from '../../testUtils/test-utils.js';
 import { nodeConsole } from '../../../src/utils/logger.js';
-import { getOSFamily } from '../../../src/utils/util.js';
+import { getOSFamily, sleep } from '../../../src/utils/util.js';
 import { spinnerType } from '../../../src/utils/terminal/tools.js';
 
 let tools: typeof import('../../../src/utils/terminal/tools.js');
