@@ -1,6 +1,6 @@
 import t from 'tap';
 
-import { generateTestDataDir } from '../../../../testUtils/utils.js';
+import { generateTestDataDir } from '../../../../testUtils/test-utils.js';
 import { generateFakeBlock } from '../../../../testUtils/schema.helper.js';
 
 t.beforeEach(async t => {

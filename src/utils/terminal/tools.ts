@@ -1,9 +1,13 @@
 import chalk from 'chalk';
 import { DateTime } from 'luxon';
-import ora from 'ora';
+import ora, { type spinners } from 'ora';
 import { createSimpleModuleLogger } from '../logger.js';
+import { getOSFamily } from '../util.js';
 
 const Logger = createSimpleModuleLogger('utils:terminal:tools');
+
+export const spinnerType = (osFamily: 'Unix' | 'Windows'): spinners.SpinnerName =>
+  osFamily === 'Unix' ? 'dots' : 'line';
 
 export const promiseWithSpinner = async <T>(
   promise: () => Promise<T>,
@@ -15,7 +19,7 @@ export const promiseWithSpinner = async <T>(
   const spinner = ora({
     color: 'yellow',
     text: chalk.cyan(text),
-    spinner: 'dots',
+    spinner: spinnerType(getOSFamily()),
     isEnabled: true,
     discardStdin: true,
   });

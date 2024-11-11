@@ -11,6 +11,7 @@ import { searchMods } from '../../app/mods/mod.js';
 import actionSelect from '../../components/actionSelect.js';
 import { editMod } from './editMod.js';
 import { wrapTextWithPrefix } from '../../utils/terminal/tools.js';
+import { nodeConsole } from '../../utils/logger.js';
 
 const displayMod = (mod: Mod): void => {
   const longSeparator = chalk.magenta(
@@ -77,7 +78,7 @@ const displayMod = (mod: Mod): void => {
     copyOverridesString += `  ${mediumSeparator}`;
   }
 
-  console.log(
+  nodeConsole.log(
     `
   ${longSeparator}
   ${shortSeparator}
@@ -116,7 +117,6 @@ const manageMod = async (mod: Mod): Promise<boolean> => {
       { name: 'Edit Mod', value: 'editMod', description: 'Edit mod configuration' },
     ];
 
-    // console.log("") // just add a line break
     const answer = await actionSelect({
       message: `Managing Mod - ${current.name}`,
       choices: [...defaultChoices],

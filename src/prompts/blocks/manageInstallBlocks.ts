@@ -11,6 +11,7 @@ import { updateInstallOrder } from './updateInstallOrder.js';
 import { installMods } from '../mods/installMods.js';
 import { confirm } from '@inquirer/prompts';
 import { DateTime } from 'luxon';
+import { nodeConsole } from '../../utils/logger.js';
 
 const displayBlock = (block: Block): void => {
   const longSeparator = chalk.magenta(
@@ -36,7 +37,7 @@ const displayBlock = (block: Block): void => {
     installOrderString += `  ${mediumSeparator}`;
   }
 
-  console.log(
+  nodeConsole.log(
     `
   ${longSeparator}
   ${shortSeparator}
@@ -112,7 +113,7 @@ const createAndManageNewBlock = async (): Promise<Block | null> => {
   });
 
   if (!areYouSure) {
-    console.log(chalk.yellow(`Skipping block creation`));
+    nodeConsole.log(chalk.yellow(`Skipping block creation`));
     return null;
   }
 
@@ -136,7 +137,7 @@ const manageInstallBlocks = async (): Promise<boolean> => {
     }
 
     if (choices.length === 0) {
-      console.log(chalk.yellow(`No install blocks have been created, you can create one now!`));
+      nodeConsole.log(chalk.yellow(`No install blocks have been created, you can create one now!`));
       newBlock = await createAndManageNewBlock();
     } else {
       const answer = await actionSelect({

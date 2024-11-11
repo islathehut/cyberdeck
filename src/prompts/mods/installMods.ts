@@ -10,7 +10,7 @@ import * as path from 'path';
 
 import type { UnpackResult } from '../../app/types/types.js';
 import { InstallStatus } from '../../app/types/types.js';
-import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 import { installMods, unpackMods } from '../../app/mods/install.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
@@ -57,15 +57,15 @@ const installModsPrompt = async (blockUuid: string): Promise<void> => {
   const {
     manager: { cliOptions, config },
   } = ConfigManager;
-  console.log(chalk.bold.green('Unpacking mods before installation'));
+  nodeConsole.log(chalk.bold.green('Unpacking mods before installation'));
   const result: UnpackResult | null = await unpackMods(blockUuid);
   if (result == null) {
-    console.log(chalk.dim.yellow('No uninstalled mods found, skipping install!'));
+    nodeConsole.log(chalk.dim.yellow('No uninstalled mods found, skipping install!'));
     return;
   }
 
   if (cliOptions.dry) {
-    console.log(chalk.dim.yellow(`Dry run enabled, skipping installation!`));
+    nodeConsole.log(chalk.dim.yellow(`Dry run enabled, skipping installation!`));
     return;
   }
 
@@ -86,11 +86,11 @@ const installModsPrompt = async (blockUuid: string): Promise<void> => {
   });
 
   if (!continueWithInstall) {
-    console.log(chalk.dim.yellow('Skipping install!'));
+    nodeConsole.log(chalk.dim.yellow('Skipping install!'));
     return;
   }
 
-  console.log(chalk.bold.green(`Installing mods to ${installPath}`));
+  nodeConsole.log(chalk.bold.green(`Installing mods to ${installPath}`));
 
   await promiseWithSpinner(
     async () => {

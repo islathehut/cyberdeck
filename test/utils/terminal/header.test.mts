@@ -2,23 +2,37 @@ import t from 'tap';
 
 import { generateCliHeader } from '../../../src/utils/terminal/header.js';
 
-t.matchSnapshot(generateCliHeader({}), 'CLI Options - Empty');
-t.matchSnapshot(
-  generateCliHeader({
+t.test('CLI Options - Empty', t => {
+  const header = generateCliHeader({});
+
+  t.matchSnapshot(header);
+  t.end();
+});
+
+t.test('CLI Options - dry === true', t => {
+  const header = generateCliHeader({
     dry: true,
-  }),
-  'CLI Options - dry === true'
-);
-t.matchSnapshot(
-  generateCliHeader({
+  });
+
+  t.matchSnapshot(header);
+  t.end();
+});
+
+t.test('CLI Options - test === true', t => {
+  const header = generateCliHeader({
     test: true,
-  }),
-  'CLI Options - test === true'
-);
-t.matchSnapshot(
-  generateCliHeader({
+  });
+
+  t.matchSnapshot(header);
+  t.end();
+});
+
+t.test('CLI Options - dry === true && test === true', t => {
+  const header = generateCliHeader({
     dry: true,
     test: true,
-  }),
-  'CLI Options - dry === true && test === true'
-);
+  });
+
+  t.matchSnapshot(header);
+  t.end();
+});

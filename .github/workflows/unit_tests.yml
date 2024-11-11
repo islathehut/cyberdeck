@@ -1,0 +1,23 @@
+name: Run Unit Tests
+on:
+  pull_request:
+
+jobs:
+  unit-tests:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:  [ubuntu-20.04, macos-13, windows-2019]
+    
+    steps:
+      - name: "Print OS"
+        run: echo ${{ matrix.os }}
+
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+
+      - name: "Unit tests"
+        run: pnpm run test:ci

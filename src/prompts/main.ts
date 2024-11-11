@@ -4,7 +4,7 @@ import debug from 'debug';
 
 import actionSelect from '../components/actionSelect.js';
 import { initNewConfig } from './init.js';
-import { createSimpleModuleLogger } from '../utils/logger.js';
+import { createSimpleModuleLogger, nodeConsole } from '../utils/logger.js';
 import { loadMods } from './mods/loadMods.js';
 import { DEFAULT_THEME } from './helpers/theme.js';
 import { generateCliHeader } from '../utils/terminal/header.js';
@@ -36,7 +36,6 @@ const mainLoop = async (): Promise<boolean> => {
       { name: 'Refresh Mod Metadata', value: 'loadMods', description: 'Load all mod metadata' },
     ];
 
-    // console.log("") // just add a line break
     const answer = await actionSelect({
       message: 'Main Menu',
       choices: [...defaultChoices],
@@ -70,7 +69,7 @@ const mainLoop = async (): Promise<boolean> => {
 };
 
 const printHeader = (options: CLIOptions): void => {
-  console.log(generateCliHeader(options));
+  nodeConsole.log(generateCliHeader(options));
 };
 
 const main = async (options: CLIOptions): Promise<void> => {
@@ -106,7 +105,7 @@ const main = async (options: CLIOptions): Promise<void> => {
     await mainLoop();
   }
 
-  console.log(chalk.bold.magentaBright('Goodbye!'));
+  nodeConsole.log(chalk.bold.magentaBright('Goodbye!'));
 };
 
 export default main;

@@ -5,7 +5,7 @@ import autocomplete from 'inquirer-autocomplete-standalone';
 import { confirm } from '@inquirer/prompts';
 
 import { type Block, InstallStatus, type Mod } from '../../app/types/types.js';
-import { createSimpleModuleLogger } from '../../utils/logger.js';
+import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
 import { updateBlock } from '../../app/mods/block.js';
@@ -80,7 +80,7 @@ const updateInstallOrder = async (blockUuid: string): Promise<Block> => {
   }
 
   if (remainingChoices.size === 0) {
-    console.log(chalk.yellow(`No uninstalled mods to add to the install order`));
+    nodeConsole.log(chalk.yellow(`No uninstalled mods to add to the install order`));
     exit = true;
   }
 
