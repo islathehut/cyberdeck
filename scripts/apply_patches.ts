@@ -7,42 +7,37 @@ const runScript = async (): Promise<void> => {
     `patch --forward -p0 node_modules/verse.db/dist/index.js < patch/versedb.patch`,
   ];
   const acceptableFailure = 'Reversed (or previously applied) patch detected!  Skipping patch.';
+  if (getOSFamily() === 'Windows' && process.env.IS_CI !== 'true') {
+    console.log(`Apply patches using a WSL terminal`);
+    for (const applyPatchCommand of applyPatchCommands) {
+      try {
+        console.log(`Running ${applyPatchCommand}`);
+        execSync(`wsl -e ${applyPatchCommand}`);
+        console.log(`Patch applied successfully!`);
+      } catch (e) {
+        if ((e as { stdout: Buffer }).stdout.toString().includes(acceptableFailure)) {
+          console.log(`File already patched, skipping...!`);
+          continue;
+        }
+        throw e as Error;
+      }
+    }
+    return;
+  }
 
-  switch (getOSFamily()) {
-    case 'Windows':
-      console.log(`Apply patches using a WSL terminal`);
-      for (const applyPatchCommand of applyPatchCommands) {
-        try {
-          console.log(`Running ${applyPatchCommand}`);
-          execSync(`wsl -e ${applyPatchCommand}`);
-          console.log(`Patch applied successfully!`);
-        } catch (e) {
-          if ((e as { stdout: Buffer }).stdout.toString().includes(acceptableFailure)) {
-            console.log(`File already patched, skipping...!`);
-            continue;
-          }
-          throw e as Error;
-        }
+  console.log(`Apply patches`);
+  for (const applyPatchCommand of applyPatchCommands) {
+    try {
+      console.log(`Running ${applyPatchCommand}`);
+      execSync(applyPatchCommand);
+      console.log(`Patch applied successfully!`);
+    } catch (e) {
+      if ((e as { stdout: Buffer }).stdout.toString().includes(acceptableFailure)) {
+        console.log(`File already patched, skipping...!`);
+        continue;
       }
-      break;
-    case 'Unix':
-      console.log(`Apply patches`);
-      for (const applyPatchCommand of applyPatchCommands) {
-        try {
-          console.log(`Running ${applyPatchCommand}`);
-          execSync(applyPatchCommand);
-          console.log(`Patch applied successfully!`);
-        } catch (e) {
-          if ((e as { stdout: Buffer }).stdout.toString().includes(acceptableFailure)) {
-            console.log(`File already patched, skipping...!`);
-            continue;
-          }
-          throw e as Error;
-        }
-      }
-      break;
-    default:
-      throw new Error(`Unknown OS family`);
+      throw e as Error;
+    }
   }
 };
 
