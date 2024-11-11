@@ -65,6 +65,7 @@
     "@types/luxon": "3.4.2",
     "@types/node": "^18.18.13",
     "@types/node-7z": "^2.1.10",
+    "ansi-regex": "^6.1.0",
     "cross-env": "^7.0.3",
     "esbuild": "^0.24.0",
     "eslint": "^9.13.0",

@@ -99,6 +99,9 @@ importers:
       '@types/node-7z':
         specifier: ^2.1.10
         version: 2.1.10
+      ansi-regex:
+        specifier: ^6.1.0
+        version: 6.1.0
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
