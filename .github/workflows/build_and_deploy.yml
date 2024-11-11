@@ -3,7 +3,7 @@ on:
   pull_request:
 
 jobs:
-  unit-tests:
+  build-and-deploy:
     runs-on: ${{ matrix.os }}
 
     strategy:
