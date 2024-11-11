@@ -28,6 +28,9 @@ jobs:
       - name: "Generate SEA blob"
         run: pnpm run dist:blob
 
+      - name: "Create release directory"
+        run: mkdir -p bin/release
+
       - name: "Build Windows release package"
         if: ${{ runner.os == 'Windows' }}
         run: pnpm run dist:create:win
