@@ -20,7 +20,7 @@ jobs:
         uses: ./.github/actions/setup-env
 
       - name: "Build"
-        run: pnpm run Build
+        run: pnpm run build
       
       - name: "Prepare bundle"
         run: pnpm run bundle
