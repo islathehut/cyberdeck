@@ -9,7 +9,8 @@ export default [
         '@typescript-eslint/no-magic-numbers': 'off'
       },
       files: [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "scripts/**/*.ts"
       ],
   },
   {
@@ -20,7 +21,8 @@ export default [
       "src/components/actionSelect.ts",
       "src/**/*.autogen.*",
       "coverage-map.mjs",
-      "tap-snapshots/*",
+      "tap-snapshots-windows/*",
+      "tap-snapshots-unix/*",
       "test/*"
     ],
   }

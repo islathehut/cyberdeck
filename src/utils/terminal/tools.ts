@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { DateTime } from 'luxon';
 import ora from 'ora';
 import { createSimpleModuleLogger } from '../logger.js';
+import { getOSFamily } from '../util.js';
 
 const Logger = createSimpleModuleLogger('utils:terminal:tools');
 
@@ -15,7 +16,7 @@ export const promiseWithSpinner = async <T>(
   const spinner = ora({
     color: 'yellow',
     text: chalk.cyan(text),
-    spinner: 'dots',
+    spinner: getOSFamily() === 'Unix' ? 'dots' : 'line',
     isEnabled: true,
     discardStdin: true,
   });
