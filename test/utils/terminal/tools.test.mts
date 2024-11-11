@@ -1,11 +1,10 @@
 import t from 'tap';
-import * as os from 'os';
 
 import { generateTestDataDir, sleep } from '../../testUtils/test-utils.js';
 import { nodeConsole } from '../../../src/utils/logger.js';
+import { getOSFamily } from '../../../src/utils/util.js';
 
-let tools: typeof import('/Users/isla/Dev/cyberdeck/src/utils/terminal/tools');
-const snapshotSuffix: string = os.platform() === 'win32' ? 'Windows' : 'Unix';
+let tools: typeof import('../../../src/utils/terminal/tools.js');
 
 t.beforeEach(async t => {
   await generateTestDataDir(t);
@@ -35,17 +34,16 @@ t.test('Successful promise', async t => {
   const spinnerLogs = logs();
   t.matchSnapshot(
     spinnerLogs.slice(0, -2).map(log => log.args[0]),
-    `promiseWithSpinner - Success - ${snapshotSuffix}`
+    `promiseWithSpinner - Success - ${getOSFamily()}`
   );
 
   const finalLog = spinnerLogs.pop()?.args[0].toString();
-  t.notMatch(
-    finalLog?.match(
-      '\\\x1B\\[32m✔\\\x1B\\[39m \\\x1B\\[35mTest passed!\\\x1B\\[39m \\\x1B\\[32m\\(200[0-9]ms\\)\\\x1B\\[39m\\\n'
-    ),
-    null,
-    'Should match the test string'
+  const matchText = new RegExp(
+    getOSFamily() === 'Unix'
+      ? '\\\x1B\\[32m✔\\\x1B\\[39m \\\x1B\\[35mTest passed!\\\x1B\\[39m \\\x1B\\[32m\\(200[0-9]ms\\)\\\x1B\\[39m\\\n'
+      : '\\u001b\\[32m✔\\\u001b\\[39m \\\u001b\\[35mTest passed!\\\u001b\\[39m \\\u001b\\[32m\\(200[0-9]ms\\)\\\u001b\\[39m\\\n'
   );
+  t.match(finalLog, matchText, 'Should match the test string');
 
   t.end();
 });
@@ -68,17 +66,16 @@ t.test('Failed promise', async t => {
   const spinnerLogs = logs();
   t.matchSnapshot(
     spinnerLogs.slice(0, -2).map(log => log.args[0]),
-    `promiseWithSpinner - Failure - ${snapshotSuffix}`
+    `promiseWithSpinner - Failure - ${getOSFamily()}`
   );
 
   const finalLog = spinnerLogs.pop()?.args[0].toString();
-  t.notMatch(
-    finalLog?.match(
-      '\\\x1B\\[31m✖\\\x1B\\[39m \\\x1B\\[31mTest failed!\\\x1B\\[39m \\\x1B\\[33m\\(200[0-9]ms\\)\\\x1B\\[39m\\n'
-    ),
-    null,
-    'Should match the test string'
+  const matchText = new RegExp(
+    getOSFamily() === 'Unix'
+      ? '\\\x1B\\[31m✖\\\x1B\\[39m \\\x1B\\[31mTest failed!\\\x1B\\[39m \\\x1B\\[33m\\(200[0-9]ms\\)\\\x1B\\[39m\\n'
+      : '\\\u001b\\[31m✖\\\u001b\\[39m \\\u001b\\[31mTest failed!\\\u001b\\[39m \\\u001b\\[33m\\(200[0-9]ms\\)\\\u001b\\[39m\\\n'
   );
+  t.match(finalLog, matchText, 'Should match the test string');
 
   t.end();
 });
