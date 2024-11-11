@@ -1,0 +1,41 @@
+name: Build and Deploy Packages
+on:
+  pull_request:
+
+jobs:
+  unit-tests:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:  [ubuntu-20.04, macos-13, windows-2019]
+    
+    steps:
+      - name: "Print OS"
+        run: echo ${{ matrix.os }}
+
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+
+      - name: "Build"
+        run: pnpm run Build
+      
+      - name: "Prepare bundle"
+        run: pnpm run bundle
+
+      - name: "Generate SEA blob"
+        run: pnpm run dist:blob
+
+      - name: "Build Windows release package"
+        if: ${{ runner.os == 'Windows' }}
+        run: pnpm run dist:create:win
+      
+      - name: "Build Linux release package"
+        if: ${{ runner.os == 'Linux' }}
+        run: pnpm run dist:create:linux
+      
+      - name: "Build MacOS release package"
+        if: ${{ runner.os == 'MacOS' }}
+        run: pnpm run dist:create:mac
