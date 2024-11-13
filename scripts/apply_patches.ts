@@ -26,7 +26,8 @@ const runScript = async (): Promise<void> => {
   }
 
   console.log(`Apply patches`);
-  for (const applyPatchCommand of applyPatchCommands) {
+  for (const basePatchCommand of applyPatchCommands) {
+    const applyPatchCommand = `${basePatchCommand} || true`;
     try {
       console.log(`Running ${applyPatchCommand}`);
       execSync(applyPatchCommand);
