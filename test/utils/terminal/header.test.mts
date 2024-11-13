@@ -2,8 +2,10 @@ import t from 'tap';
 
 import { generateCliHeader } from '../../../src/utils/terminal/header.js';
 import { initLogger } from '../../../src/utils/logger.js';
+import { generateTestDataDir } from '../../testUtils/test-utils.js';
 
 t.beforeEach(async t => {
+  await generateTestDataDir(t);
   await initLogger();
 });
 
