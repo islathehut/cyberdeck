@@ -1,6 +1,11 @@
 import t from 'tap';
 
 import { generateChecksum } from '../../src/utils/crypto.js';
+import { initLogger } from '../../src/utils/logger.js';
+
+t.beforeEach(async t => {
+  await initLogger();
+});
 
 t.test('Checksum of string', async t => {
   const input = 'foobar';

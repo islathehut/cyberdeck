@@ -1,4 +1,9 @@
 {
   "main": "bundle/bundle.cjs",
-  "output": "bin/cyberdeck-sea.blob"
+  "output": "bin/cyberdeck-sea.blob",
+  "disableExperimentalSEAWarning": true,
+  "assets": {
+    "cyberdeck_header_image_ans": "assets/cyberdeck_header_image.utf.ans",
+    "versedb_version": ".versedb.version"
+  }
 }

@@ -47,7 +47,7 @@ const modsSchemaFields: Record<string, FieldConfig> = {
     },
   },
   name: { type: SchemaTypes.String, required: true },
-  description: { type: SchemaTypes.String, required: false },
+  description: { type: SchemaTypes.Mix, mix: [SchemaTypes.String, SchemaTypes.Null] },
   nexusMetadata: { type: SchemaTypes.Mix, mix: [SchemaTypes.Object, SchemaTypes.Null] },
 };
 

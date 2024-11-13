@@ -1,9 +1,11 @@
 import t from 'tap';
 
 import { generateTestDataDir } from '../../../testUtils/test-utils.js';
+import { initLogger } from '../../../../src/utils/logger.js';
 
 t.beforeEach(async t => {
   await generateTestDataDir(t);
+  await initLogger();
 });
 
 t.test('Get DB and validate basic functionality', async t => {

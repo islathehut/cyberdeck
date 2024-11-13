@@ -1,0 +1,253 @@
+--- node_modules/verse.db/dist/index.js	2024-11-11 12:52:47.181117000 -0500
++++ patch/patch.js	2024-11-11 12:51:29.542273300 -0500
+@@ -1,126 +1,124 @@
+-"use strict";
+-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+-    if (k2 === undefined) k2 = k;
+-    var desc = Object.getOwnPropertyDescriptor(m, k);
+-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+-      desc = { enumerable: true, get: function() { return m[k]; } };
+-    }
+-    Object.defineProperty(o, k2, desc);
+-}) : (function(o, m, k, k2) {
+-    if (k2 === undefined) k2 = k;
+-    o[k2] = m[k];
+-}));
+-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+-    Object.defineProperty(o, "default", { enumerable: true, value: v });
+-}) : function(o, v) {
+-    o["default"] = v;
+-});
+-var __importStar = (this && this.__importStar) || function (mod) {
+-    if (mod && mod.__esModule) return mod;
+-    var result = {};
+-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+-    __setModuleDefault(result, mod);
+-    return result;
+-};
+-var __importDefault = (this && this.__importDefault) || function (mod) {
+-    return (mod && mod.__esModule) ? mod : { "default": mod };
+-};
+-Object.defineProperty(exports, "__esModule", { value: true });
+-exports.ConnectTypes = exports.AdapterTypes = exports.cache = exports.session = exports.SQLTypes = exports.SQLSchema = exports.genObjectId = exports.neutralizer = exports.colors = exports.SchemaTypes = exports.verseParser = exports.Schema = exports.logger = exports.randomUUID = exports.randomID = exports.connect = void 0;
+-/**
+- * @params Copyright(c) 2023 marco5dev & jedi.tsx & kmoshax
+- * MIT Licensed
+- */
+-const path = __importStar(require("path"));
+-const fs = __importStar(require("fs"));
+-const secureData_1 = require("./core/functions/secureData");
+-Object.defineProperty(exports, "neutralizer", { enumerable: true, get: function () { return secureData_1.neutralizer; } });
+-Object.defineProperty(exports, "genObjectId", { enumerable: true, get: function () { return secureData_1.genObjectId; } });
+-const connect_1 = __importDefault(require("./core/connect"));
+-exports.connect = connect_1.default;
+-const id_1 = require("./lib/id");
+-Object.defineProperty(exports, "randomID", { enumerable: true, get: function () { return id_1.randomID; } });
+-Object.defineProperty(exports, "randomUUID", { enumerable: true, get: function () { return id_1.randomUUID; } });
+-const logger_1 = require("./core/functions/logger");
+-const schema_1 = __importDefault(require("./core/functions/schema"));
+-exports.Schema = schema_1.default;
+-const schema_2 = require("./core/functions/schema");
+-Object.defineProperty(exports, "SchemaTypes", { enumerable: true, get: function () { return schema_2.SchemaTypes; } });
+-const colors_1 = __importDefault(require("./lib/colors"));
+-exports.colors = colors_1.default;
+-const SQL_Schemas_1 = require("./core/functions/SQL-Schemas");
+-Object.defineProperty(exports, "SQLSchema", { enumerable: true, get: function () { return SQL_Schemas_1.SQLSchema; } });
+-const sql_types_1 = require("./types/sql-types");
+-Object.defineProperty(exports, "SQLTypes", { enumerable: true, get: function () { return sql_types_1.SQLTypes; } });
+-const export_1 = require("./adapters/export");
+-Object.defineProperty(exports, "session", { enumerable: true, get: function () { return export_1.sessionAdapter; } });
+-Object.defineProperty(exports, "cache", { enumerable: true, get: function () { return export_1.CacheAdapter; } });
+-const packageJsonPath = path.resolve(process.cwd(), "package.json");
+-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+-const getLibraryVersion = function (library) {
+-    const dependencies = packageJson.dependencies || {};
+-    const devDependencies = packageJson.devDependencies || {};
+-    const version = (dependencies[library] || devDependencies[library] || "").replace(/^(\^|~)/, "") || "Not installed";
+-    return version;
+-};
+-fetch("https://registry.npmjs.com/-/v1/search?text=verse.db")
+-    .then(function (response) {
+-    if (!response.ok) {
+-        throw new Error('Failed to fetch');
+-    }
+-    return response.json();
+-})
+-    .then(function (data) {
+-    var _a, _b;
+-    const version = (_b = (_a = data.objects[0]) === null || _a === void 0 ? void 0 : _a.package) === null || _b === void 0 ? void 0 : _b.version;
+-    if (version && getLibraryVersion("verse.db") !== version) {
+-        (0, logger_1.logWarning)({
+-            content: `Please Update verse.db to the latest verseion ` +
+-                version +
+-                `  using ${colors_1.default.fg.green}npm install verse.db@latest${colors_1.default.reset}`,
+-        });
+-    }
+-})
+-    .catch(function (error) {
+-    (0, logger_1.logError)({
+-        content: error,
+-    });
+-});
+-const logger = {
+-    logError: logger_1.logError,
+-    logInfo: logger_1.logInfo,
+-    logSuccess: logger_1.logSuccess,
+-    logWarning: logger_1.logWarning,
+-};
+-exports.logger = logger;
+-const verseParser = {
+-    encodeJSON: secureData_1.encodeJSON,
+-    decodeJSON: secureData_1.decodeJSON,
+-    encodeYAML: secureData_1.encodeYAML,
+-    decodeYAML: secureData_1.decodeYAML,
+-    encodeSQL: secureData_1.encodeSQL,
+-    decodeSQL: secureData_1.decodeSQL,
+-    neutralizer: secureData_1.neutralizer,
+-    genObjectId: secureData_1.genObjectId,
+-};
+-exports.verseParser = verseParser;
+-const versedb = {
+-    connect: connect_1.default,
+-    randomID: id_1.randomID,
+-    randomUUID: id_1.randomUUID,
+-    logger,
+-    Schema: schema_1.default,
+-    SchemaTypes: schema_2.SchemaTypes,
+-    verseParser,
+-    colors: colors_1.default,
+-    neutralizer: secureData_1.neutralizer,
+-    genObjectId: secureData_1.genObjectId,
+-    SQLSchema: SQL_Schemas_1.SQLSchema,
+-    SQLTypes: sql_types_1.SQLTypes,
+-    session: export_1.sessionAdapter,
+-    cache: export_1.CacheAdapter,
+-};
+-exports.AdapterTypes = __importStar(require("./types/adapter"));
+-exports.ConnectTypes = __importStar(require("./types/connect"));
+-exports.default = versedb;
++"use strict";
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    var desc = Object.getOwnPropertyDescriptor(m, k);
++    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
++      desc = { enumerable: true, get: function() { return m[k]; } };
++    }
++    Object.defineProperty(o, k2, desc);
++}) : (function(o, m, k, k2) {
++    if (k2 === undefined) k2 = k;
++    o[k2] = m[k];
++}));
++var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
++    Object.defineProperty(o, "default", { enumerable: true, value: v });
++}) : function(o, v) {
++    o["default"] = v;
++});
++var __importStar = (this && this.__importStar) || function (mod) {
++    if (mod && mod.__esModule) return mod;
++    var result = {};
++    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
++    __setModuleDefault(result, mod);
++    return result;
++};
++var __importDefault = (this && this.__importDefault) || function (mod) {
++    return (mod && mod.__esModule) ? mod : { "default": mod };
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.ConnectTypes = exports.AdapterTypes = exports.cache = exports.session = exports.SQLTypes = exports.SQLSchema = exports.genObjectId = exports.neutralizer = exports.colors = exports.SchemaTypes = exports.verseParser = exports.Schema = exports.logger = exports.randomUUID = exports.randomID = exports.connect = void 0;
++/**
++ * @params Copyright(c) 2023 marco5dev & jedi.tsx & kmoshax
++ * MIT Licensed
++ */
++const path = __importStar(require("path"));
++const fs = __importStar(require("fs"));
++const node_sea = __importStar(require("node:sea"));
++const secureData_1 = require("./core/functions/secureData");
++Object.defineProperty(exports, "neutralizer", { enumerable: true, get: function () { return secureData_1.neutralizer; } });
++Object.defineProperty(exports, "genObjectId", { enumerable: true, get: function () { return secureData_1.genObjectId; } });
++const connect_1 = __importDefault(require("./core/connect"));
++exports.connect = connect_1.default;
++const id_1 = require("./lib/id");
++Object.defineProperty(exports, "randomID", { enumerable: true, get: function () { return id_1.randomID; } });
++Object.defineProperty(exports, "randomUUID", { enumerable: true, get: function () { return id_1.randomUUID; } });
++const logger_1 = require("./core/functions/logger");
++const schema_1 = __importDefault(require("./core/functions/schema"));
++exports.Schema = schema_1.default;
++const schema_2 = require("./core/functions/schema");
++Object.defineProperty(exports, "SchemaTypes", { enumerable: true, get: function () { return schema_2.SchemaTypes; } });
++const colors_1 = __importDefault(require("./lib/colors"));
++exports.colors = colors_1.default;
++const SQL_Schemas_1 = require("./core/functions/SQL-Schemas");
++Object.defineProperty(exports, "SQLSchema", { enumerable: true, get: function () { return SQL_Schemas_1.SQLSchema; } });
++const sql_types_1 = require("./types/sql-types");
++Object.defineProperty(exports, "SQLTypes", { enumerable: true, get: function () { return sql_types_1.SQLTypes; } });
++const export_1 = require("./adapters/export");
++Object.defineProperty(exports, "session", { enumerable: true, get: function () { return export_1.sessionAdapter; } });
++Object.defineProperty(exports, "cache", { enumerable: true, get: function () { return export_1.CacheAdapter; } });
++const versedbVersionPath = path.resolve(process.cwd(), ".versedb.version");
++const versedbVersion = node_sea.isSea() ? node_sea.getAsset('versedb_version', 'utf-8').trim() : fs.readFileSync(versedbVersionPath, "utf8").trim();
++const getLibraryVersion = function () {
++    return versedbVersion;
++};
++fetch("https://registry.npmjs.com/-/v1/search?text=verse.db")
++    .then(function (response) {
++    if (!response.ok) {
++        throw new Error('Failed to fetch');
++    }
++    return response.json();
++})
++    .then(function (data) {
++    var _a, _b;
++    const version = (_b = (_a = data.objects[0]) === null || _a === void 0 ? void 0 : _a.package) === null || _b === void 0 ? void 0 : _b.version;
++    if (version && getLibraryVersion() !== version) {
++        (0, logger_1.logWarning)({
++            content: `Please Update verse.db to the latest verseion ` +
++                version +
++                `  using ${colors_1.default.fg.green}npm install verse.db@latest${colors_1.default.reset}`,
++        });
++    }
++})
++    .catch(function (error) {
++    (0, logger_1.logError)({
++        content: error,
++    });
++});
++const logger = {
++    logError: logger_1.logError,
++    logInfo: logger_1.logInfo,
++    logSuccess: logger_1.logSuccess,
++    logWarning: logger_1.logWarning,
++};
++exports.logger = logger;
++const verseParser = {
++    encodeJSON: secureData_1.encodeJSON,
++    decodeJSON: secureData_1.decodeJSON,
++    encodeYAML: secureData_1.encodeYAML,
++    decodeYAML: secureData_1.decodeYAML,
++    encodeSQL: secureData_1.encodeSQL,
++    decodeSQL: secureData_1.decodeSQL,
++    neutralizer: secureData_1.neutralizer,
++    genObjectId: secureData_1.genObjectId,
++};
++exports.verseParser = verseParser;
++const versedb = {
++    connect: connect_1.default,
++    randomID: id_1.randomID,
++    randomUUID: id_1.randomUUID,
++    logger,
++    Schema: schema_1.default,
++    SchemaTypes: schema_2.SchemaTypes,
++    verseParser,
++    colors: colors_1.default,
++    neutralizer: secureData_1.neutralizer,
++    genObjectId: secureData_1.genObjectId,
++    SQLSchema: SQL_Schemas_1.SQLSchema,
++    SQLTypes: sql_types_1.SQLTypes,
++    session: export_1.sessionAdapter,
++    cache: export_1.CacheAdapter,
++};
++exports.AdapterTypes = __importStar(require("./types/adapter"));
++exports.ConnectTypes = __importStar(require("./types/connect"));
++exports.default = versedb;
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file

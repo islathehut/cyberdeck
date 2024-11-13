@@ -3,9 +3,11 @@ import t from 'tap';
 import { generateTestDataDir } from '../../../../testUtils/test-utils.js';
 import { generateFakeMod } from '../../../../testUtils/schema.helper.js';
 import { InstallStatus } from '../../../../../src/app/types/types.js';
+import { initLogger } from '../../../../../src/utils/logger.js';
 
 t.beforeEach(async t => {
   await generateTestDataDir(t);
+  await initLogger();
 });
 
 t.test('Get Mods schema and validate basic functionality', async t => {
@@ -41,7 +43,7 @@ t.test('Validate loaded data', async t => {
     message: 'Found data matching your query.',
     results: {
       uuid: 'c32ac778-99a7-4963-b853-10a190dcd09b',
-      status: 'INSTALLED',
+      status: InstallStatus.INSTALLED,
       checksum: '22e2b4b8ffcd65b30ec621d9395059a5',
       path: '/Users/isla/.cyberdeck/mods/test_mod2.zip',
       filename: 'test_mod2.zip',
