@@ -54,6 +54,8 @@ export const initDirectoryStructure = async (): Promise<void> => {
       );
     } else {
       console.log('Creating header image ans file from local asset file');
+      console.log(HEADER_IMAGE_LOCAL_ASSET_PATH);
+      console.log(HEADER_IMAGE_ASSET_PATH());
       const content = await fs.readFile(HEADER_IMAGE_LOCAL_ASSET_PATH);
       await fs.writeFile(HEADER_IMAGE_ASSET_PATH(), content);
     }
