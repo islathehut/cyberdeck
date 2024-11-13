@@ -18,7 +18,7 @@
     "dist:blob": "node --experimental-sea-config bin/config/sea-config.json",
     "dist:create:linux": "cp $(command -v node) bin/release/cyberdeck && pnpx postject bin/release/cyberdeck NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
     "dist:create:mac": "cp $(command -v node) bin/release/cyberdeck && codesign --remove-signature bin/release/cyberdeck && pnpx postject bin/release/cyberdeck NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 --macho-segment-name NODE_SEA && codesign --sign - bin/release/cyberdeck",
-    "dist:create:win": "node -e \"require('fs').copyFileSync(process.execPath, 'bin/release/cyberdeck.exe')\" && signtool remove /s bin/release/cyberdeck.exe && pnpx postject bin/release/cyberdeck.exe NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
+    "dist:create:win": "tsx ./scripts/release/release_windows.ts",
     "generate:types:nexusmods": "npx openapi-typescript src/app/mods/external/nexusMods/nexusMods.swagger.yaml --output src/app/mods/external/nexusMods/nexusMods.api.types.ts",
     "prettier": "pnpx prettier -c --config .prettierrc.json src/ scripts/ test/",
     "prettier:fix": "pnpx prettier -c --config .prettierrc.json -w src/ scripts/ test/",
