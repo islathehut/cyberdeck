@@ -43,7 +43,6 @@ jobs:
       - name: "Build Windows release package"
         if: ${{ runner.os == 'Windows' }}
         run: |
-          ls -lart C:/Program Files (x86)/Windows Kits/10/bin/
           pnpm run dist:create:win
       
       - name: "Build Linux release package"
