@@ -3,6 +3,9 @@ name: Check
 on:
   pull_request:
 
+env:
+  IS_CI: true
+
 jobs:
   check:
     timeout-minutes: 5
