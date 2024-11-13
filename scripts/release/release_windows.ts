@@ -46,7 +46,7 @@ const generateExecutable = async (): Promise<void> => {
 
 const removeSignature = async (): Promise<void> => {
   const signtoolExePath = await getSigntoolLocation();
-  child.execSync(`${signtoolExePath} remove /s ${EXECUTABLE_PATH_WIN}`);
+  child.execSync(`"${signtoolExePath}" remove /s ${EXECUTABLE_PATH_WIN}`);
 };
 
 const injectExecutable = async (): Promise<void> => {
