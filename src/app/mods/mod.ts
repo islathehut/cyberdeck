@@ -151,6 +151,8 @@ export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]>
       modifiedAt: now,
       copyOverrides: [],
       installedAt: null,
+      nexusMetadata: null,
+      description: null,
     };
 
     loadedMods.push(mod);
