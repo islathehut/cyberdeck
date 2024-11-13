@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os:  [ubuntu-20.04, macos-13, windows-2019]
+        os:  [ubuntu-20.04, macos-13, windows-latest]
 
     env:
       IS_CI: "true"
@@ -21,6 +21,12 @@ jobs:
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
+      
+      - name: "Install Windows SDK"
+        if: ${{ runner.os == 'Windows' }}
+        uses: fbactions/setup-winsdk@v1
+        with:
+          winsdk-build-version: 20348
 
       - name: "Build"
         run: pnpm run build
