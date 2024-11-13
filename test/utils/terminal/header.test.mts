@@ -1,6 +1,11 @@
 import t from 'tap';
 
 import { generateCliHeader } from '../../../src/utils/terminal/header.js';
+import { initLogger } from '../../../src/utils/logger.js';
+
+t.beforeEach(async t => {
+  await initLogger();
+});
 
 t.test('CLI Options - Empty', t => {
   const header = generateCliHeader({});

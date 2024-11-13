@@ -2,9 +2,11 @@ import t from 'tap';
 
 import { generateTestDataDir } from '../../../../testUtils/test-utils.js';
 import { generateFakeBlock } from '../../../../testUtils/schema.helper.js';
+import { initLogger } from '../../../../../src/utils/logger.js';
 
 t.beforeEach(async t => {
   await generateTestDataDir(t);
+  await initLogger();
 });
 
 t.test('Get Blocks schema and validate basic functionality', async t => {

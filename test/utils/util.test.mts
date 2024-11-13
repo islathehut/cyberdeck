@@ -1,6 +1,10 @@
 import t from 'tap';
 import { sleep } from '../../src/utils/util.js';
+import { initLogger } from '../../src/utils/logger.js';
 
+t.beforeEach(async t => {
+  await initLogger();
+});
 /**
  * getOsFamily
  */
