@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises';
 import child from 'node:child_process';
-import { BLOB_PATH, EXECUTABLE_PATH_WIN, NODE_SEA_FUSE } from './base_release';
 import type { PathLike } from 'node:fs';
+
+import { BLOB_PATH, EXECUTABLE_PATH_WIN, NODE_SEA_FUSE } from './base_release.js';
 
 /**
  * Searches the installed Windows SDKs for the most recent signtool.exe version
