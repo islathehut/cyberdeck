@@ -1,6 +1,9 @@
 name: Build and Deploy Packages
+
 on:
-  pull_request:
+  release:
+    types:
+      [prereleased, released]
 
 jobs:
   build-and-deploy:
