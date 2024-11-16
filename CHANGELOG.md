@@ -1,5 +1,11 @@
 # cyberdeck
 
+## 0.4.2
+
+### Patch Changes
+
+- Add gh-release
+
 ## 0.4.1
 
 ### Patch Changes
