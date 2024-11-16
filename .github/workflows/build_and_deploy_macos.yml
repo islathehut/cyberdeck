@@ -46,7 +46,7 @@ jobs:
       - name: "Build MacOS release package"
         id: build_release
         run: |
-          pnpm run dist:create -- -p macos -v ${{ steps.get_release.outputs.tag_name }}
+          pnpm run dist:create -- -p macos -r ${{ steps.get_release.outputs.tag_name }}
 
       - name: "Upload release package"
         uses: actions/upload-release-asset@v1.0.2
