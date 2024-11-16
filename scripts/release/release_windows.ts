@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import child from 'node:child_process';
 import type { PathLike } from 'node:fs';
 
-import { BLOB_PATH, EXECUTABLE_PATH_WIN, NODE_SEA_FUSE } from './base_release.js';
+import { archiveRelease, BLOB_PATH, EXECUTABLE_PATH_WIN, NODE_SEA_FUSE } from './base_release.js';
 
 /**
  * Searches the installed Windows SDKs for the most recent signtool.exe version
@@ -56,20 +56,22 @@ const injectExecutable = async (): Promise<void> => {
 };
 
 const packageRelease = async (): Promise<void> => {
-  console.log(`Generating windows executable`);
+  console.log(`Generating Windows executable`);
   await generateExecutable();
   console.log(`Removing signature`);
   await removeSignature();
   console.log(`Injecting code bundle into executable`);
   await injectExecutable();
+  console.log(`Creating archive`);
+  await archiveRelease(EXECUTABLE_PATH_WIN, 'win');
 };
 
 packageRelease()
   .then(() => {
-    console.log(`Finished packaging windows release!`);
+    console.log(`Finished packaging Windows release!`);
     process.exit(0);
   })
   .catch(e => {
-    console.error(`Error occurred while packaging windows release!`, e);
+    console.error(`Error occurred while packaging Windows release!`, e);
     process.exit(1);
   });

@@ -1,9 +1,10 @@
 {
   "name": "cyberdeck",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Cross-platform CLI mod manager for Cyberpunk 2077",
   "main": "./dist/src/index.js",
   "type": "module",
+  "license": "GPL-3.0",
   "bin": {
     "cyberdeck": "./dist/src/index.js"
   },
@@ -16,8 +17,8 @@
     "bundle": "esbuild dist/src/index.js --bundle --platform=node --format=cjs --outfile=bundle/bundle.cjs --allow-overwrite --main-fields=module,main",
     "build:bundle": "pnpm run build && pnpm run bundle",
     "dist:blob": "node --experimental-sea-config bin/config/sea-config.json",
-    "dist:create:linux": "cp $(command -v node) bin/release/cyberdeck && pnpx postject bin/release/cyberdeck NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
-    "dist:create:mac": "cp $(command -v node) bin/release/cyberdeck && codesign --remove-signature bin/release/cyberdeck && pnpx postject bin/release/cyberdeck NODE_SEA_BLOB bin/cyberdeck-sea.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 --macho-segment-name NODE_SEA && codesign --sign - bin/release/cyberdeck",
+    "dist:create:linux": "tsx ./scripts/release/release_linux.ts",
+    "dist:create:mac": "tsx ./scripts/release/release_macos.ts",
     "dist:create:win": "tsx ./scripts/release/release_windows.ts",
     "generate:types:nexusmods": "npx openapi-typescript src/app/mods/external/nexusMods/nexusMods.swagger.yaml --output src/app/mods/external/nexusMods/nexusMods.api.types.ts",
     "prettier": "pnpx prettier -c --config .prettierrc.json src/ scripts/ test/",
@@ -30,10 +31,12 @@
     "test": "pnpm run link-tap-snapshots && tap --color",
     "test:ci": "pnpm run link-tap-snapshots && cross-env IS_CI=true DEBUG=cyberdeck* tap --color --serial=test/ --reporter=base --jobs 1",
     "start": "cross-env DEBUG=cyberdeck* node dist/src/index.js",
-    "prepare": "husky"
+    "prepare": "husky",
+    "get-version": "node -e \"var pj = require('./package.json'); console.log(pj.version);\"",
+    "publish:tag": "cross-env CYBERDECK_PUBLISH_VERSION=$(pnpm run get-version) git tag -a $CYBERDECK_PUBLISH_VERSION -m \"Publishing version $CYBERDECK_PUBLISH_VERSION\" main && git push --tags"
   },
   "keywords": [],
-  "author": "",
+  "author": "Isla",
   "dependencies": {
     "@commander-js/extra-typings": "^12.1.0",
     "@inquirer/core": "^10.0.1",
@@ -60,6 +63,9 @@
     "yaml": "^2.6.0"
   },
   "devDependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@changesets/cli": "^2.27.9",
     "@tapjs/clock": "^3.0.0",
     "@types/debug": "4.1.12",
     "@types/figlet": "^1.5.8",

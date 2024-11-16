@@ -1,0 +1,61 @@
+name: Build and Deploy Packages
+on:
+  pull_request:
+
+jobs:
+  build-and-deploy:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:  [windows-latest]
+
+    env:
+      IS_CI: "true"
+    
+    steps:
+      - name: "Print OS"
+        run: echo ${{ matrix.os }}
+
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+      
+      - name: "Install Windows SDK"
+        uses: fbactions/setup-winsdk@v1
+        with:
+          winsdk-build-version: 22621
+      
+      - name: "Get release"
+        id: get_release
+        uses: bruceadams/get-release@v1.3.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: "Build"
+        run: pnpm run build
+
+      - name: "Create release directory"
+        run: mkdir -p bin/release
+      
+      - name: "Prepare bundle"
+        run: pnpm run bundle
+
+      - name: "Generate SEA blob"
+        run: pnpm run dist:blob
+
+      - name: "Build Windows release package"
+        id: build_release
+        run: |
+          pnpm run dist:create:win
+
+      - name: "Upload release package"
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ${{ steps.build_release.outputs.archive_path }}
+          asset_name: ${{ steps.build_release.outputs.asset_name }}
+          asset_content_type: application/octet-stream
