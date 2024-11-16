@@ -1,5 +1,11 @@
 # cyberdeck
 
+## 0.4.3
+
+### Patch Changes
+
+- c6416e7: Release updates
+
 ## 0.4.2
 
 ### Patch Changes
