@@ -1,4 +1,4 @@
-name: Build and Deploy Packages
+name: Build and Deploy Packages (MacOS)
 
 on:
   release:
