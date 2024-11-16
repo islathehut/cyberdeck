@@ -4,12 +4,13 @@ import ansiRegex from 'ansi-regex';
 import { generateTestDataDir } from '../../testUtils/test-utils.js';
 import { nodeConsole } from '../../../src/utils/logger.js';
 import { getOSFamily, sleep } from '../../../src/utils/util.js';
-import { spinnerType } from '../../../src/utils/terminal/tools.js';
+import { initLogger } from '../../../src/utils/logger.js';
 
 let tools: typeof import('../../../src/utils/terminal/tools.js');
 
 t.beforeEach(async t => {
   await generateTestDataDir(t);
+  await initLogger();
   tools = await import('../../../src/utils/terminal/tools.js');
 });
 
@@ -18,12 +19,12 @@ t.beforeEach(async t => {
  */
 
 t.test('Validate correct spinner type is selected on Windows', t => {
-  t.match(spinnerType('Windows'), 'line', 'Windows uses `line` spinner type');
+  t.match(tools.spinnerType('Windows'), 'line', 'Windows uses `line` spinner type');
   t.end();
 });
 
 t.test('Validate correct spinner type is selected on Unix', t => {
-  t.match(spinnerType('Unix'), 'dots', 'Unix uses `dots` spinner type');
+  t.match(tools.spinnerType('Unix'), 'dots', 'Unix uses `dots` spinner type');
   t.end();
 });
 

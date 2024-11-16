@@ -11,6 +11,15 @@ export const CYBERDECK_DIR_PATH = (): string =>
 export const MODS_DIR_PATH = (): string => path.join(CYBERDECK_DIR_PATH(), 'mods');
 export const UNPACK_DIR_PATH = (): string => path.join(CYBERDECK_DIR_PATH(), 'unpacked');
 export const LOGS_DIR_PATH = (): string => path.join(CYBERDECK_DIR_PATH(), 'logs');
+export const ASSETS_DIR_PATH = (): string => path.join(CYBERDECK_DIR_PATH(), 'assets');
+
+export const HEADER_IMAGE_LOCAL_ASSET_PATH = path.join(
+  process.cwd(),
+  '/assets/cyberdeck_header_image.utf.ans'
+);
+export const HEADER_IMAGE_ASSET_PATH = (): string =>
+  path.join(ASSETS_DIR_PATH(), 'cyberdeck_header_image.utf.ans');
+export const HEADER_IMAGE_SEA_ASSET_KEY = 'cyberdeck_header_image_ans';
 
 export const VERSE_DB_DIR_PATH = (): string => path.join(CYBERDECK_DIR_PATH(), 'versedb');
 export const VERSE_DB_DATA_DIR_PATH = (): string => path.join(VERSE_DB_DIR_PATH(), 'data');
