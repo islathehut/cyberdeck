@@ -1,5 +1,11 @@
 # cyberdeck
 
+## 0.4.5
+
+### Patch Changes
+
+- 8f3538e: More...
+
 ## 0.4.4
 
 ### Patch Changes
