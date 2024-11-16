@@ -1,6 +1,6 @@
 {
   "name": "cyberdeck",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Cross-platform CLI mod manager for Cyberpunk 2077",
   "main": "./dist/src/index.js",
   "type": "module",

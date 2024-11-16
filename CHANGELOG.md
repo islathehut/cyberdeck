@@ -1,5 +1,11 @@
 # cyberdeck
 
+## 0.4.6
+
+### Patch Changes
+
+- update release script asset name
+
 ## 0.4.5
 
 ### Patch Changes
