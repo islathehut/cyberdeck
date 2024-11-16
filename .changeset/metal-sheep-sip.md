@@ -1,5 +1,0 @@
----
-'cyberdeck': patch
----
-
-Release updates

@@ -1,6 +1,6 @@
 {
   "name": "cyberdeck",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Cross-platform CLI mod manager for Cyberpunk 2077",
   "main": "./dist/src/index.js",
   "type": "module",
@@ -35,7 +35,7 @@
     "start": "cross-env DEBUG=cyberdeck* node dist/src/index.js",
     "prepare": "husky",
     "publish:tag": "CYBERDECK_PUBLISH_VERSION=$(node -e \"var pj = require('./package.json'); console.log(pj.version);\") && git tag -a $CYBERDECK_PUBLISH_VERSION -m \"Publishing version $CYBERDECK_PUBLISH_VERSION\" && git push --tags",
-    "publish": "npx changeset version && git add . && cross-env CYBERDECK_PUBLISH_VERSION=$(node -e \"var pj = require('./package.json'); console.log(pj.version);\") git commit -m \"Publishing version $CYBERDECK_PUBLISH_VERSION\" && pnpm run publish:tag && npx gh-release -t $CYBERDECK_PUBLISH_VERSION -n $CYBERDECK_PUBLISH_VERSION",
+    "publish": "npx changeset version && git add . && cross-env CYBERDECK_PUBLISH_VERSION=$(node -e \"var pj = require('./package.json'); console.log(pj.version);\") git commit -m \"Publishing version $CYBERDECK_PUBLISH_VERSION\" && git push origin && pnpm run publish:tag && npx gh-release -t $CYBERDECK_PUBLISH_VERSION -n $CYBERDECK_PUBLISH_VERSION",
     "changeset:create": "npx changeset"
   },
   "keywords": [],
