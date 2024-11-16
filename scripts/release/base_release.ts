@@ -18,7 +18,8 @@ export const archiveRelease = async (
   osName: 'linux' | 'macos' | 'win',
   version: string
 ): Promise<void> => {
-  const archivePath = path.join(RELEASE_DIR, `cyberdeck_${osName}_${version}.7z`);
+  const archiveFileName = `cyberdeck_${osName}_${version.replaceAll('.', '_')}.7z`;
+  const archivePath = path.join(RELEASE_DIR, archiveFileName);
 
   let archiveFinished = false;
   Seven.add(archivePath, binaryPath)
@@ -43,6 +44,6 @@ export const archiveRelease = async (
 
   actions.setOutput('archive_path', archivePath);
   actions.setOutput('release_os', osName);
-  actions.setOutput('asset_name', `cyberdeck_${osName}`);
+  actions.setOutput('asset_name', archiveFileName);
   console.log(`Done archiving ${osName} release!`);
 };

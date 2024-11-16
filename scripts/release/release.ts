@@ -7,7 +7,7 @@ import { packageWinRelease } from './release_windows.js';
 
 interface CLIOptions {
   platform?: string;
-  version?: string;
+  releaseVersion?: string;
 }
 
 const VERSION_REGEX = /^[0-9]+\.[0-9]+\.[0-9]+.*/g;
@@ -42,7 +42,7 @@ const validateVersion = (version?: string): boolean => {
 
 const validateOptions = (options: CLIOptions): boolean => {
   const platformValid = validatePlatform(options.platform);
-  const versionValid = validateVersion(options.version);
+  const versionValid = validateVersion(options.releaseVersion);
 
   return platformValid && versionValid;
 };
@@ -53,7 +53,7 @@ program.name('release-cyberdeck').description('Release Cyberdeck').version('1.0.
 program
   .description('Release for platform')
   .option('-p, --platform <PLATFORM>', 'Platform to build release for [linux macos win]')
-  .option('-v --version <VERSION>', 'Version to release')
+  .option('-r --release-version <VERSION>', 'Version to release')
   .action(async (options: CLIOptions) => {
     if (!validateOptions(options)) {
       console.error(`Invalid option(s) provided`);
@@ -62,13 +62,13 @@ program
 
     switch (options.platform) {
       case 'linux':
-        await packageLinuxRelease(options.version!);
+        await packageLinuxRelease(options.releaseVersion!);
         break;
       case 'macos':
-        await packageMacOSRelease(options.version!);
+        await packageMacOSRelease(options.releaseVersion!);
         break;
       case 'win':
-        await packageWinRelease(options.version!);
+        await packageWinRelease(options.releaseVersion!);
         break;
       default:
         console.error(

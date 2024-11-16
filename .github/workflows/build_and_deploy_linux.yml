@@ -1,4 +1,4 @@
-name: Build and Deploy Packages
+name: Build and Deploy Packages (Linux)
 
 on:
   release:
@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        os:  [ubuntu-20.04, macos-13, windows-latest]
+        os:  [ubuntu-20.04]
 
     env:
       IS_CI: "true"
@@ -29,7 +29,7 @@ jobs:
         id: get_release
         uses: bruceadams/get-release@v1.3.2
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: "Build"
         run: pnpm run build
@@ -46,12 +46,12 @@ jobs:
       - name: "Build Linux release package"
         id: build_release
         run: |
-          pnpm run dist:create -- -p linux -v ${{ steps.get_release.outputs.tag_name }}
+          pnpm run dist:create -p linux -r ${{ steps.get_release.outputs.tag_name }}
 
       - name: "Upload release package"
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ${{ steps.build_release.outputs.archive_path }}
