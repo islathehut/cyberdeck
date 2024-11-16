@@ -46,7 +46,7 @@ jobs:
       - name: "Build Linux release package"
         id: build_release
         run: |
-          pnpm run dist:create -- -p linux -r ${{ steps.get_release.outputs.tag_name }}
+          pnpm run dist:create -p linux -r ${{ steps.get_release.outputs.tag_name }}
 
       - name: "Upload release package"
         uses: actions/upload-release-asset@v1.0.2
