@@ -55,23 +55,21 @@ const injectExecutable = async (): Promise<void> => {
   );
 };
 
-const packageRelease = async (): Promise<void> => {
-  console.log(`Generating Windows executable`);
-  await generateExecutable();
-  console.log(`Removing signature`);
-  await removeSignature();
-  console.log(`Injecting code bundle into executable`);
-  await injectExecutable();
-  console.log(`Creating archive`);
-  await archiveRelease(EXECUTABLE_PATH_WIN, 'win');
-};
-
-packageRelease()
-  .then(() => {
-    console.log(`Finished packaging Windows release!`);
-    process.exit(0);
-  })
-  .catch(e => {
+export const packageWinRelease = async (version: string): Promise<void> => {
+  try {
+    console.log(`Generating Windows executable`);
+    await generateExecutable();
+    console.log(`Removing signature`);
+    await removeSignature();
+    console.log(`Injecting code bundle into executable`);
+    await injectExecutable();
+    console.log(`Creating archive`);
+    await archiveRelease(EXECUTABLE_PATH_WIN, 'win', version);
+  } catch (e) {
     console.error(`Error occurred while packaging Windows release!`, e);
     process.exit(1);
-  });
+  }
+
+  console.log(`Finished packaging Windows release!`);
+  process.exit(0);
+};

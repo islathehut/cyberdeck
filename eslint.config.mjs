@@ -8,7 +8,8 @@ export default [
   },
   {
       rules: {
-        '@typescript-eslint/no-magic-numbers': 'off'
+        '@typescript-eslint/no-magic-numbers': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off'
       },
       files: [
         "src/**/*.ts",

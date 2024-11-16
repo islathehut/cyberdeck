@@ -14,21 +14,19 @@ const injectExecutable = async (): Promise<void> => {
   );
 };
 
-const packageRelease = async (): Promise<void> => {
-  console.log(`Generating Linux executable`);
-  await generateExecutable();
-  console.log(`Injecting code bundle into executable`);
-  await injectExecutable();
-  console.log(`Creating archive`);
-  await archiveRelease(EXECUTABLE_PATH_LINUX, 'linux');
-};
-
-packageRelease()
-  .then(() => {
-    console.log(`Finished packaging Linux release!`);
-    process.exit(0);
-  })
-  .catch(e => {
+export const packageLinuxRelease = async (version: string): Promise<void> => {
+  try {
+    console.log(`Generating Linux executable`);
+    await generateExecutable();
+    console.log(`Injecting code bundle into executable`);
+    await injectExecutable();
+    console.log(`Creating archive`);
+    await archiveRelease(EXECUTABLE_PATH_LINUX, 'linux', version);
+  } catch (e) {
     console.error(`Error occurred while packaging Linux release!`, e);
     process.exit(1);
-  });
+  }
+
+  console.log(`Finished packaging Linux release!`);
+  process.exit(0);
+};

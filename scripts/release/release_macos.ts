@@ -22,25 +22,23 @@ const signExecutable = async (): Promise<void> => {
   child.execSync(`codesign --sign - ${EXECUTABLE_PATH_MACOS}`);
 };
 
-const packageRelease = async (): Promise<void> => {
-  console.log(`Generating MacOS executable`);
-  await generateExecutable();
-  console.log(`Remove signature`);
-  await removeSignature();
-  console.log(`Injecting code bundle into executable`);
-  await injectExecutable();
-  console.log(`Signing executable`);
-  await signExecutable();
-  console.log(`Creating archive`);
-  await archiveRelease(EXECUTABLE_PATH_MACOS, 'macos');
-};
-
-packageRelease()
-  .then(() => {
-    console.log(`Finished packaging MacOS release!`);
-    process.exit(0);
-  })
-  .catch(e => {
+export const packageMacOSRelease = async (version: string): Promise<void> => {
+  try {
+    console.log(`Generating MacOS executable`);
+    await generateExecutable();
+    console.log(`Remove signature`);
+    await removeSignature();
+    console.log(`Injecting code bundle into executable`);
+    await injectExecutable();
+    console.log(`Signing executable`);
+    await signExecutable();
+    console.log(`Creating archive`);
+    await archiveRelease(EXECUTABLE_PATH_MACOS, 'macos', version);
+  } catch (e) {
     console.error(`Error occurred while packaging MacOS release!`, e);
     process.exit(1);
-  });
+  }
+
+  console.log(`Finished packaging MacOS release!`);
+  process.exit(0);
+};
