@@ -1,5 +1,11 @@
 # cyberdeck
 
+## 0.4.7
+
+### Patch Changes
+
+- Try to fix release
+
 ## 0.4.6
 
 ### Patch Changes
