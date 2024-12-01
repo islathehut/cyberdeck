@@ -14,8 +14,37 @@ const displaySettings = (currentOptions: RuntimeOptions): void => {
   const shortSeparator = chalk.magenta('░░░░');
 
   const nameString = chalk.bold.white(`Current Cyberdeck Settings`);
-  const installModeString = `${chalk.bold.cyan('Install Mode:  ')} ${chalk.magenta(currentOptions.installMode)}`;
-  const verboseString = `${chalk.bold.cyan('Verbose:       ')} ${chalk.magenta(currentOptions.verbose ?? false)}`;
+
+  const generateInstallModeString = (currentOptions: RuntimeOptions): string => {
+    let modeString = '';
+    switch (currentOptions.installMode) {
+      case InstallMode.REAL:
+        modeString = chalk.green('Real Install');
+        break;
+      case InstallMode.TEST:
+        modeString = chalk.yellow('Test Install (Fake Install Dir)');
+        break;
+      case InstallMode.DRY:
+        modeString = chalk.red('Extract-Only');
+        break;
+    }
+
+    return `${chalk.bold.cyan('Install Mode:  ')} ${modeString}`;
+  };
+
+  const generateVerboseString = (currentOptions: RuntimeOptions): string => {
+    let verboseString = '';
+    switch (currentOptions.verbose) {
+      case undefined:
+        verboseString = chalk.gray('false');
+        break;
+      case true:
+        verboseString = chalk.magenta('true');
+        break;
+    }
+
+    return `${chalk.bold.cyan('Verbose:       ')} ${verboseString}`;
+  };
 
   nodeConsole.log(
     `
@@ -25,8 +54,8 @@ const displaySettings = (currentOptions: RuntimeOptions): void => {
   ${shortSeparator}
   ${longSeparator}
   ${shortSeparator}
-  ${shortSeparator} ${installModeString}
-  ${shortSeparator} ${verboseString}
+  ${shortSeparator} ${generateInstallModeString(currentOptions)}
+  ${shortSeparator} ${generateVerboseString(currentOptions)}
   ${shortSeparator}
   ${longSeparator}
   `
