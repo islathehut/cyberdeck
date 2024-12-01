@@ -6,7 +6,13 @@ import * as fs from 'node:fs/promises';
 import * as path from 'path';
 import { randomUUID } from 'node:crypto';
 
-import { type Mod, InstallStatus, type SearchResult, type FindResult } from '../types/types.js';
+import {
+  type Mod,
+  InstallStatus,
+  type SearchResult,
+  type FindResult,
+  type RemoveResult,
+} from '../types/types.js';
 import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import { generateChecksum } from '../../utils/crypto.js';
 import Mods, { MODS_DATANAME } from '../storage/versedb/schemas/mods.schema.js';
@@ -16,6 +22,25 @@ import { ConfigManager } from '../config/config.manager.js';
 import { NexusModsManager } from './nexusMods/nexusMods.manager.js';
 
 const LOGGER = createSimpleModuleLogger('mods:mod');
+
+export const removeMod = async (query: Query<Mod>): Promise<boolean> => {
+  const removeResult: RemoveResult<Mod> = (await Mods?.remove(query, {
+    docCount: 1,
+  })) as RemoveResult<Mod>;
+
+  if (
+    !removeResult.acknowledged ||
+    /1 document\(s\) removed successfully\./.exec(removeResult.message) == null
+  ) {
+    LOGGER.error(
+      `Failed to remove mod with query ${JSON.stringify(query)}`,
+      JSON.stringify(removeResult)
+    );
+    return false;
+  }
+
+  return true;
+};
 
 export const addMod = async (mod: Mod): Promise<Mod> => {
   try {

@@ -118,6 +118,12 @@ export interface FindResult<T> {
   results?: T;
 }
 
+export interface RemoveResult<T> {
+  acknowledged: boolean;
+  message: string;
+  results?: T;
+}
+
 export interface NexusModsUser {
   userId: number;
   key: string;

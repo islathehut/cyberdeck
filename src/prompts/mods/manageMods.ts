@@ -108,9 +108,15 @@ const displayMod = (mod: Mod): void => {
 };
 
 const manageMod = async (mod: Mod): Promise<boolean> => {
-  let current = mod;
+  let current: Mod | undefined = mod;
   let exit = false;
   while (!exit) {
+    if (current == null) {
+      console.error(chalk.bold.red(`Selected mod is undefined!`));
+      exit = true;
+      continue;
+    }
+
     displayMod(current);
 
     const defaultChoices = [
@@ -132,6 +138,7 @@ const manageMod = async (mod: Mod): Promise<boolean> => {
         switch (answer.answer) {
           case 'editMod':
             current = await editMod(current);
+            if (current == null) exit = true;
             break;
         }
         break;
