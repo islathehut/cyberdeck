@@ -1,11 +1,9 @@
 #! /usr/bin/env ts-node
 
-import { confirm, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 
 import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import { loadUnseenModMetadata } from '../../app/mods/mod.js';
-import { DEFAULT_THEME } from '../helpers/theme.js';
 
 import Mods from '../../app/storage/versedb/schemas/mods.schema.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
@@ -33,23 +31,7 @@ const loadMods = async (recheckAll = false): Promise<void> => {
     return;
   }
 
-  const manuallySetMetadata = await confirm({
-    message: `Would you like to manually set metadata (e.g. mod name) for the ${rawLoadedMods.length} uninstalled mods that were loaded?`,
-    default: true,
-    theme: DEFAULT_THEME,
-  });
-
   for (const uninstalledMod of rawLoadedMods) {
-    if (manuallySetMetadata) {
-      const name: string = await input({
-        message: `Would you like to enter a name for the mod ${uninstalledMod.filename} (otherwise use hash of the filename)?`,
-        default: uninstalledMod.name,
-        theme: DEFAULT_THEME,
-      });
-
-      uninstalledMod.name = name;
-    }
-
     try {
       await Mods?.add(uninstalledMod);
       await NexusModsManager._updateModWithMetadata(uninstalledMod);
