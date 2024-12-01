@@ -4,7 +4,7 @@ import * as fs from 'node:fs/promises';
 import * as fsSync from 'fs';
 import * as path from 'path';
 
-import type { CLIOptions, Config } from '../types/types.js';
+import type { RuntimeOptions, Config } from '../types/types.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { CONFIG_FILE_NAME, CYBERDECK_DIR_PATH } from '../const.js';
 
@@ -15,18 +15,18 @@ export class ConfigManager {
   private static readonly _logger = createSimpleModuleLogger('config-manager');
 
   private _config: Config;
-  private readonly _cliOptions: CLIOptions;
+  private _runtimeOptions: RuntimeOptions;
   private readonly _configFilePath: string;
 
-  private constructor(config: Config, configFilePath: string, cliOptions: CLIOptions) {
+  private constructor(config: Config, configFilePath: string, cliOptions: RuntimeOptions) {
     this._config = config;
     this._configFilePath = configFilePath;
-    this._cliOptions = cliOptions;
+    this._runtimeOptions = cliOptions;
   }
 
   public static async init(
     config: Config,
-    cliOptions: CLIOptions,
+    runtimeOptions: RuntimeOptions,
     configFilePath: string = DEFAULT_CONFIG_FILE_PATH()
   ): Promise<ConfigManager> {
     ConfigManager._logger.log(
@@ -42,12 +42,12 @@ export class ConfigManager {
 
     ConfigManager._logger.log(`Writing data to config file at ${configFilePath}`);
     await fs.writeFile(configFilePath, JSON.stringify(config, null, 2));
-    this._manager = new ConfigManager(config, configFilePath, cliOptions);
+    this._manager = new ConfigManager(config, configFilePath, runtimeOptions);
     return this._manager;
   }
 
   public static async initFromFile(
-    cliOptions: CLIOptions,
+    cliOptions: RuntimeOptions,
     configFilePath: string = DEFAULT_CONFIG_FILE_PATH()
   ): Promise<ConfigManager> {
     ConfigManager._logger.log(`Initializing existing config from config file at ${configFilePath}`);
@@ -81,12 +81,23 @@ export class ConfigManager {
     return true;
   }
 
+  public async updateOptions(updates: Partial<RuntimeOptions>): Promise<RuntimeOptions> {
+    ConfigManager._logger.log(`Updating runtime options`);
+
+    this._runtimeOptions = {
+      ...this._runtimeOptions,
+      ...updates,
+    };
+
+    return this._runtimeOptions;
+  }
+
   public get config(): Config {
     return this._config;
   }
 
-  public get cliOptions(): CLIOptions {
-    return this._cliOptions;
+  public get runtimeOptions(): RuntimeOptions {
+    return this._runtimeOptions;
   }
 
   private static fileExists(configFilePath: string): boolean {

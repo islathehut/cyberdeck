@@ -14,8 +14,9 @@ import Mods from '../app/storage/versedb/schemas/mods.schema.js';
 import { manageInstallBlocks } from './blocks/manageInstallBlocks.js';
 import { selectMod } from './mods/manageMods.js';
 import { ConfigManager } from '../app/config/config.manager.js';
-import type { CLIOptions } from '../app/types/types.js';
+import type { RuntimeOptions } from '../app/types/types.js';
 import { NexusModsManager } from '../app/mods/nexusMods/nexusMods.manager.js';
+import { manageSettings } from './settings/manageSettings.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:main');
 
@@ -33,7 +34,16 @@ const mainLoop = async (): Promise<boolean> => {
         value: 'manageMods',
         description: 'Manage mods that Cyberdeck knows about',
       },
-      { name: 'Refresh Mod Metadata', value: 'loadMods', description: 'Load all mod metadata' },
+      {
+        name: 'Refresh Mod Metadata',
+        value: 'loadMods',
+        description: 'Load all uninstalled mods and fetch Nexus metadata',
+      },
+      {
+        name: 'Cyberdeck Settings',
+        value: 'manageSettings',
+        description: 'Manage Settings for Cyberdeck',
+      },
     ];
 
     const answer = await actionSelect({
@@ -58,6 +68,9 @@ const mainLoop = async (): Promise<boolean> => {
           case 'loadMods':
             await loadMods(true);
             break;
+          case 'manageSettings':
+            await manageSettings();
+            break;
         }
         break;
       case 'exit':
@@ -68,11 +81,11 @@ const mainLoop = async (): Promise<boolean> => {
   return exit;
 };
 
-const printHeader = (options: CLIOptions): void => {
-  nodeConsole.log(generateCliHeader(options));
+const printHeader = (options: RuntimeOptions): void => {
+  nodeConsole.log(generateCliHeader());
 };
 
-const main = async (options: CLIOptions): Promise<void> => {
+const main = async (options: RuntimeOptions): Promise<void> => {
   if (options.verbose) {
     debug.enable('cyberdeck:*');
   }

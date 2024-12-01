@@ -6,15 +6,20 @@ export enum InstallStatus {
   UNKNOWN = 'UNKNOWN',
 }
 
+export enum InstallMode {
+  REAL = 'REAL',
+  TEST = 'TEST',
+  DRY = 'DRY',
+}
+
 export interface Logger {
   log: Debugger;
   error: Debugger;
 }
 
-export interface CLIOptions {
+export interface RuntimeOptions {
   verbose?: true | undefined;
-  dry?: true | undefined;
-  test?: true | undefined;
+  installMode: InstallMode;
 }
 
 export interface CopyOverride {

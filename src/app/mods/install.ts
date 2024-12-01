@@ -4,7 +4,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
 
-import type { Mod, UnpackResult } from '../types/types.js';
+import { InstallMode, type Mod, type UnpackResult } from '../types/types.js';
 import { extractArchiveToTempDir } from './extract.js';
 import { createSimpleModuleLogger } from '../../utils/logger.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
@@ -40,7 +40,7 @@ const unpackMods = async (blockUuid: string): Promise<UnpackResult | null> => {
   LOGGER.log('Unpacking mods to temporary directory');
   let logPrefix = '';
   let unpackDirPrefix = '';
-  if (ConfigManager.manager.cliOptions.dry) {
+  if (ConfigManager.manager.runtimeOptions.installMode === InstallMode.DRY) {
     logPrefix = 'DRY RUN - ';
     unpackDirPrefix = 'dryRun_';
   }

@@ -9,7 +9,7 @@ import * as fsSync from 'fs';
 import * as path from 'path';
 
 import type { UnpackResult } from '../../app/types/types.js';
-import { InstallStatus } from '../../app/types/types.js';
+import { InstallMode, InstallStatus } from '../../app/types/types.js';
 import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import { DEFAULT_THEME } from '../helpers/theme.js';
 import { installMods, unpackMods } from '../../app/mods/install.js';
@@ -55,7 +55,7 @@ const updateDbAfterInstall = async (blockUuid: string): Promise<void> => {
 
 const installModsPrompt = async (blockUuid: string): Promise<void> => {
   const {
-    manager: { cliOptions, config },
+    manager: { runtimeOptions, config },
   } = ConfigManager;
   nodeConsole.log(chalk.bold.green('Unpacking mods before installation'));
   const result: UnpackResult | null = await unpackMods(blockUuid);
@@ -64,13 +64,13 @@ const installModsPrompt = async (blockUuid: string): Promise<void> => {
     return;
   }
 
-  if (cliOptions.dry) {
+  if (runtimeOptions.installMode === InstallMode.DRY) {
     nodeConsole.log(chalk.dim.yellow(`Dry run enabled, skipping installation!`));
     return;
   }
 
   let overrideInstallPath: string | undefined = undefined;
-  if (cliOptions.test) {
+  if (runtimeOptions.installMode === InstallMode.TEST) {
     overrideInstallPath = path.join(process.cwd(), 'fake-install-dir');
     LOGGER.log(`In test mod, installing to ${overrideInstallPath}`);
     if (!fsSync.existsSync(overrideInstallPath)) {
