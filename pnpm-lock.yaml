@@ -50,6 +50,9 @@ importers:
       inquirer-radio-prompt:
         specifier: ^1.2.0
         version: 1.2.0(@types/node@22.9.0)
+      inquirer-sortable-checkbox:
+        specifier: ^1.0.1
+        version: 1.0.1
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
@@ -625,6 +628,10 @@ packages:
     resolution: {integrity: sha512-lR2GaqBkp42Ew9BOAOqf2pSp+ymVES1qN8OC90WWh45yeoYLl0Ty1GyCxmkKqBJtq/+Ea1MF12AdFcZcpRNFsw==}
     engines: {node: '>=14.18.0'}
 
+  '@inquirer/core@8.2.4':
+    resolution: {integrity: sha512-7vsXSfxtrrbwMTirfaKwPcjqJy7pzeuF/bP62yo1NQrRJ5HjmMlrhZml/Ljm9ODc1RnbhJlTeSnCkjtFddKjwA==}
+    engines: {node: '>=18'}
+
   '@inquirer/editor@4.0.1':
     resolution: {integrity: sha512-qAHHJ6hs343eNtCKgV2wV5CImFxYG8J1pl/YCeI5w9VoW7QpulRUU26+4NsMhjR6zDRjKBsH/rRjCIcaAOHsrg==}
     engines: {node: '>=18'}
@@ -1154,6 +1161,9 @@ packages:
 
   '@types/mute-stream@0.0.1':
     resolution: {integrity: sha512-0yQLzYhCqGz7CQPE3iDmYjhb7KMBFOP+tBkyw+/Y2YyDI5wpS7itXXxneN1zSsUwWx3Ji6YiVYrhAnpQGS/vkw==}
+
+  '@types/mute-stream@0.0.4':
+    resolution: {integrity: sha512-CPM9nzrCPPJHQNA9keH9CVkVI+WR5kMa+7XEs5jcGQ0VoAGnLv242w8lIVgwAEfmE4oufJRaTc9PNLQl0ioAow==}
 
   '@types/node-7z@2.1.10':
     resolution: {integrity: sha512-LdfuQcGAKsLafyM96+F8VekToCuGQnFy9DMM0UdS6f5pEnaP5kAixp3TQPc1NJU4C6IwLwnednktYBjp/z2LRw==}
@@ -2351,6 +2361,10 @@ packages:
 
   inquirer-radio-prompt@1.2.0:
     resolution: {integrity: sha512-lAdjr+nubgK+hZW4xGIDUVVTByUOX+7y5ZVzZ5szxddUhVUTJHrMi2MoNF4iGZ89S2iIQnUlQ4m8nLbbYCHkzw==}
+    engines: {node: '>=18'}
+
+  inquirer-sortable-checkbox@1.0.1:
+    resolution: {integrity: sha512-6uYqb5UZTa8Mz/pJ5yDom8d4trpcUHYsYlHGXpnUE/rzkJnhqZnKuu8EjJ+KBTK5+gxH/4jF8y5F2efvBTHs1Q==}
     engines: {node: '>=18'}
 
   inquirer@8.2.6:
@@ -4513,6 +4527,22 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
 
+  '@inquirer/core@8.2.4':
+    dependencies:
+      '@inquirer/figures': 1.0.7
+      '@inquirer/type': 1.5.5
+      '@types/mute-stream': 0.0.4
+      '@types/node': 20.17.3
+      '@types/wrap-ansi': 3.0.0
+      ansi-escapes: 4.3.2
+      cli-spinners: 2.9.2
+      cli-width: 4.1.0
+      mute-stream: 1.0.0
+      picocolors: 1.1.1
+      signal-exit: 4.1.0
+      strip-ansi: 6.0.1
+      wrap-ansi: 6.2.0
+
   '@inquirer/editor@4.0.1(@types/node@22.9.0)':
     dependencies:
       '@inquirer/core': 10.0.1(@types/node@22.9.0)
@@ -5269,6 +5299,10 @@ snapshots:
   '@types/ms@0.7.34': {}
 
   '@types/mute-stream@0.0.1':
+    dependencies:
+      '@types/node': 22.9.0
+
+  '@types/mute-stream@0.0.4':
     dependencies:
       '@types/node': 22.9.0
 
@@ -6704,6 +6738,14 @@ snapshots:
       yoctocolors: 2.1.1
     transitivePeerDependencies:
       - '@types/node'
+
+  inquirer-sortable-checkbox@1.0.1:
+    dependencies:
+      '@inquirer/core': 8.2.4
+      '@inquirer/figures': 1.0.7
+      '@inquirer/type': 1.5.5
+      ansi-escapes: 4.3.2
+      chalk: 4.1.2
 
   inquirer@8.2.6:
     dependencies:

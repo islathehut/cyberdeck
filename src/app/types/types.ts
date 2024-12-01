@@ -133,3 +133,34 @@ export interface NexusModsUser {
   email: string;
   profileUrl: string;
 }
+
+export interface SortableCheckboxTheme {
+  icon?:
+    | {
+        checked?: string | undefined;
+        unchecked?: string | undefined;
+        cursor?: string | undefined;
+      }
+    | undefined;
+  style?:
+    | {
+        disabledChoice?: object | undefined;
+        renderSelectedChoices?: object | undefined;
+        answer?: object | undefined;
+        message?: object | undefined;
+        error?: object | undefined;
+        defaultAnswer?: object | undefined;
+        help?: object | undefined;
+        highlight?: object | undefined;
+        key?: object | undefined;
+      }
+    | undefined;
+  helpMode?: 'always' | 'never' | 'auto' | undefined;
+  prefix?: string | undefined;
+  spinner?:
+    | {
+        interval?: number | undefined;
+        frames?: Array<string | undefined> | undefined;
+      }
+    | undefined;
+}
