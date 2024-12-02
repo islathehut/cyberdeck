@@ -6,15 +6,20 @@ export enum InstallStatus {
   UNKNOWN = 'UNKNOWN',
 }
 
+export enum InstallMode {
+  REAL = 'REAL',
+  TEST = 'TEST',
+  DRY = 'DRY',
+}
+
 export interface Logger {
   log: Debugger;
   error: Debugger;
 }
 
-export interface CLIOptions {
+export interface RuntimeOptions {
   verbose?: true | undefined;
-  dry?: true | undefined;
-  test?: true | undefined;
+  installMode: InstallMode;
 }
 
 export interface CopyOverride {
@@ -113,6 +118,12 @@ export interface FindResult<T> {
   results?: T;
 }
 
+export interface RemoveResult<T> {
+  acknowledged: boolean;
+  message: string;
+  results?: T;
+}
+
 export interface NexusModsUser {
   userId: number;
   key: string;
@@ -121,4 +132,35 @@ export interface NexusModsUser {
   isSupporter: boolean;
   email: string;
   profileUrl: string;
+}
+
+export interface SortableCheckboxTheme {
+  icon?:
+    | {
+        checked?: string | undefined;
+        unchecked?: string | undefined;
+        cursor?: string | undefined;
+      }
+    | undefined;
+  style?:
+    | {
+        disabledChoice?: object | undefined;
+        renderSelectedChoices?: object | undefined;
+        answer?: object | undefined;
+        message?: object | undefined;
+        error?: object | undefined;
+        defaultAnswer?: object | undefined;
+        help?: object | undefined;
+        highlight?: object | undefined;
+        key?: object | undefined;
+      }
+    | undefined;
+  helpMode?: 'always' | 'never' | 'auto' | undefined;
+  prefix?: string | undefined;
+  spinner?:
+    | {
+        interval?: number | undefined;
+        frames?: Array<string | undefined> | undefined;
+      }
+    | undefined;
 }

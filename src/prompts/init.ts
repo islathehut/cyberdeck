@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { DateTime } from 'luxon';
 import { confirm, input } from '@inquirer/prompts';
 
-import type { CLIOptions, Config } from '../app/types/types.js';
+import type { RuntimeOptions, Config } from '../app/types/types.js';
 import { ConfigManager } from '../app/config/config.manager.js';
 import { createSimpleModuleLogger } from '../utils/logger.js';
 import { DEFAULT_THEME } from './helpers/theme.js';
@@ -17,7 +17,7 @@ import {
 
 const LOGGER = createSimpleModuleLogger('prompts:init');
 
-const initNewConfig = async (cliOptions: CLIOptions): Promise<ConfigManager | null> => {
+const initNewConfig = async (cliOptions: RuntimeOptions): Promise<ConfigManager | null> => {
   LOGGER.log(`No config file found, generating a new one...`);
   const shouldInit = await confirm({
     message: `No cyberdeck setup found in ${CYBERDECK_DIR_PATH()}.  Cyberdeck will create this directory, a new config file and empty sub-directories.  Continue?`,
