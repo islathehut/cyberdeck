@@ -41,6 +41,7 @@ const displayMod = (mod: Mod): void => {
     nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Name:               ')} ${chalk.magentaBright(mod.nexusMetadata.mod.name)}`;
     nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('ID:                 ')} ${chalk.magentaBright(mod.nexusMetadata.mod.modId)}`;
     nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Summary:            ')} ${chalk.magentaBright(wrapTextWithPrefix(mod.nexusMetadata.mod.summary, `  ${mediumSeparator}                      `))}`;
+    nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Web URL:            ')} ${chalk.magentaBright(mod.nexusMetadata.mod.url)}`;
     nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Latest Version:     ')} ${chalk.magentaBright(mod.nexusMetadata.mod.version)}`;
     nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Installed Version:  ')} ${chalk.magentaBright(mod.nexusMetadata.file.version)}`;
     nexusString += `\n  ${mediumSeparator} ${chalk.whiteBright.italic.bold('Available:          ')} ${mod.nexusMetadata.mod.available ? chalk.magentaBright(mod.nexusMetadata.mod.available) : chalk.bold.redBright(mod.nexusMetadata.mod.available)}`;

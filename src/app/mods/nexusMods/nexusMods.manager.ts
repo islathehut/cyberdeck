@@ -12,6 +12,7 @@ import type {
 } from '../../types/types.js';
 import { NexusModsAPI } from './nexusMods.api.js';
 import { updateMod } from '../mod.js';
+import { NEXUS_MODS_WEB_BASE_URL } from '../../const.js';
 
 export class NexusModsManager {
   private static _manager: NexusModsManager;
@@ -110,6 +111,7 @@ export class NexusModsManager {
     const modMetadata: NexusModsModMetadata = {
       name: nexusModsMetadata.mod.name,
       summary: nexusModsMetadata.mod.summary,
+      url: NexusModsManager._generateNexusModsLinkByModId(nexusModsMetadata.mod.mod_id),
       pictureUrl: nexusModsMetadata.mod.picture_url,
       uid: nexusModsMetadata.mod.uid,
       modId: nexusModsMetadata.mod.mod_id,
@@ -175,6 +177,10 @@ export class NexusModsManager {
     }
 
     return modMetadata;
+  }
+
+  private static _generateNexusModsLinkByModId(modId: string | number): string {
+    return `${NEXUS_MODS_WEB_BASE_URL}${modId}`;
   }
 
   public static get manager(): NexusModsManager {

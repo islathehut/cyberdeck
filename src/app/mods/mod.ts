@@ -154,10 +154,6 @@ export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]>
 
     const existingMod = await findModByChecksum(checksum);
     if (existingMod != null) {
-      if (existingMod.nexusMetadata != null) {
-        LOGGER.log(chalk.dim.yellow(`Skipping already cached uninstalled mod`));
-        continue;
-      }
       await NexusModsManager._updateModWithMetadata(existingMod);
       continue;
     }

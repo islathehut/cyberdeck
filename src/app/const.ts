@@ -35,3 +35,4 @@ export const DEFAULT_INSTALL_DIR_PATH = path.join(
 export const NEXUS_MODS_API_BASE_URL = 'https://api.nexusmods.com/';
 export const NEXUS_MODS_API_APIKEY_HEADER = 'apikey';
 export const NEXUS_MODS_API_GAME_DOMAIN_NAME = 'cyberpunk2077';
+export const NEXUS_MODS_WEB_BASE_URL = 'https://www.nexusmods.com/cyberpunk2077/mods/';

@@ -31,17 +31,28 @@ const loadMods = async (recheckAll = false): Promise<void> => {
     return;
   }
 
-  for (const uninstalledMod of rawLoadedMods) {
-    try {
-      await Mods?.add(uninstalledMod);
-      await NexusModsManager._updateModWithMetadata(uninstalledMod);
-    } catch (e) {
-      nodeConsole.error(`Error while writing mod to db`, e);
-      process.exit(0);
+  const addModsWithMetadata = async (): Promise<void> => {
+    for (const uninstalledMod of rawLoadedMods) {
+      try {
+        await Mods?.add(uninstalledMod);
+        await NexusModsManager._updateModWithMetadata(uninstalledMod);
+      } catch (e) {
+        nodeConsole.error(`Error while writing mod to db`, e);
+        process.exit(0);
+      }
     }
-  }
+  };
 
-  const message = chalk.green(`Finished loading new mods!`);
+  await promiseWithSpinner(
+    async () => {
+      await addModsWithMetadata();
+    },
+    `Adding ${rawLoadedMods.length} mods with Nexus Mods metadata...`,
+    `Finished adding new mod files!`,
+    `Failed while adding new mod files!!!`
+  );
+
+  const message = chalk.green(`Finished loading ${rawLoadedMods.length} new mods!`);
   nodeConsole.log(message);
   LOGGER.log(message);
 };

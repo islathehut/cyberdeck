@@ -37,6 +37,7 @@ export interface NexusModsAuthor {
 export interface NexusModsModMetadata {
   name: string;
   summary: string;
+  url: string;
   pictureUrl: string;
   uid: number;
   modId: number;
