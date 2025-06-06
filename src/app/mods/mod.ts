@@ -12,6 +12,7 @@ import {
   type SearchResult,
   type FindResult,
   type RemoveResult,
+  type LoadedMods,
 } from '../types/types.js';
 import { createSimpleModuleLogger, nodeConsole } from '../../utils/logger.js';
 import { generateChecksum } from '../../utils/crypto.js';
@@ -99,10 +100,7 @@ export const findMod = async (findQuery: Query<Mod>): Promise<Mod | undefined> =
   }
 };
 
-export const findModByChecksum = async (
-  checksum: string,
-  throwOnUndefined = false
-): Promise<Mod | undefined> =>
+export const findModByChecksum = async (checksum: string): Promise<Mod | undefined> =>
   await findMod({
     checksum,
   });
@@ -112,8 +110,11 @@ export const findModByFilename = async (filename: string): Promise<Mod | undefin
     filename,
   });
 
-export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]> => {
-  const loadedMods: Mod[] = [];
+export const loadModMetadata = async (recheckAll: boolean): Promise<LoadedMods> => {
+  const loadedMods: LoadedMods = {
+    new: [],
+    updates: [],
+  };
   let latestModLoadedMs = 0;
   const { manager: configManager } = ConfigManager;
 
@@ -154,7 +155,13 @@ export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]>
 
     const existingMod = await findModByChecksum(checksum);
     if (existingMod != null) {
-      await NexusModsManager._updateModWithMetadata(existingMod);
+      const updatedMod = await NexusModsManager._updateModWithMetadata(existingMod);
+      if (
+        updatedMod.nexusMetadata != null &&
+        updatedMod.nexusMetadata.mod.version !== updatedMod.nexusMetadata.file.version
+      ) {
+        loadedMods.updates.push(updatedMod);
+      }
       continue;
     }
 
@@ -176,7 +183,7 @@ export const loadUnseenModMetadata = async (recheckAll: boolean): Promise<Mod[]>
       description: null,
     };
 
-    loadedMods.push(mod);
+    loadedMods.new.push(mod);
   }
 
   if (latestModLoadedMs > 0) {

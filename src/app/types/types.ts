@@ -135,6 +135,11 @@ export interface NexusModsUser {
   profileUrl: string;
 }
 
+export interface LoadedMods {
+  new: Mod[];
+  updates: Mod[];
+}
+
 export interface SortableCheckboxTheme {
   icon?:
     | {
