@@ -9,6 +9,9 @@ import Mods from '../../app/storage/versedb/schemas/mods.schema.js';
 import { promiseWithSpinner } from '../../utils/terminal/tools.js';
 import { NexusModsManager } from '../../app/mods/nexusMods/nexusMods.manager.js';
 import type { Mod } from '../../app/types/types.js';
+import { checkbox } from '@inquirer/prompts';
+import { DEFAULT_SORTABLE_THEME } from '../helpers/theme.js';
+import type Choice from 'inquirer/lib/objects/choice.js';
 
 const LOGGER = createSimpleModuleLogger('prompts:loadMods');
 
@@ -72,13 +75,34 @@ const loadMods = async (recheckAll = false): Promise<void> => {
     nodeConsole.log('Found the following possible mod updates:\n');
     for (const mod of updates) {
       const nameString = chalk.bold.white(mod.name);
-      const updateString = `${chalk.magentaBright(mod.nexusMetadata?.file.version)} -> ${chalk.italic.bold.yellowBright(mod.nexusMetadata?.mod.version)}`;
+      const updateString = `${chalk.gray(mod.nexusMetadata?.file.version)} ${chalk.bold.yellowBright('->')} ${chalk.italic.bold.redBright(mod.nexusMetadata?.mod.version)}`;
       nodeConsole.log(`   * ${nameString} - ${updateString}`);
     }
     nodeConsole.log('\n');
   };
 
   displayPossibleUpdates(rawLoadedMods.updates);
+
+  const toUpdate = await checkbox({
+    message: 'Choose mods to update from Nexus Mods',
+    choices: rawLoadedMods.updates.map(
+      mod =>
+        ({
+          name: `${mod.name} (${mod.nexusMetadata?.file.version} -> ${mod.nexusMetadata?.mod.version})`,
+          value: mod,
+          checked: true,
+          short: mod.name,
+          disabled: false,
+        }) satisfies Choice
+    ),
+    theme: DEFAULT_SORTABLE_THEME,
+  });
+
+  if (toUpdate.length === 0) {
+    const message = chalk.dim.yellow(`No mods selected for updates!`);
+    nodeConsole.log(message);
+    LOGGER.log(message);
+  }
 };
 
 export { loadMods };

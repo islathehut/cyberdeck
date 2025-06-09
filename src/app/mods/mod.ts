@@ -52,7 +52,7 @@ export const addMod = async (mod: Mod): Promise<Mod> => {
     }
     return addedMod;
   } catch (e) {
-    LOGGER.error(`Error while writing mod to db`, e);
+    LOGGER.error(`Error while writing mod to db: ${mod.filename}`, e);
     throw e as Error;
   }
 };
